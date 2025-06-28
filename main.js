@@ -38,10 +38,14 @@ function renderSavedCodes() {
 
         const data = snapshot.val();
         const headings = data.headings || {};
-        let html = '';
+const sortedHKeys = Object.keys(headings).sort((a, b) => {
+  return parseInt(a.slice(1)) - parseInt(b.slice(1));
+});
 
-for (const hKey in headings) {
-    const heading = headings[hKey];
+let html = '';
+
+for (const hKey of sortedHKeys) {
+  const heading = headings[hKey];
     html += `
 <details data-hkey="${hKey}">
   <summary class="summary-bar">
