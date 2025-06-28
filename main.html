@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+        <title>Strivers A2Z DSA SHEET</title>
+        <link rel="stylesheet" href="main.css">
+        <!-- Firebase & Monaco -->
+        <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+        <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.34.1/min/vs/loader.min.js"></script>
+    </head>
+    <body>
+        <h2>Code Storage</h2>
+        <div id="appContent">
+            
+            <div id="controls" style="
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    align-items: center;
+    margin-bottom: 20px;
+    padding: 12px;
+    border-radius: 8px;
+    
+    font-family: 'Segoe UI', sans-serif;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+">
+
+  <button id="expandAll" style="
+    padding: 6px 12px;
+    background-color: #616661;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+  ">Expand All</button>
+
+  <button id="collapseAll" style="
+    padding: 6px 12px;
+    background-color: #3f2220;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+  ">Collapse All</button>
+
+  <input type="text" id="searchInput" placeholder="Search..." style="
+    padding: 6px 12px;
+    font-size: 14px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    width: 240px;
+    flex-grow: 1;
+  ">
+
+  <input type="text" id="newHeadingInput" placeholder="Add Topic...." style="
+    padding: 6px 12px;
+    font-size: 14px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    width: 200px;
+  ">
+
+  <button id="addHeadingBtn" style="
+    padding: 6px 10px;
+    
+    color: white;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 18px;
+  ">➕</button>
+</div>
+            
+            <div id="container"></div>
+        </div>
+        <script type="module" src="main.js"></script>
+    </body>
+</html>

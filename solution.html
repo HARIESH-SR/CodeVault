@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Solution Editor</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=1">
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+
+  <link rel="stylesheet" href="solution.css">
+</head>
+<body>
+ <div id="top-bar">
+  <div id="problemTitle">Solution Title</div>
+
+  <div id="controls">
+    <select id="lang">
+      <option value="71">Python</option>
+      <option value="54">C++</option>
+      <option value="62">Java</option>
+      <option value="63">JavaScript</option>
+      <option value="50">C</option>
+      <option value="68">PHP</option>
+      <option value="72">Ruby</option>
+      <option value="74">Rust</option>
+      <option value="83">Swift</option>
+      <option value="78">Kotlin</option>
+      <option value="80">TypeScript</option>
+    </select>
+
+    <button onclick="runCode()" title="Run">▶</button>
+    <button onclick="saveSolution()" title="Save">💾</button>
+    <button class="font-btn" onclick="changeFontSize('editor', -1)" title="Decrease editor font size">A−</button>
+    <button class="font-btn" onclick="changeFontSize('editor', 1)" title="Increase editor font size">A+</button>
+    <button class="copy-btn" onclick="copyTextFromEditor()" title="Copy editor">🖫</button>
+    <button class="font-btn" onclick="toggleWordWrap()" title="word wrap">↩️</button>
+    <button class="font-btn" onclick="toggleFullScreenEditor()" title="Fullscreen editor">⛶</button>
+    <button onclick="handleClose()" title="Close">❌</button>
+  </div>
+</div>
+  
+    <div id="editor"></div>
+    <div id="resizer"></div>
+  
+  <div id="io-section">
+    <div id="inputContainer">
+      <textarea id="inputArea" placeholder="Type Input here..."></textarea>
+
+      <div class="font-controls">
+        <button class="font-btn" onclick="changeFontSize('input', -1)" title="Decrease size">A−</button>
+        <button class="font-btn" onclick="changeFontSize('input', 1)" title="Increase size">A+</button>
+        <button class="copy-btn" onclick="copyText('inputArea')" title="copy">📋</button>
+      </div>
+    </div>
+    <div id="outputContainer">
+      <div id="output"> Output will appear here...</div>
+      <div class="font-controls">
+        <button class="font-btn" onclick="changeFontSize('output', -1)" title="Decrease size">A−</button>
+        <button class="font-btn" onclick="changeFontSize('output', 1)" title="Increase size">A+</button>
+        <button class="copy-btn" onclick="copyText('output')" title="copy">📋</button>
+
+      </div>
+    </div>
+  </div>
+<script>
+  window.require = { paths: { vs: "https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.34.1/min/vs" } };
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.34.1/min/vs/loader.min.js"></script>
+
+<script src="solution.js"></script>
+  
+</body>
+</html>

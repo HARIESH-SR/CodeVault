@@ -1,0 +1,263 @@
+/* General body style */
+body {
+  margin: 0;
+  padding: 0;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #121212;
+  color: #e0e0e0;
+  line-height: 1.5;
+}
+
+/* App container */
+#appContent {
+  width: 100%;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+
+/* Header */
+h2 {
+  color: #4caf50;
+  text-align: center;
+  margin-top: 20px;
+  margin-bottom: 10px;
+}
+
+/* Controls */
+#controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+  margin: 20px 0;
+}
+
+/* Search input */
+#searchInput {
+  flex: 1;
+  min-width: 250px;
+  padding: 8px 10px;
+}
+
+/* Inputs and buttons */
+input,
+button {
+  background: #2c2c2c;
+  border: 1px solid #444;
+  color: #e0e0e0;
+  border-radius: 4px;
+  padding: 6px 10px;
+  font-size: 14px;
+}
+
+input:focus,
+button:focus {
+  outline: none;
+  border-color: #4caf50;
+}
+
+button {
+  cursor: pointer;
+  transition: background 0.3s, border 0.3s;
+}
+
+button:hover {
+  background: #4caf50;
+  border-color: #4caf50;
+  color: #000;
+}
+
+/* Progress summary */
+#progressSummary div {
+  font-size: 14px;
+  margin-bottom: 10px;
+}
+
+#progressSummary .bar-bg {
+  background: #333;
+  border-radius: 10px;
+  overflow: hidden;
+  height: 20px;
+}
+
+#progressSummary .bar-fill {
+  background: #4caf50;
+  height: 100%;
+}
+
+/* Details wrapper */
+details {
+  background: #1a1a1a;
+  border: 1px solid #333;
+  border-radius: 6px;
+  margin-bottom: 14px;
+  padding: 8px 12px;
+  transition: all 0.2s;
+}
+
+summary {
+  font-weight: 600;
+  cursor: pointer;
+  font-size: 16px;
+  color: #81c784;
+  margin-bottom: 10px;
+}
+
+/* Table layout */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  background: #1e1e1e;
+  margin-bottom: 10px;
+}
+
+th,
+td {
+  padding: 10px;
+  border: 1px solid #333;
+  text-align: left;
+  font-size: 14px;
+  font-weight: bold;
+}
+
+/* Table hover */
+table tr {
+  transition: background 0.2s ease;
+}
+
+table tr:hover {
+  background-color: rgba(76, 175, 80, 0.2);
+}
+
+/* Action cell */
+td.actions-cell {
+  text-align: center;
+  vertical-align: middle;
+}
+
+/* Icons */
+.problem-link-icon,
+.article-link-icon {
+  font-size: 18px;
+  text-decoration: none;
+}
+
+.problem-link-icon {
+  color: #4caf50;
+}
+
+.problem-link-icon:hover {
+  color: #81c784;
+}
+
+.article-link-icon {
+  color: #2196f3;
+}
+
+.article-link-icon:hover {
+  color: #64b5f6;
+}
+
+/* Input under each heading */
+.heading-input-row {
+  display: flex;
+  gap: 10px;
+  margin-top: 8px;
+  padding-top: 10px;
+  border-top: 1px dashed #333;
+}
+
+/* Clean, horizontal layout for summary bar */
+.summary-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  padding: 6px 8px;
+}
+
+/* Left side: triangle + heading title */
+.summary-left {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* Triangle icon simulated using pseudo-elements */
+.arrow-icon::before {
+  content: "▸";
+  transition: transform 0.2s ease;
+}
+
+/* Rotate when expanded */
+details[open] .arrow-icon::before {
+  content: "▾";
+}
+
+/* Fix spacing and look of heading text */
+.heading-text {
+  font-size: 16px;
+  font-weight: bold;
+}
+
+/* Right-side Add Problem button */
+.add-problem-btn {
+  background-color: #2c2c2c;
+  border: 1px solid #444;
+  padding: 4px 10px;
+  border-radius: 4px;
+  color: #e0e0e0;
+  font-weight: bold;
+}
+
+.add-problem-btn:hover {
+  background-color: #ffffff;
+  border-color: #444444;
+  color: rgb(0, 0, 0);
+  
+}
+/* Existing row hover */
+table tr:hover {
+  background-color: rgba(76, 175, 80, 0.2); /* Soft green */
+}
+
+/* Add this: Change button appearance when its row is hovered */
+table tr:hover button {
+  background-color: #388e3c; /* Darker green */
+  border-color: #388e3c;
+  color: white;
+}
+.clickable-row {
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.clickable-row:hover {
+  background-color: rgba(76, 175, 80, 0.2);
+}
+
+.addform {
+  display: none;
+  margin: 12px 0;
+  padding: 8px;
+  border: 1px solid #9c9999;
+  border-radius: 8px;
+  
+  display: flex;
+  flex-direction: row;
+  gap: 12px;
+  align-items: center;
+  flex-wrap: wrap;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+#appContent {
+  padding-top: 0px;
+}
+#collapseAll {
+  background-color: #3f2220;
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 6px;
+}
