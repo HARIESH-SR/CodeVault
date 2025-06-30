@@ -24,7 +24,7 @@ const langNameToId = {
     kotlin: "78",
     typescript: "80",
     sqlite: "82",
-    mysql:null
+    mysql:""
 };
 
 const savedSolution = localStorage.getItem("solutionDraft") || "{}";
