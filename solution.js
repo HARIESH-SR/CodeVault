@@ -23,7 +23,7 @@ const langNameToId = {
     swift: "83",
     kotlin: "78",
     typescript: "80",
-    sqllite: "82",
+    sqlite: "82",
     mysql:null
 };
 
@@ -74,7 +74,7 @@ require(['vs/editor/editor.main'], function () {
     let initialInput = solObj[initialLang]?.input || "";
     const initialOutput = solObj[initialLang]?.output || "";
     const initialTimestamp = solObj[initialLang]?.timestamp || "";
-const monacoLang = (initialLang === "mysql" || initialLang === "sqllite") ? "sql" : initialLang;
+const monacoLang = (initialLang === "mysql" || initialLang === "sqlite") ? "sql" : initialLang;
 
     editor = monaco.editor.create(document.getElementById('editor'), {
         value: initialCode,
@@ -445,7 +445,7 @@ function getLanguageVersion(langName) {
     case "swift":       return "Swift 5.3";
     case "kotlin":      return "Kotlin 1.4.31";
     case "typescript":  return "TypeScript 4.2.4";
-    case "sqllite":     return "SQLite 3.31.1";
+    case "sqlite":     return "SQLite 3.31.1";
     default:            return langName;
   }
 }
