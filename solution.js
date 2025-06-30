@@ -157,6 +157,10 @@ function getMonacoLang(langId) {
                 return "kotlin";
             case "80":
                 return "typescript";
+            case "82": 
+                return "sql";    
+            case "86": 
+                return "sql";  
             default:
                 return "plaintext";
         }
