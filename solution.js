@@ -111,9 +111,17 @@ const monacoLang = (initialLang === "mysql" || initialLang === "sqlite") ? "sql"
         mouseWheelZoom: true
 
     });
+    editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.Enter, function () {
+    runCode();
+});
+editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyS, function () {
+    saveSolution();
+});
+
     editor.updateOptions({
         fontSize: 16
     });
+
     document.getElementById('inputArea').value = initialInput;
     document.getElementById('output').innerHTML = initialOutput ? `<span class='clr-str'>Stored Output (${formatTimestamp(initialTimestamp)}):</span>\n\n${initialOutput}` : 'Output will appear here...';
     document.getElementById('inputArea').addEventListener('input', () => {
@@ -460,3 +468,15 @@ function getLanguageVersion(langName) {
     default:            return langName;
   }
 }
+window.addEventListener('keydown', function (e) {
+    if (e.ctrlKey && e.key === 'Enter') {
+        e.preventDefault();
+        runCode();
+    }
+});
+window.addEventListener("keydown", function (e) {
+    if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "s") {
+        e.preventDefault(); // Stops default browser save
+        saveSolution();
+    }
+});
