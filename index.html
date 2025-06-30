@@ -21,16 +21,33 @@
   </div>
 
   <script>
-    document.getElementById('loginBtn').addEventListener('click', () => {
-      const user = document.getElementById('username').value.trim();
-      const pass = document.getElementById('password').value.trim();
+  const loginBtn = document.getElementById('loginBtn');
+  const usernameEl = document.getElementById('username');
+  const passwordEl = document.getElementById('password');
+  const errorEl = document.getElementById('loginError');
 
-      if (user === 'Hariesh S_R' && pass === '250624') {
-        window.location.href = 'main.html';
-      } else {
-        document.getElementById('loginError').style.display = 'block';
+  function attemptLogin() {
+    const user = usernameEl.value.trim();
+    const pass = passwordEl.value.trim();
+
+    if (user === 'Hariesh S_R' && pass === '250624') {
+      window.location.href = 'main.html';
+    } else {
+      errorEl.style.display = 'block';
+    }
+  }
+
+  loginBtn.addEventListener('click', attemptLogin);
+
+  // 🔑 Listen for Enter key on both inputs
+  [usernameEl, passwordEl].forEach(input => {
+    input.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        attemptLogin();
       }
     });
-  </script>
+  });
+</script>
+
 </body>
 </html>
