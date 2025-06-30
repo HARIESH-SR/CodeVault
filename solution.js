@@ -435,8 +435,8 @@ enableCtrlScrollZoomForIO();
 function getLanguageVersion(langName) {
   switch (langName.toLowerCase()) {
     case "python":      return "Python 3.8.1";
-    case "cpp":         return "C++ (GCC 9.4.0)";
-    case "java":        return "Java OpenJDK 11.0.11";
+    case "cpp":         return "C++ (GCC 9.2.0)";
+    case "java":        return "Java (OpenJDK 13.0.1)";
     case "javascript":  return "JavaScript (Node.js 14.17.0)";
     case "c":           return "C (GCC 9.4.0)";
     case "php":         return "PHP 7.4.19";
