@@ -68,12 +68,23 @@ require(['vs/editor/editor.main'], function () {
     }
     solutionObj = solObj;
 
-    const langSelect = document.getElementById('lang');
-    let initialLang = langSelect.value;
-    let initialCode = solObj[initialLang]?.code || "";
-    let initialInput = solObj[initialLang]?.input || "";
-    const initialOutput = solObj[initialLang]?.output || "";
-    const initialTimestamp = solObj[initialLang]?.timestamp || "";
+   const langSelect = document.getElementById('lang');
+const allLangOptions = Array.from(langSelect.options).map(opt => opt.value);
+
+let initialLang = langSelect.value;
+for (let lang of allLangOptions) {
+    if (solObj[lang]?.code?.trim()) {
+        initialLang = lang;
+        break;
+    }
+}
+
+langSelect.value = initialLang; // set dropdown to match
+let initialCode = solObj[initialLang]?.code || "";
+let initialInput = solObj[initialLang]?.input || "";
+const initialOutput = solObj[initialLang]?.output || "";
+const initialTimestamp = solObj[initialLang]?.timestamp || "";
+
 const monacoLang = (initialLang === "mysql" || initialLang === "sqlite") ? "sql" : initialLang;
 
     editor = monaco.editor.create(document.getElementById('editor'), {
