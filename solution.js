@@ -158,9 +158,7 @@ function getMonacoLang(langId) {
             case "80":
                 return "typescript";
             case "82": 
-                return "sql";    
-            case "86": 
-                return "sql";  
+                return "sqllite";  
             default:
                 return "plaintext";
         }
