@@ -11,6 +11,21 @@ const firebaseConfig = {
 };
 firebase.initializeApp(firebaseConfig);
 const db = firebase.database();
+const langNameToId = {
+    python: "71",
+    cpp: "54",
+    java: "62",
+    javascript: "63",
+    c: "50",
+    php: "68",
+    ruby: "72",
+    rust: "74",
+    swift: "83",
+    kotlin: "78",
+    typescript: "80",
+    sqllite: "82",
+    mysql:null
+};
 
 const savedSolution = localStorage.getItem("solutionDraft") || "{}";
 const hKey = localStorage.getItem("hKey");
@@ -59,10 +74,11 @@ require(['vs/editor/editor.main'], function () {
     let initialInput = solObj[initialLang]?.input || "";
     const initialOutput = solObj[initialLang]?.output || "";
     const initialTimestamp = solObj[initialLang]?.timestamp || "";
+const monacoLang = (initialLang === "mysql" || initialLang === "sqllite") ? "sql" : initialLang;
 
     editor = monaco.editor.create(document.getElementById('editor'), {
         value: initialCode,
-        language: getMonacoLang(initialLang),
+        language: monacoLang,
         theme: 'vs-dark',
         automaticLayout: true,
         minimap: {
@@ -133,43 +149,19 @@ require(['vs/editor/editor.main'], function () {
     
 
 });
-function getMonacoLang(langId) {
-        switch (langId) {
-            case "71":
-                return "python";
-            case "54":
-                return "cpp";
-            case "62":
-                return "java";
-            case "63":
-                return "javascript";
-            case "50":
-                return "c";
-            case "68":
-                return "php";
-            case "72":
-                return "ruby";
-            case "74":
-                return "rust";
-            case "83":
-                return "swift";
-            case "78":
-                return "kotlin";
-            case "80":
-                return "typescript";
-            case "82": 
-                return "sqllite";  
-            default:
-                return "plaintext";
-        }
-    }
+
 let lastRawOutput = "";
 
 function runCode() {
     const code = editor.getValue();
-    const langId = document.getElementById('lang').value;
+    const langName = document.getElementById('lang').value;
+     const langId = langNameToId[langName]; // ✅ Get ID here
     const input = document.getElementById('inputArea').value;
-
+    if (langName === "mysql") {
+        document.getElementById('output').innerText = '⚠️ This language is for saving only. Execution is disabled.';
+        lastRawOutput = '';
+        return;
+    }
     document.getElementById('output').innerText = '⚡ Running...';
 
     fetch('https://judge0-ce.p.rapidapi.com/submissions?base64_encoded=false&wait=true', {
@@ -214,18 +206,20 @@ function runCode() {
 }
 
 function saveSolution() {
-    const langId = document.getElementById("lang").value;
+    const langName = document.getElementById("lang").value;
+     const langId = langNameToId[langName]; // ✅ Get ID here
     const code = editor.getValue();
     const input = document.getElementById("inputArea").value;
     const output = lastRawOutput;
 
     if (!solutionObj) solutionObj = {};
-    solutionObj[langId] = {
+    solutionObj[langName] = {
         code,
         input,
         output,
         timestamp: new Date().toISOString(),
-        language: document.getElementById("lang").selectedOptions[0].text
+        languageVersion: getLanguageVersion(langName),
+        languageId: langId
     };
 
 const probRef = db.ref(`savedcodes/headings/${hKey}/problems/${pKey}`);
@@ -437,3 +431,21 @@ function enableCtrlScrollZoomForIO() {
 
 // Call the function on page load
 enableCtrlScrollZoomForIO();
+
+function getLanguageVersion(langName) {
+  switch (langName.toLowerCase()) {
+    case "python":      return "Python 3.8.1";
+    case "cpp":         return "C++ (GCC 9.4.0)";
+    case "java":        return "Java OpenJDK 11.0.11";
+    case "javascript":  return "JavaScript (Node.js 14.17.0)";
+    case "c":           return "C (GCC 9.4.0)";
+    case "php":         return "PHP 7.4.19";
+    case "ruby":        return "Ruby 2.7.2";
+    case "rust":        return "Rust 1.54.0";
+    case "swift":       return "Swift 5.3";
+    case "kotlin":      return "Kotlin 1.4.31";
+    case "typescript":  return "TypeScript 4.2.4";
+    case "sqllite":     return "SQLite 3.31.1";
+    default:            return langName;
+  }
+}
