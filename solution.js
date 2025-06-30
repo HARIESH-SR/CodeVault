@@ -51,7 +51,7 @@ let isSaved = true;
 let isInputSaved = true;
 let isOutputSaved = true;
 let solutionObj;
-let currentLangId = document.getElementById("lang").value;
+let currentLangName = document.getElementById("lang").value;
 
 require.config({
     paths: {
@@ -121,16 +121,16 @@ const monacoLang = (initialLang === "mysql" || initialLang === "sqlite") ? "sql"
     });
 
     langSelect.addEventListener("change", (e) => {
-        const newLangId = e.target.value;
+        const newLangName = e.target.value;
         if (!isSaved || !isInputSaved || !isOutputSaved) {
             const confirmSwitch = confirm("You have unsaved changes. Do you want to switch language and discard them?");
             if (!confirmSwitch) {
                 // Cancel the switch → reset dropdown to previous language
-                e.target.value = currentLangId; // Helper function to get current lang id
+                e.target.value = currentLangName; // Helper function to get current lang id
                 return;
             }
         }
-        const langData = solutionObj[newLangId] || {};
+        const langData = solutionObj[newLangName] || {};
         editor.setValue(langData.code || "");
         document.getElementById('inputArea').value = langData.input || "";
         const storedOutput = langData.output;
@@ -142,7 +142,7 @@ const monacoLang = (initialLang === "mysql" || initialLang === "sqlite") ? "sql"
         isSaved = true; // Switching means we're clean at start
         isInputSaved = true;
         isOutputSaved = true;
-        currentLangId = newLangId;
+        currentLangName = newLangName;
     });
 
     // Helper function to get the lang id for current editor model
