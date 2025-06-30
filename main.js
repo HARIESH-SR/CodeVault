@@ -1,9 +1,6 @@
 import { remove} from "https://www.gstatic.com/firebasejs/11.9.1/firebase-database.js";
 
 window.deleteHeading = async function(hKey) {
-  if (!confirm("Are you sure you want to delete this entire heading and all its problems?")) return;
-
-  const hNum = parseInt(hKey.slice(1));
   const baseRef = ref(db, "savedcodes");
 
   try {
@@ -14,35 +11,48 @@ window.deleteHeading = async function(hKey) {
     const headings = data.headings || {};
     let hcount = data.hcount || 0;
 
+    const heading = headings[hKey];
+    if (!heading) return;
+
+    const headingName = heading.heading || "this heading";
+
+    const userInput = prompt(`To delete, please type the heading name exactly:\n"${headingName}"`);
+    if (userInput !== headingName) {
+      alert("Heading name did not match. Deletion cancelled.");
+      return;
+    }
+
+    if (!confirm(`Are you sure you want to delete the heading: "${headingName}" and all its problems?`)) {
+      return;
+    }
+
+    const hNum = parseInt(hKey.slice(1));
     const updates = {};
-    updates[`headings/${hKey}`] = null; // Mark current heading for deletion
+    updates[`headings/${hKey}`] = null;
 
     // Shift subsequent headings up
-    // Shift subsequent headings up
-for (let i = hNum + 1; i <= hcount; i++) {
-  const fromKey = `h${i}`;
-  const toKey = `h${i - 1}`;
+    for (let i = hNum + 1; i <= hcount; i++) {
+      const fromKey = `h${i}`;
+      const toKey = `h${i - 1}`;
 
-  if (headings[fromKey] !== undefined) {
-    updates[`headings/${toKey}`] = headings[fromKey];
-  }
-  updates[`headings/${fromKey}`] = null;
-}
+      if (headings[fromKey] !== undefined) {
+        updates[`headings/${toKey}`] = headings[fromKey];
+      }
+      updates[`headings/${fromKey}`] = null;
+    }
 
-
+    // Update hcount
     updates[`hcount`] = hcount - 1;
 
-    await update(ref(db, "savedcodes"), updates);
-    console.log("Heading deleted and shifted successfully.");
-  } catch (err) {
-    console.error("Error during heading deletion:", err);
-    alert("Failed to delete heading.");
+    await update(baseRef, updates);
+    alert("Heading deleted successfully.");
+  } catch (error) {
+    console.error("Error deleting heading:", error);
+    alert("Something went wrong while deleting the heading.");
   }
 };
-window.deleteProblem = async function(hKey, pKey) {
-  if (!confirm("Are you sure you want to delete this problem?")) return;
 
-  const pNum = parseInt(pKey.slice(1)); // extract number from "p3"
+window.deleteProblem = async function(hKey, pKey) {
   const probRef = ref(db, `savedcodes/headings/${hKey}`);
 
   try {
@@ -53,8 +63,24 @@ window.deleteProblem = async function(hKey, pKey) {
     const problems = data.problems || {};
     let pcount = data.pcount || 0;
 
+    const problem = problems[pKey];
+    if (!problem) return;
+
+    const problemTitle = problem.title || "this problem";
+
+    const userInput = prompt(`To delete, please type the problem title exactly:\n"${problemTitle}"`);
+    if (userInput !== problemTitle) {
+      alert("Problem title did not match. Deletion cancelled.");
+      return;
+    }
+
+    if (!confirm(`Are you sure you want to delete the problem: "${problemTitle}"?`)) {
+      return;
+    }
+
+    const pNum = parseInt(pKey.slice(1)); // extract number from "p3"
     const updates = {};
-    updates[`problems/${pKey}`] = null; // Delete current problem
+    updates[`problems/${pKey}`] = null;
 
     // Shift subsequent problems up
     for (let i = pNum + 1; i <= pcount; i++) {
@@ -69,13 +95,14 @@ window.deleteProblem = async function(hKey, pKey) {
 
     updates[`pcount`] = pcount - 1;
 
-    await update(ref(db, `savedcodes/headings/${hKey}`), updates);
-    console.log("Problem deleted and shifted successfully.");
+    await update(probRef, updates);
+    alert("Problem deleted successfully.");
   } catch (err) {
     console.error("Error during problem deletion:", err);
     alert("Failed to delete problem.");
   }
 };
+
 
 
 // Import Firebase modules
@@ -465,60 +492,8 @@ document.getElementById('collapseAll').addEventListener('click', () => {
     });
 });
 
-document.getElementById('searchInput').addEventListener('input', function () {
-    const query = this.value.trim().toLowerCase();
-    const queryWords = query.split(/\s+/).filter(Boolean);
 
-    // Hide all details and entries
-    document.querySelectorAll('#container details').forEach(detail => {
-        detail.style.display = 'none';
-    });
 
-    document.querySelectorAll('#container tr, #container div[style*="margin-left"]').forEach(elem => {
-        elem.style.display = 'none';
-    });
-
-    if (!queryWords.length) {
-        // If search is empty, reset visibility
-        document.querySelectorAll('#container details').forEach(d => d.style.display = '');
-        document.querySelectorAll('#container tr, #container div[style*="margin-left"]').forEach(e => e.style.display = '');
-        return;
-    }
-
-    // Match <tr> rows (from table-style render)
-    document.querySelectorAll('#container tr').forEach(row => {
-        const text = row.innerText.toLowerCase();
-        const textWords = text.split(/\s+/);
-        const matches = queryWords.every(qw => textWords.some(tw => tw.startsWith(qw)));
-
-        if (matches) {
-            row.style.display = '';
-            let parent = row.closest('details');
-            while (parent) {
-                parent.style.display = '';
-                parent.open = true;
-                parent = parent.parentElement.closest('details');
-            }
-        }
-    });
-
-    // Match <div>s from renderSavedCodes
-    document.querySelectorAll('#container div[style*="margin-left"]').forEach(div => {
-        const text = div.innerText.toLowerCase();
-        const textWords = text.split(/\s+/);
-        const matches = queryWords.every(qw => textWords.some(tw => tw.startsWith(qw)));
-
-        if (matches) {
-            div.style.display = '';
-            let parent = div.closest('details');
-            while (parent) {
-                parent.style.display = '';
-                parent.open = true;
-                parent = parent.parentElement.closest('details');
-            }
-        }
-    });
-});
 
 
 document.getElementById("addHeadingBtn").addEventListener("click", () => {
@@ -695,3 +670,102 @@ document.getElementById("newHeadingInput").addEventListener("keydown", function 
   }
 });
 
+
+
+// Toggle this flag to true or false depending on what behavior you wantconst SHOW_CHILDREN_IF_HEADING_MATCHES = true;
+
+// Toggle this flag to true or false depending on what behavior you want
+
+
+function runSearch() {
+    const query = document.getElementById('searchInput').value.trim().toLowerCase();
+    const queryWords = query.split(/\s+/).filter(Boolean);
+
+    const SHOW_CHILDREN_IF_HEADING_MATCHES = document.getElementById('toggleShowChildren').checked;
+
+    // Hide everything initially
+    document.querySelectorAll('#container details').forEach(detail => {
+        detail.style.display = 'none';
+        detail.open = false;
+    });
+
+    document.querySelectorAll('#container tr, #container div[style*="margin-left"]').forEach(elem => {
+        elem.style.display = 'none';
+    });
+
+    if (!queryWords.length) {
+        // Reset everything if search is empty
+        document.querySelectorAll('#container details').forEach(d => {
+            d.style.display = '';
+            d.open = false;
+        });
+        document.querySelectorAll('#container tr, #container div[style*="margin-left"]').forEach(e => e.style.display = '');
+        return;
+    }
+
+    // ✅ Match <summary> (headings/subheadings)
+    document.querySelectorAll('#container details > summary').forEach(summary => {
+        const text = summary.innerText.toLowerCase();
+        const textWords = text.split(/\s+/);
+        const matches = queryWords.every(qw => textWords.some(tw => tw.startsWith(qw)));
+
+        if (matches) {
+            const detail = summary.parentElement;
+            detail.style.display = '';
+            detail.open = true;
+
+            if (SHOW_CHILDREN_IF_HEADING_MATCHES) {
+                detail.querySelectorAll('tr, div[style*="margin-left"]').forEach(child => {
+                    child.style.display = '';
+                });
+            }
+
+            let parent = detail.parentElement.closest('details');
+            while (parent) {
+                parent.style.display = '';
+                parent.open = true;
+                parent = parent.parentElement.closest('details');
+            }
+        }
+    });
+
+    // 🔍 Match <tr>
+    document.querySelectorAll('#container tr').forEach(row => {
+        const text = row.innerText.toLowerCase();
+        const textWords = text.split(/\s+/);
+        const matches = queryWords.every(qw => textWords.some(tw => tw.startsWith(qw)));
+
+        if (matches) {
+            row.style.display = '';
+            let parent = row.closest('details');
+            while (parent) {
+                parent.style.display = '';
+                parent.open = true;
+                parent = parent.parentElement.closest('details');
+            }
+        }
+    });
+
+    // 🔍 Match <div>
+    document.querySelectorAll('#container div[style*="margin-left"]').forEach(div => {
+        const text = div.innerText.toLowerCase();
+        const textWords = text.split(/\s+/);
+        const matches = queryWords.every(qw => textWords.some(tw => tw.startsWith(qw)));
+
+        if (matches) {
+            div.style.display = '';
+            let parent = div.closest('details');
+            while (parent) {
+                parent.style.display = '';
+                parent.open = true;
+                parent = parent.parentElement.closest('details');
+            }
+        }
+    });
+}
+
+// Trigger on typing
+document.getElementById('searchInput').addEventListener('input', runSearch);
+
+// Trigger on checkbox toggle
+document.getElementById('toggleShowChildren').addEventListener('change', runSearch);
