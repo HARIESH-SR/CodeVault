@@ -261,3 +261,391 @@ table tr:hover button {
   padding: 6px 12px;
   border-radius: 6px;
 }
+/* Dropdown container */
+.dropdown {
+  position: relative;
+}
+
+/* Three dots button */
+.dropdown-toggle {
+  background: transparent;
+  border: 1px solid #444;
+  font-size: 20px;
+  color: #e0e0e0;
+  cursor: pointer;
+  padding: 4px 8px;
+}
+
+/* Dropdown menu styling */
+.dropdown-menu {
+  position: absolute;
+  right: 0;
+  top: 100%;
+  margin-top: 6px;
+  background: #2a2a2a;
+  border: 1px solid #444;
+  border-radius: 6px;
+  padding: 6px 0;
+  z-index: 1000;
+  min-width: 160px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+}
+
+/* Dropdown menu buttons */
+.dropdown-menu button {
+  background: none;
+  border: none;
+  color: #e0e0e0;
+  padding: 8px 16px;
+  width: 100%;
+  text-align: left;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.dropdown-menu button:hover {
+  background-color: #4caf50;
+  color: black;
+}
+/* Hover effect for heading summary */
+
+/* Make the entire details box react on hover */
+details:hover {
+  background-color: rgba(76, 175, 80, 0.1); /* light green glow */
+  box-shadow: 0 2px 8px rgba(76, 175, 80, 0.2);
+  border-color: #4caf50;
+  transition: background-color 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+}
+details {
+  background: #1a1a1a;
+  border: 1px solid #333;
+  border-radius: 6px;
+  margin-bottom: 14px;
+  padding: 8px 12px;
+  transition: all 0.2s ease; /* already present? good */
+}
+/* Style the menu (three-dot) button */
+.dropdown-toggle {
+  background-color: #2c2c2c;
+  border: 1px solid #444;
+  padding: 4px 10px;
+  border-radius: 4px;
+  color: #e0e0e0;
+  font-weight: bold;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s, border-color 0.3s, color 0.3s;
+}
+
+/* Hover effect like Add Problem */
+.dropdown-toggle:hover {
+  background-color: #ffffff;
+  border-color: #444444;
+  color: rgb(0, 0, 0);
+}
+/* Dropdown wrapper */
+.dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+/* Initially hide the dropdown menu */
+.dropdown-menu {
+  display: none;
+  position: absolute;
+  right: 0;
+  top: 100%;
+  background-color: #1e1e1e;
+  border: 1px solid #444;
+  padding: 6px;
+  border-radius: 6px;
+  z-index: 999;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+  min-width: 160px;
+}
+
+/* Show on hover */
+.dropdown:hover .dropdown-menu {
+  display: block;
+}
+
+/* Optional: button style inside menu */
+.dropdown-menu button {
+  background-color: transparent;
+  border: none;
+  color: #e0e0e0;
+  text-align: left;
+  width: 100%;
+  padding: 8px;
+  border-radius: 4px;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.dropdown-menu button:hover {
+  background-color: #4caf50;
+  color: black;
+}
+/* Wrapper for Add button + More Options */
+.dropdown-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  position: relative;
+}
+
+/* The three-dot menu container */
+.dropdown {
+  position: relative;
+}
+
+/* The dropdown menu itself */
+.dropdown-menu {
+  display: none;
+  position: absolute;
+  top: 110%;
+  right: 0;
+  background-color: #1e1e1e;
+  border: 1px solid #444;
+  border-radius: 6px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+  z-index: 999;
+  min-width: 140px;
+}
+
+/* Show dropdown on hover */
+.dropdown:hover .dropdown-menu {
+  display: block;
+}
+
+/* Dropdown button styling */
+.dropdown-toggle {
+  background-color: #2c2c2c;
+  border: 1px solid #444;
+  color: #e0e0e0;
+  border-radius: 4px;
+  padding: 4px 10px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.dropdown-toggle:hover {
+  background-color: #ffffff;
+  color: #000;
+}
+
+/* Dropdown menu items */
+.dropdown-menu button {
+  background: transparent;
+  color: #e0e0e0;
+  border: none;
+  width: 100%;
+  text-align: left;
+  padding: 8px 12px;
+  font-size: 14px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.dropdown-menu button:hover {
+  background-color: #4caf50;
+  color: black;
+}
+.dropdown-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  position: relative;
+}
+
+.dropdown {
+  position: relative;
+}
+
+.dropdown-toggle {
+  background-color: #2c2c2c;
+  border: 1px solid #444;
+  color: #e0e0e0;
+  border-radius: 4px;
+  padding: 4px 10px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.dropdown:hover .dropdown-menu {
+  display: block;
+}
+
+.dropdown-menu {
+  display: none;
+  position: absolute;
+  top: 110%;
+  right: 0;
+  background-color: #1e1e1e;
+  border: 1px solid #444;
+  border-radius: 6px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+  z-index: 999;
+  min-width: 140px;
+}
+
+.dropdown-menu button {
+  background: transparent;
+  color: #e0e0e0;
+  border: none;
+  width: 100%;
+  text-align: left;
+  padding: 8px 12px;
+  font-size: 14px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.dropdown-menu button:hover {
+  background-color: #4caf50;
+  color: black;
+}
+.dropdown {
+  position: relative;
+}
+
+.dropdown-toggle {
+  background-color: #2c2c2c;
+  border: 1px solid #444;
+  color: #e0e0e0;
+  border-radius: 4px;
+  padding: 4px 10px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.dropdown-menu {
+  display: none;
+  position: absolute;
+  top: 110%;
+  right: 0;
+  background-color: #1e1e1e;
+  border: 1px solid #444;
+  border-radius: 6px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+  z-index: 999;
+  min-width: 140px;
+}
+
+.dropdown:hover .dropdown-menu {
+  display: block;
+}
+.arrow-icon::before {
+  content: "▸";
+  display: inline-block;
+  width: 1em;  /* ensures stable width */
+  transition: transform 0.2s ease;
+}
+
+details[open] .arrow-icon::before {
+  content: "▾";
+}
+.summary-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 6px 8px;
+  gap: 10px;
+  user-select: none;
+}
+details > summary::marker {
+  display: none;
+}
+summary {
+  list-style: none;
+  margin: 0;
+}
+.dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+.dropdown-toggle {
+  cursor: pointer;
+  padding: 4px;
+}
+
+.dropdown-menu {
+  display: none;
+  position: absolute;
+  top: 100%;
+  right: 0;
+  background-color: #1e1e1e;
+  border: 1px solid #444;
+  border-radius: 6px;
+  padding: 8px 0;
+  z-index: 1000;
+  min-width: 140px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.5);
+}
+
+/* ✅ Show dropdown on hover */
+.dropdown:hover .dropdown-menu {
+  display: block;
+}
+
+/* Menu button styling */
+.dropdown-menu button {
+  display: block;
+  background: none;
+  border: none;
+  color: #e0e0e0;
+  padding: 8px 16px;
+  width: 100%;
+  text-align: left;
+  cursor: pointer;
+}
+
+.dropdown-menu button:hover {
+  background-color: #4caf50;
+  color: black;
+}
+.dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+.dropdown-toggle {
+  cursor: pointer;
+  padding: 6px;
+  background-color: #2c2c2c;
+    border: 1px solid #444;
+}
+
+.dropdown-menu {
+  display: none;
+  position: absolute;
+  top: 100%;
+  right: 0;
+  background-color: #1e1e1e;
+  border: 1px solid #444;
+  border-radius: 6px;
+  padding: 6px 0;
+  z-index: 1000;
+  min-width: 140px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.5);
+}
+
+.dropdown-menu button {
+  display: block;
+  width: 100%;
+  background: none;
+  border: none;
+  padding: 8px 12px;
+  color: #e0e0e0;
+  text-align: left;
+  cursor: pointer;
+}
+
+.dropdown-menu button:hover {
+  background-color: #e9e9e9;
+  border-color: #444444;
+  color: rgb(0, 0, 0);
+}
