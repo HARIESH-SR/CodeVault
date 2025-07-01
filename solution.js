@@ -223,7 +223,7 @@ function runCode() {
         })
         .catch(err => document.getElementById('output').innerText = '❌ Error: ' + err);
 }
-
+const dbPrefix = sessionStorage.getItem("dbPrefix") || "savedcodes";
 function saveSolution() {
     const langName = document.getElementById("lang").value;
      const langId = langNameToId[langName]; // ✅ Get ID here
@@ -241,7 +241,7 @@ function saveSolution() {
         languageId: langId
     };
 
-const probRef = db.ref(`savedcodes/headings/${hKey}/problems/${pKey}`);
+const probRef = db.ref(`${dbPrefix}/headings/${hKey}/problems/${pKey}`);
     probRef.update({ solutions: solutionObj }).then(() => {
         isSaved = true;
         isInputSaved = true;
