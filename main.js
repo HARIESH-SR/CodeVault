@@ -680,76 +680,95 @@ document.getElementById("newHeadingInput").addEventListener("keydown", function 
 // Toggle this flag to true or false depending on what behavior you want
 
 
-document.getElementById('searchInput').addEventListener('input', runSearch);
-document.getElementById('toggleShowChildren').addEventListener('change', runSearch);
-
 function runSearch() {
-  const query = document.getElementById('searchInput').value.trim().toLowerCase();
-  const showAllUnderMatch = document.getElementById('toggleShowChildren').checked;
-  const queryWords = query.split(/\s+/).filter(Boolean);
+    const query = document.getElementById('searchInput').value.trim().toLowerCase();
+    const queryWords = query.split(/\s+/).filter(Boolean);
 
-  // Reset: hide everything
-  document.querySelectorAll('#container details').forEach(detail => {
-    detail.style.display = 'none';
-  });
-  document.querySelectorAll('#container tr').forEach(row => {
-    row.style.display = 'none';
-  });
+    const SHOW_CHILDREN_IF_HEADING_MATCHES = document.getElementById('toggleShowChildren').checked;
 
-  if (!queryWords.length) {
-    // No search -> show everything
-    document.querySelectorAll('#container details').forEach(d => d.style.display = '');
-    document.querySelectorAll('#container tr').forEach(r => r.style.display = '');
-    return;
-  }
-
-  // Track which details should show all their rows
-  const matchedDetails = new Set();
-
-  // Match headings (inside <summary>)
-  document.querySelectorAll('#container summary').forEach(summary => {
-    const text = summary.innerText.toLowerCase();
-    const textWords = text.split(/\s+/);
-    const matches = queryWords.every(qw =>
-      textWords.some(tw => tw.startsWith(qw))
-    );
-
-    if (matches) {
-      const details = summary.closest('details');
-      if (details) {
-        details.style.display = '';
-        details.open = true;
-        matchedDetails.add(details);
-      }
-    }
-  });
-
-  // Match problem rows (<tr>)
-  document.querySelectorAll('#container tr').forEach(row => {
-    const text = row.innerText.toLowerCase();
-    const textWords = text.split(/\s+/);
-    const matches = queryWords.every(qw =>
-      textWords.some(tw => tw.startsWith(qw))
-    );
-
-    if (matches) {
-      row.style.display = '';
-      let parent = row.closest('details');
-      while (parent) {
-        parent.style.display = '';
-        parent.open = true;
-        parent = parent.parentElement.closest('details');
-      }
-    }
-  });
-
-  // If heading matched and "show all children" is ON -> show all its rows
-  if (showAllUnderMatch) {
-    matchedDetails.forEach(details => {
-      details.querySelectorAll('tr').forEach(row => {
-        row.style.display = '';
-      });
+    // Hide everything initially
+    document.querySelectorAll('#container details').forEach(detail => {
+        detail.style.display = 'none';
+        detail.open = false;
     });
-  }
+
+    document.querySelectorAll('#container tr, #container div[style*="margin-left"]').forEach(elem => {
+        elem.style.display = 'none';
+    });
+
+    if (!queryWords.length) {
+        // Reset everything if search is empty
+        document.querySelectorAll('#container details').forEach(d => {
+            d.style.display = '';
+            d.open = false;
+        });
+        document.querySelectorAll('#container tr, #container div[style*="margin-left"]').forEach(e => e.style.display = '');
+        return;
+    }
+
+    // ✅ Match <summary> (headings/subheadings)
+    document.querySelectorAll('#container details > summary').forEach(summary => {
+        const text = summary.innerText.toLowerCase();
+        const textWords = text.split(/\s+/);
+        const matches = queryWords.every(qw => textWords.some(tw => tw.startsWith(qw)));
+
+        if (matches) {
+            const detail = summary.parentElement;
+            detail.style.display = '';
+            detail.open = true;
+
+            if (SHOW_CHILDREN_IF_HEADING_MATCHES) {
+                detail.querySelectorAll('tr, div[style*="margin-left"]').forEach(child => {
+                    child.style.display = '';
+                });
+            }
+
+            let parent = detail.parentElement.closest('details');
+            while (parent) {
+                parent.style.display = '';
+                parent.open = true;
+                parent = parent.parentElement.closest('details');
+            }
+        }
+    });
+
+    // 🔍 Match <tr>
+    document.querySelectorAll('#container tr').forEach(row => {
+        const text = row.innerText.toLowerCase();
+        const textWords = text.split(/\s+/);
+        const matches = queryWords.every(qw => textWords.some(tw => tw.startsWith(qw)));
+
+        if (matches) {
+            row.style.display = '';
+            let parent = row.closest('details');
+            while (parent) {
+                parent.style.display = '';
+                parent.open = true;
+                parent = parent.parentElement.closest('details');
+            }
+        }
+    });
+
+    // 🔍 Match <div>
+    document.querySelectorAll('#container div[style*="margin-left"]').forEach(div => {
+        const text = div.innerText.toLowerCase();
+        const textWords = text.split(/\s+/);
+        const matches = queryWords.every(qw => textWords.some(tw => tw.startsWith(qw)));
+
+        if (matches) {
+            div.style.display = '';
+            let parent = div.closest('details');
+            while (parent) {
+                parent.style.display = '';
+                parent.open = true;
+                parent = parent.parentElement.closest('details');
+            }
+        }
+    });
 }
 
+// Trigger on typing
+document.getElementById('searchInput').addEventListener('input', runSearch);
+
+// Trigger on checkbox toggle
+document.getElementById('toggleShowChildren').addEventListener('change', runSearch);
