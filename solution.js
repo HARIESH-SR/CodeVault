@@ -1,14 +1,13 @@
 
-const firebaseConfig = {
-  apiKey: "AIzaSyDDfMZ8pr7RfvaWCS3v0BaelPnAcRknn5c",
-  authDomain: "mycodes-f9798.firebaseapp.com",
-  databaseURL: "https://mycodes-f9798-default-rtdb.firebaseio.com",
-  projectId: "mycodes-f9798",
-  storageBucket: "mycodes-f9798.firebasestorage.app",
-  messagingSenderId: "709454901938",
-  appId: "1:709454901938:web:aad7896ed3f7ecb17a4fab",
-  measurementId: "G-QMQQQ0SH3E"
-};
+let firebaseConfig;
+try {
+    firebaseConfig = JSON.parse(sessionStorage.getItem("firebaseConfig"));
+    if (!firebaseConfig) throw new Error("Missing config");
+} catch {
+    alert("Missing Firebase config. Please log in again.");
+    window.location.href = "index.html";
+}
+
 firebase.initializeApp(firebaseConfig);
 const db = firebase.database();
 const langNameToId = {
