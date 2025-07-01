@@ -170,6 +170,7 @@ editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyS, function () {
 });
 
 let lastRawOutput = "";
+const apiKey = sessionStorage.getItem("judge0Key");
 
 function runCode() {
     const code = editor.getValue();
@@ -187,7 +188,7 @@ function runCode() {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'X-RapidAPI-Key': '009ec64d36mshebee8defed7ea35p115ef9jsnb1b6ce3aa962',
+                'X-RapidAPI-Key': apiKey,
                 'X-RapidAPI-Host': 'judge0-ce.p.rapidapi.com'
             },
             body: JSON.stringify({
