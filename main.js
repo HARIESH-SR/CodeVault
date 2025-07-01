@@ -126,6 +126,7 @@ try {
     alert("Missing Firebase config. Please log in again.");
     window.location.href = "index.html";
 }
+
 const dbPrefix = sessionStorage.getItem("dbPrefix") || "savedcodes";
 // Init Firebase
 const app = initializeApp(firebaseConfig);
@@ -141,8 +142,9 @@ function renderSavedCodes() {
     .map(detail => detail.dataset.hkey); // we’ll set this below
 
     get(ref(db, dbPrefix)).then(snapshot => {
+      console.log(snapshot.val())
         if (!snapshot.exists()) return;
-
+        
         const data = snapshot.val();
         const headings = data.headings || {};
 const sortedHKeys = Object.keys(headings).sort((a, b) => {
@@ -523,6 +525,7 @@ document.getElementById("addHeadingBtn").addEventListener("click", () => {
     });
 });
 onValue(ref(db, dbPrefix), () => {
+    
     renderSavedCodes();
 });
 currentlyOpenForm = null;
