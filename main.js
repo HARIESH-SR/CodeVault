@@ -1,7 +1,7 @@
 import { remove} from "https://www.gstatic.com/firebasejs/11.9.1/firebase-database.js";
 
 window.deleteHeading = async function(hKey) {
-  const baseRef = ref(db, "savedcodes");
+  const baseRef = ref(db, dbPrefix);
 
   try {
     const snap = await get(baseRef);
@@ -53,7 +53,7 @@ window.deleteHeading = async function(hKey) {
 };
 
 window.deleteProblem = async function(hKey, pKey) {
-  const probRef = ref(db, `savedcodes/headings/${hKey}`);
+  const probRef = ref(db, `${dbPrefix}/headings/${hKey}`);
 
   try {
     const snap = await get(probRef);
@@ -118,20 +118,20 @@ import {
 } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-database.js";
 
 // Firebase config
-const firebaseConfig = {
-  apiKey: "AIzaSyDDfMZ8pr7RfvaWCS3v0BaelPnAcRknn5c",
-  authDomain: "mycodes-f9798.firebaseapp.com",
-  databaseURL: "https://mycodes-f9798-default-rtdb.firebaseio.com",
-  projectId: "mycodes-f9798",
-  storageBucket: "mycodes-f9798.firebasestorage.app",
-  messagingSenderId: "709454901938",
-  appId: "1:709454901938:web:aad7896ed3f7ecb17a4fab",
-  measurementId: "G-QMQQQ0SH3E"
-};
-
+let firebaseConfig;
+try {
+    firebaseConfig = JSON.parse(sessionStorage.getItem("firebaseConfig"));
+    if (!firebaseConfig) throw new Error("Missing config");
+} catch {
+    alert("Missing Firebase config. Please log in again.");
+    window.location.href = "index.html";
+}
+const dbPrefix = sessionStorage.getItem("dbPrefix") || "savedcodes";
 // Init Firebase
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
+const username = sessionStorage.getItem("username") || "Guest";
+document.getElementById("usernameDisplay").textContent = `👤 ${username}`;
 
 
 
@@ -140,7 +140,7 @@ function renderSavedCodes() {
     .filter(detail => detail.open)
     .map(detail => detail.dataset.hkey); // we’ll set this below
 
-    get(ref(db, "savedcodes")).then(snapshot => {
+    get(ref(db, dbPrefix)).then(snapshot => {
         if (!snapshot.exists()) return;
 
         const data = snapshot.val();
@@ -245,12 +245,12 @@ window.renameHeading = function(hKey) {
   const newTitle = prompt("Enter new heading title:");
   if (!newTitle) return;
 
-  update(ref(db, `savedcodes/headings/${hKey}`), { heading: newTitle });
+  update(ref(db, `${dbPrefix}/headings/${hKey}`), { heading: newTitle });
 };
 // ✅ Replace the previous moveProblemToAnotherHeading with this corrected version
 window.moveProblemToAnotherHeading = async function (fromHKey, pKey) {
   try {
-    const allSnap = await get(ref(db, "savedcodes/headings"));
+    const allSnap = await get(ref(db, `${dbPrefix}/headings`));
     if (!allSnap.exists()) return alert("No headings found.");
 
     const allHeadings = allSnap.val();
@@ -294,10 +294,10 @@ const promptText = targetKeys
     newToProblems[`p${toIndex}`] = problemToMove;
 
     const updates = {
-      [`savedcodes/headings/${fromHKey}/problems`]: newFromProblems,
-      [`savedcodes/headings/${fromHKey}/pcount`]: fromIndex - 1,
-      [`savedcodes/headings/${toHKey}/problems`]: newToProblems,
-      [`savedcodes/headings/${toHKey}/pcount`]: toIndex
+      [`${dbPrefix}/headings/${fromHKey}/problems`]: newFromProblems,
+      [`${dbPrefix}/headings/${fromHKey}/pcount`]: fromIndex - 1,
+      [`${dbPrefix}/headings/${toHKey}/problems`]: newToProblems,
+      [`${dbPrefix}/headings/${toHKey}/pcount`]: toIndex
     };
 
     await update(ref(db), updates);
@@ -312,10 +312,10 @@ window.renameProblem = function(hKey,pKey) {
   const newProblemTitle = prompt("Enter new heading title:");
   if (!newProblemTitle) return;
 
-  update(ref(db, `savedcodes/headings/${hKey}/problems/${pKey}`), { title: newProblemTitle });
+  update(ref(db, `${dbPrefix}/headings/${hKey}/problems/${pKey}`), { title: newProblemTitle });
 };
 window.moveHeading = function(hKey, direction) {
-  get(ref(db, "savedcodes/headings")).then(snapshot => {
+  get(ref(db, `${dbPrefix}/headings`)).then(snapshot => {
     if (!snapshot.exists()) return;
 
     const headings = snapshot.val();
@@ -327,14 +327,14 @@ window.moveHeading = function(hKey, direction) {
     if (swapIdx < 0 || swapIdx >= keys.length) return;
 
     const updates = {};
-    updates[`savedcodes/headings/${hKey}`] = headings[keys[swapIdx]];
-    updates[`savedcodes/headings/${keys[swapIdx]}`] = headings[hKey];
+    updates[`${dbPrefix}/headings/${hKey}`] = headings[keys[swapIdx]];
+    updates[`${dbPrefix}/headings/${keys[swapIdx]}`] = headings[hKey];
 
     update(ref(db), updates);
   });
 };
 window.moveProblem = function(hKey, pKey, direction) {
-  get(ref(db, `savedcodes/headings/${hKey}/problems`)).then(snapshot => {
+  get(ref(db, `${dbPrefix}/headings/${hKey}/problems`)).then(snapshot => {
     if (!snapshot.exists()) return;
 
     const problems = snapshot.val();
@@ -346,8 +346,8 @@ window.moveProblem = function(hKey, pKey, direction) {
     if (swapIdx < 0 || swapIdx >= keys.length) return;
 
     const updates = {};
-    updates[`savedcodes/headings/${hKey}/problems/${pKey}`] = problems[keys[swapIdx]];
-    updates[`savedcodes/headings/${hKey}/problems/${keys[swapIdx]}`] = problems[pKey];
+    updates[`${dbPrefix}/headings/${hKey}/problems/${pKey}`] = problems[keys[swapIdx]];
+    updates[`${dbPrefix}/headings/${hKey}/problems/${keys[swapIdx]}`] = problems[pKey];
 
     update(ref(db), updates);
   });
@@ -441,7 +441,7 @@ window.addProblem = function (hKey) {
     const title = input.value.trim();
     if (!title) return alert("Title cannot be empty.");
 
-    const probPath = `savedcodes/headings/${hKey}`;
+    const probPath = `${dbPrefix}/headings/${hKey}`;
 
     get(ref(db, `${probPath}/pcount`)).then(snapshot => {
         let pcount = snapshot.exists() ? snapshot.val() : 0;
@@ -464,7 +464,7 @@ window.addProblem = function (hKey) {
     });
 };
 window.editSolution = function (hKey, pKey) {
-    get(ref(db, `savedcodes/headings/${hKey}/problems/${pKey}`)).then(snapshot => {
+    get(ref(db, `${dbPrefix}/headings/${hKey}/problems/${pKey}`)).then(snapshot => {
         if (!snapshot.exists()) return;
 
         const prob = snapshot.val();
@@ -500,7 +500,7 @@ document.getElementById("addHeadingBtn").addEventListener("click", () => {
     const headingTitle = document.getElementById("newHeadingInput").value.trim();
     if (!headingTitle) return alert("Heading title cannot be empty.");
 
-    get(ref(db, "savedcodes/hcount")).then(snapshot => {
+    get(ref(db, "${dbPrefix}/hcount")).then(snapshot => {
         let hcount = snapshot.exists() ? snapshot.val() : 0;
         hcount++;
         const newHeadingKey = `h${hcount}`;
@@ -512,8 +512,8 @@ document.getElementById("addHeadingBtn").addEventListener("click", () => {
         };
 
         const updates = {
-            [`savedcodes/headings/${newHeadingKey}`]: newHeading,
-            [`savedcodes/hcount`]: hcount
+            [`${dbPrefix}/headings/${newHeadingKey}`]: newHeading,
+            [`${dbPrefix}/hcount`]: hcount
         };
 
         update(ref(db), updates).then(() => {
@@ -522,7 +522,7 @@ document.getElementById("addHeadingBtn").addEventListener("click", () => {
         });
     });
 });
-onValue(ref(db, "savedcodes"), () => {
+onValue(ref(db, dbPrefix), () => {
     renderSavedCodes();
 });
 currentlyOpenForm = null;
@@ -577,7 +577,7 @@ window.insertHeadingAbove = async function (hKey) {
   if (!newTitle) return;
 
   const hNum = parseInt(hKey.slice(1)); // Get numeric part
-  const baseRef = ref(db, "savedcodes");
+  const baseRef = ref(db, dbPrefix);
 
   try {
     const snap = await get(baseRef);
@@ -620,7 +620,7 @@ window.insertProblemAbove = async function(hKey, pKey) {
   if (!title) return;
 
   const pNum = parseInt(pKey.slice(1));
-  const probPath = `savedcodes/headings/${hKey}`;
+  const probPath = `${dbPrefix}/headings/${hKey}`;
 
   try {
     const snap = await get(ref(db, probPath));
