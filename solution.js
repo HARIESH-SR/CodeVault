@@ -27,9 +27,9 @@ const langNameToId = {
     mysql:""
 };
 
-const savedSolution = localStorage.getItem("solutionDraft") || "{}";
-const hKey = localStorage.getItem("hKey");
-const pKey = localStorage.getItem("pKey");
+const savedSolution = sessionStorage.getItem("solutionDraft") || "{}";
+const hKey = sessionStorage.getItem("hKey");
+const pKey = sessionStorage.getItem("pKey");
 
 function toggleFullScreenEditor() {
     const editorEl = document.getElementById("editor");
@@ -40,7 +40,7 @@ function toggleFullScreenEditor() {
     }
 }
 
-const title = localStorage.getItem("solutionTitle") || "Solution";
+const title = sessionStorage.getItem("solutionTitle") || "Solution";
 
 
 document.title = title + " - Solution";
@@ -272,9 +272,9 @@ const editorFontKey = "editorFontSize";
 const inputFontKey = "inputFontSize";
 const outputFontKey = "outputFontSize";
 
-let editorFontSize = parseInt(localStorage.getItem(editorFontKey) || "16");
-let inputFontSize = parseInt(localStorage.getItem(inputFontKey) || "16");
-let outputFontSize = parseInt(localStorage.getItem(outputFontKey) || "16");
+let editorFontSize = parseInt(sessionStorage.getItem(editorFontKey) || "16");
+let inputFontSize = parseInt(sessionStorage.getItem(inputFontKey) || "16");
+let outputFontSize = parseInt(sessionStorage.getItem(outputFontKey) || "16");
 
 document.getElementById("inputArea").style.fontSize = inputFontSize + "px";
 document.getElementById("output").style.fontSize = outputFontSize + "px";
@@ -309,15 +309,15 @@ function changeFontSize(target, delta) {
         if (window.editor) editor.updateOptions({
             fontSize: editorFontSize
         });
-        localStorage.setItem(editorFontKey, editorFontSize);
+        sessionStorage.setItem(editorFontKey, editorFontSize);
     } else if (target === "input") {
         inputFontSize = Math.min(max, Math.max(min, inputFontSize + delta));
         document.getElementById("inputArea").style.fontSize = inputFontSize + "px";
-        localStorage.setItem(inputFontKey, inputFontSize);
+        sessionStorage.setItem(inputFontKey, inputFontSize);
     } else if (target === "output") {
         outputFontSize = Math.min(max, Math.max(min, outputFontSize + delta));
         document.getElementById("output").style.fontSize = outputFontSize + "px";
-        localStorage.setItem(outputFontKey, outputFontSize);
+        sessionStorage.setItem(outputFontKey, outputFontSize);
     }
 }
 
@@ -431,7 +431,7 @@ function enableCtrlScrollZoomForIO() {
   const input = document.getElementById('inputArea');
   const output = document.getElementById('output');
 
-  // Use actual values from earlier localStorage setup
+  // Use actual values from earlier sessionStorage setup
   function handleWheelZoom(event, targetEl, key) {
     if (event.ctrlKey) {
       event.preventDefault();
@@ -440,7 +440,7 @@ function enableCtrlScrollZoomForIO() {
       const delta = event.deltaY < 0 ? 1 : -1;
       const newSize = Math.min(36, Math.max(10, current + delta));
       targetEl.style.fontSize = `${newSize}px`;
-      localStorage.setItem(key, newSize);
+      sessionStorage.setItem(key, newSize);
     }
   }
 
