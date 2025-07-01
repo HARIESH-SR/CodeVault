@@ -468,10 +468,10 @@ window.editSolution = function (hKey, pKey) {
         if (!snapshot.exists()) return;
 
         const prob = snapshot.val();
-        localStorage.setItem("solutionDraft", JSON.stringify(prob.solutions || {}));
-        localStorage.setItem("solutionTitle", prob.title);
-        localStorage.setItem("hKey", hKey);
-        localStorage.setItem("pKey", pKey);
+        sessionStorage.setItem("solutionDraft", JSON.stringify(prob.solutions || {}));
+        sessionStorage.setItem("solutionTitle", prob.title);
+        sessionStorage.setItem("hKey", hKey);
+        sessionStorage.setItem("pKey", pKey);
 
         window.open("solution.html", "_blank");
     });
@@ -652,10 +652,10 @@ window.insertProblemAbove = async function(hKey, pKey) {
     await update(ref(db, probPath), updates);
 
     // Immediately open solution editor for the new problem
-    localStorage.setItem("solutionDraft", JSON.stringify({}));
-    localStorage.setItem("solutionTitle", title);
-    localStorage.setItem("hKey", hKey);
-    localStorage.setItem("pKey", newKey);
+    sessionStorage.setItem("solutionDraft", JSON.stringify({}));
+    sessionStorage.setItem("solutionTitle", title);
+    sessionStorage.setItem("hKey", hKey);
+    sessionStorage.setItem("pKey", newKey);
 
     window.open("solution.html", "_blank");
   } catch (err) {
