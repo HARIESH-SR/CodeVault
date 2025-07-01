@@ -500,7 +500,7 @@ document.getElementById("addHeadingBtn").addEventListener("click", () => {
     const headingTitle = document.getElementById("newHeadingInput").value.trim();
     if (!headingTitle) return alert("Heading title cannot be empty.");
 
-    get(ref(db, "${dbPrefix}/hcount")).then(snapshot => {
+    get(ref(db, `${dbPrefix}/hcount`)).then(snapshot => {
         let hcount = snapshot.exists() ? snapshot.val() : 0;
         hcount++;
         const newHeadingKey = `h${hcount}`;
