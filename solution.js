@@ -29,6 +29,10 @@ const langNameToId = {
 const savedSolution = sessionStorage.getItem("solutionDraft") || "{}";
 const hKey = sessionStorage.getItem("hKey");
 const pKey = sessionStorage.getItem("pKey");
+let autoMaximizeOnFocus = false;
+document.getElementById("autoMaxToggle").addEventListener("change", (e) => {
+  autoMaximizeOnFocus = e.target.checked;
+});
 
 function toggleFullScreenEditor() {
     const editorEl = document.getElementById("editor");
@@ -110,12 +114,35 @@ const monacoLang = (initialLang === "mysql" || initialLang === "sqlite") ? "sql"
         mouseWheelZoom: true
 
     });
+    window.editor = editor;
+
     editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.Enter, function () {
     runCode();
 });
 editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyS, function () {
     saveSolution();
 });
+editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyM, function () {
+    maximizeEditor();
+});
+editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.Comma, function () {
+    resetLayout();
+});
+
+editor.onDidFocusEditorWidget(() => {
+  // Just in case you click back into editor
+  if (autoMaximizeOnFocus) {
+    maximizeEditor();
+  }
+});
+
+editor.onDidType(() => {
+  // Trigger on first keypress after run
+  if (autoMaximizeOnFocus) {
+    maximizeEditor();
+  }
+});
+
 
     editor.updateOptions({
         fontSize: 16
@@ -171,7 +198,16 @@ editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyS, function () {
 let lastRawOutput = "";
 const apiKey = sessionStorage.getItem("judge0Key");
 
-function runCode() {
+async function runCode() {
+        const editorContainer = document.getElementById('editor');
+    const ioSection = document.getElementById('io-section');
+
+   if (editorContainer.classList.contains('maximize-editor')) {
+    resetLayout(); // Restore layout and resizer
+}
+
+
+
     const code = editor.getValue();
     const langName = document.getElementById('lang').value;
      const langId = langNameToId[langName]; // ✅ Get ID here
@@ -181,8 +217,47 @@ function runCode() {
         lastRawOutput = '';
         return;
     }
-    document.getElementById('output').innerText = '⚡ Running...';
+    if (langName === "python") {
+    document.getElementById('output').innerText = '⚡ Running in browser using Pyodide...';
 
+    try {
+        if (!window.pyodide) {
+            window.pyodide = await loadPyodide(); // Load only once
+        }
+
+        const wrappedCode = `
+import sys
+from io import StringIO
+
+sys.stdin = StringIO("""${input}""")
+_stdout = sys.stdout
+sys.stdout = mystdout = StringIO()
+
+try:
+${code.split('\n').map(line => '    ' + line).join('\n')}
+finally:
+    sys.stdout = _stdout
+mystdout.getvalue()
+        `;
+
+        await window.pyodide.loadPackagesFromImports(wrappedCode);
+        const output = await window.pyodide.runPythonAsync(wrappedCode);
+
+        lastRawOutput = output.toString();
+        document.getElementById('output').innerText = `Output:\n\n${lastRawOutput}`;
+        isOutputSaved = false;
+
+    } catch (e) {
+        document.getElementById('output').innerText = '❌ Pyodide Error:\n' + e;
+        lastRawOutput = '';
+        isOutputSaved = true;
+    }
+
+    return;
+}
+
+    document.getElementById('output').innerText = '⚡ Running...';
+    
     fetch('https://judge0-ce.p.rapidapi.com/submissions?base64_encoded=false&wait=true', {
             method: 'POST',
             headers: {
@@ -301,8 +376,8 @@ function copyTextFromEditor() {
 
 
 function changeFontSize(target, delta) {
-    const min = 10,
-        max = 36;
+    const min = 5,
+        max = 70;
     if (target === "editor") {
         editorFontSize = Math.min(max, Math.max(min, editorFontSize + delta));
         if (window.editor) editor.updateOptions({
@@ -420,6 +495,7 @@ window.addEventListener('mousemove', function (e) {
     if (window.editor) {
         window.editor.layout();
     }
+
 });
 
 window.addEventListener('mouseup', function () {
@@ -474,9 +550,32 @@ window.addEventListener('keydown', function (e) {
         runCode();
     }
 });
+
 window.addEventListener("keydown", function (e) {
     if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "s") {
         e.preventDefault(); // Stops default browser save
         saveSolution();
     }
+});
+
+window.addEventListener("keydown", function (e) {
+    if (e.ctrlKey && e.key.toLowerCase() === "m") {
+        e.preventDefault();
+        maximizeEditor();
+    }
+});
+window.addEventListener('keydown', function (e) {
+    if ((e.ctrlKey || e.metaKey) && e.key === ',') {
+        e.preventDefault();
+        resetLayout();
+    }
+});
+
+const toggleCheckbox = document.getElementById("autoMaxToggle");
+toggleCheckbox.checked = sessionStorage.getItem("autoMaximizeOnFocus") === "true";
+autoMaximizeOnFocus = toggleCheckbox.checked;
+
+toggleCheckbox.addEventListener("change", (e) => {
+  autoMaximizeOnFocus = e.target.checked;
+  sessionStorage.setItem("autoMaximizeOnFocus", autoMaximizeOnFocus);
 });
