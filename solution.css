@@ -245,3 +245,76 @@ body {
   line-height: 1.4;
 }
 
+/* Hide element */
+.hidden {
+  display: none !important;
+}
+
+/* Maximize editor */
+.maximize-editor {
+  height: calc(100vh - 50px); /* Full height minus top bar */
+  max-height: none !important;
+}
+
+/* Maximize IO */
+.maximize-io {
+  height: calc(100vh - 50px);
+  max-height: none !important;
+  flex: unset;
+  display: flex;
+  flex-direction: row;
+}
+.maximize-editor {
+  height: calc(100vh - 50px) !important;  /* 50px is approx top bar */
+  max-height: none !important;
+  min-height: unset !important;
+}
+/* Container for checkbox */
+.toggle-container {
+  position: relative;
+  display: inline-block;
+  width: 40px;
+  height: 22px;
+  cursor: pointer;
+}
+
+/* Hide default checkbox */
+.toggle-container input[type="checkbox"] {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+/* The slider */
+.custom-toggle {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #888;
+  border-radius: 30px;
+  transition: 0.3s;
+}
+
+/* The circle inside the slider */
+.custom-toggle::before {
+  content: "";
+  position: absolute;
+  height: 16px;
+  width: 16px;
+  left: 3px;
+  top: 3px;
+  background-color: white;
+  border-radius: 50%;
+  transition: 0.3s;
+}
+
+/* When checked */
+.toggle-container input:checked + .custom-toggle {
+  background-color: #4caf50;
+}
+
+.toggle-container input:checked + .custom-toggle::before {
+  transform: translateX(18px);
+}
