@@ -23,6 +23,7 @@ const langNameToId = {
     kotlin: "78",
     typescript: "80",
     sqlite: "82",
+    go: "60",
     mysql:""
 };
 
@@ -197,6 +198,28 @@ editor.onDidType(() => {
 
 let lastRawOutput = "";
 const apiKey = sessionStorage.getItem("judge0Key");
+async function runRemoteReplit(langName, code, input) {
+  const endpoint = `https://cc546d14-07a2-41c6-919e-c57a3502e00c-00-2eslduvvsfou7.kirk.replit.dev/run-${langName}`;
+  try {
+    const response = await fetch(endpoint, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ code, input }),
+    });
+
+    const result = await response.json();
+    const output = result.output || result.error || "No output";
+
+    lastRawOutput = output;
+    document.getElementById("output").innerText = output;
+    isOutputSaved = false;
+  } catch (err) {
+    document.getElementById("output").innerText = "❌ Error: " + err.message;
+    lastRawOutput = "";
+    isOutputSaved = true;
+  }
+}
+
 
 async function runCode() {
         const editorContainer = document.getElementById('editor');
@@ -218,7 +241,7 @@ async function runCode() {
         return;
     }
     if (langName === "python") {
-    document.getElementById('output').innerText = '⚡ Running in browser using Pyodide...';
+    document.getElementById('output').innerText = '⚡ Running in Pyodide - Python...';
 
     try {
         if (!window.pyodide) {
@@ -255,8 +278,89 @@ mystdout.getvalue()
 
     return;
 }
+if (langName === "sqlite") {
+  document.getElementById('output').innerText = '⚡ Running in Pyodide - SQLite...';
 
-    document.getElementById('output').innerText = '⚡ Running...';
+  try {
+    if (!window.pyodide) {
+      window.pyodide = await loadPyodide(); // Load Pyodide if not already
+    }
+
+    const sqlLines = code
+      .split('\n')
+      .filter(line => line.trim()) // ignore empty lines
+      .map(line => `cursor.execute("""${line.replace(/"/g, '\\"')}""")`)
+      .join('\n');
+
+    const wrappedCode = `
+import sqlite3
+import sys
+from io import StringIO
+import re
+
+sys.stdout = mystdout = StringIO()
+
+conn = sqlite3.connect(":memory:")
+cursor = conn.cursor()
+
+try:
+    sql_script = \"\"\"${code.replace(/"/g, '\\"')}\"\"\"
+    cursor.executescript(sql_script)
+
+    # Extract and execute each SELECT statement
+    select_statements = re.findall(r"(SELECT[\\s\\S]+?;)", sql_script, re.IGNORECASE)
+
+    for i, stmt in enumerate(select_statements, 1):
+        try:
+            print(f"Result {i}:")
+            cursor.execute(stmt)
+            columns = [desc[0] for desc in cursor.description]
+            col_line = " | ".join(columns)
+            print(col_line)
+            print("-" * len(col_line))
+
+            rows = cursor.fetchall()
+            for row in rows:
+                print(" | ".join(str(cell) for cell in row))
+            print()  # spacing between results
+        except Exception as e:
+            print(f"Error in SELECT {i}:", e)
+
+except Exception as e:
+    print("Error:", e)
+finally:
+    conn.close()
+
+mystdout.getvalue()
+`;
+
+
+    await window.pyodide.loadPackagesFromImports(wrappedCode);
+    const output = await window.pyodide.runPythonAsync(wrappedCode);
+
+    lastRawOutput = output.toString().trim();
+    document.getElementById('output').innerText = `Output:\n\n${lastRawOutput}`;
+    isOutputSaved = false;
+
+  } catch (e) {
+    document.getElementById('output').innerText = '❌ SQLite Pyodide Error:\n' + e;
+    lastRawOutput = '';
+    isOutputSaved = true;
+  }
+
+  return;
+}
+
+if (["cpp", "java", "c", "php"].includes(langName)) {
+  document.getElementById("output").innerText = `⚡ Running in backend server - ${langName.toUpperCase()}...`;
+  await runRemoteReplit(langName, code, input);
+  return;
+}
+
+
+
+
+    document.getElementById('output').innerText = `⚡ Running in Judge0 API - ${langName} ...`;
     
     fetch('https://judge0-ce.p.rapidapi.com/submissions?base64_encoded=false&wait=true', {
             method: 'POST',
