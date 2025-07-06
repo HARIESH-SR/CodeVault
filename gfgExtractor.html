@@ -1,0 +1,23 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+  <title>GFG Problem Parser</title>
+  <link rel="stylesheet" href="gfgStyle.css">
+</head>
+<body>
+  <div class="container">
+    <h1>🧠 GeeksforGeeks Problem Parser</h1>
+    <textarea id="rawInput" placeholder="Paste your GFG problem here..."></textarea>
+    <button onclick="extract()">Extract</button>
+      <button onclick="saveProblemData()">💾 Save Problem</button>
+
+    <div id="renderedOutput"></div>
+  </div>
+  <script src="gfgScript.js"></script>
+</body>
+</html>

@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>GFG Problem Viewer</title>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
+  <style>
+    body {
+      background-color: #121212;
+      color: #e0e0e0;
+      font-family: "Segoe UI", sans-serif;
+      padding: 2rem;
+      padding-top: 0px;
+    }
+
+    h1 {
+        margin-top: 0px;
+      
+      margin-bottom: 0.5rem;
+      font-size: 1.5rem;
+    }
+
+    .section {
+      margin-bottom: 1.5rem;
+    }
+
+    .tag {
+      display: inline-block;
+      padding: 4px 10px;
+      margin: 0 5px 5px 0;
+      border-radius: 999px;
+      font-size: 0.85rem;
+      font-weight: bold;
+    }
+
+    .tag.easy { background: #10b981; color: white; }
+    .tag.medium { background: #f59e0b; color: white; }
+    .tag.hard { background: #ef4444; color: white; }
+    .tag.gray { background: #4b5563; color: #e5e7eb; }
+
+    .description-text {
+      white-space: pre-wrap;
+      line-height: 2;
+      font-size: 1rem;
+      color: #e5e7eb;
+    }
+
+    .example-block {
+      background-color: #2d2d2d;
+      padding: 1rem;
+      border-radius: 6px;
+      margin-bottom: 1rem;
+      font-family: monospace;
+      white-space: pre-wrap;
+      border-left: 4px solid #3b82f6;
+      line-height: 1.8;
+    }
+
+    ul {
+      padding-left: 20px;
+    }
+
+    li {
+      margin: 6px 0;
+    }
+
+    .footer {
+      margin-top: 40px;
+      font-size: 0.85rem;
+      color: #888;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1 id="title">Loading...</h1>
+    <div id="difficultyTag" class="tag"></div>
+
+    <div class="section">
+      <h3>📝 Description</h3>
+      <div id="description" class="description-text"></div>
+    </div>
+
+    <div class="section">
+      <h3>📌 Examples</h3>
+      <div id="examples"></div>
+    </div>
+
+    <div class="section">
+      <h3>📋 Constraints</h3>
+      <ul id="constraints"></ul>
+    </div>
+
+    <div class="section">
+      <h3>🏷️ Tags</h3>
+      <div id="tags"></div>
+    </div>
+
+    <div class="footer" id="createdAt"></div>
+  </div>
+
+  <script>
+    const config = JSON.parse(sessionStorage.getItem("firebaseConfig"));
+    firebase.initializeApp(config);
+    const db = firebase.database();
+
+    const hKey = sessionStorage.getItem("hKey");
+    const pKey = sessionStorage.getItem("pKey");
+    const dbPrefix = sessionStorage.getItem("dbPrefix") || "savedcodes";
+
+
+    const path = `${dbPrefix}/headings/${hKey}/problems/${pKey}/problemData`;
+
+    
+
+    firebase.database().ref(path).once("value").then(snap => {
+      if (!snap.exists()) {
+        document.querySelector(".container").innerHTML = "<h2>❌ No problem data found.</h2>";
+        return;
+      }
+
+      const data = snap.val();
+
+      document.getElementById("title").textContent = data.title || "";
+      const difficultyTag = document.getElementById("difficultyTag");
+      difficultyTag.textContent = data.difficulty || "Unknown";
+      difficultyTag.classList.add((data.difficulty || "easy").toLowerCase());
+
+      function escapeHTML(str) {
+  return (str || "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/\n/g, "<br>");
+}
+
+document.getElementById("description").innerHTML = escapeHTML(data.description);
+
+const examplesDiv = document.getElementById("examples");
+(data.examples || []).forEach(ex => {
+  const div = document.createElement("div");
+  div.className = "example-block";
+  div.innerHTML = escapeHTML(ex);
+  examplesDiv.appendChild(div);
+});
+
+
+      const constraintsUl = document.getElementById("constraints");
+      (data.constraints || []).forEach(c => {
+        const li = document.createElement("li");
+        li.textContent = c;
+        constraintsUl.appendChild(li);
+      });
+
+      const tagsStr = data.tags || "";
+      const tagsList = tagsStr.split(/(?=[A-Z])/).map(t => t.trim()).filter(Boolean);
+      document.getElementById("tags").innerHTML = tagsList.map(t => `<span class="tag gray">${t}</span>`).join(" ");
+
+      document.getElementById("createdAt").textContent = `🕒 Created: ${new Date(data.createdAt).toLocaleString()}`;
+    });
+  </script>
+</body>
+</html>

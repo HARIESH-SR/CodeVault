@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>LeetCode Problem Viewer</title>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
+  <style>
+    body {
+      background-color: #121212;
+      color: #e0e0e0;
+      font-family: "Segoe UI", sans-serif;
+      padding: 2rem;
+    }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 1.5rem;
+      font-size: 2rem;
+      
+    }
+
+    .section {
+      margin-bottom: 1.5rem;
+    }
+
+    .tag {
+      display: inline-block;
+      padding: 4px 10px;
+      margin: 0 5px 5px 0;
+      border-radius: 999px;
+      font-size: 0.85rem;
+      font-weight: bold;
+    }
+
+    .tag.easy { background: #10b981; color: white; }
+    .tag.medium { background: #f59e0b; color: white; }
+    .tag.hard { background: #ef4444; color: white; }
+    .tag.gray { background: #4b5563; color: #e5e7eb; }
+
+    .description-text {
+      white-space: pre-line;
+      line-height: 2;
+      font-size: 1rem;
+      color: #e5e7eb;
+    }
+
+    .example-block {
+      background-color: #2d2d2d;
+      padding: 1rem;
+      border-radius: 6px;
+      margin-bottom: 1rem;
+      font-family: monospace;
+      line-height: 1.8;
+      font-size: 18px;
+    }
+
+    strong {
+      color: #93c5fd;
+    }
+
+    ul {
+      padding-left: 20px;
+    }
+
+    li {
+      margin: 4px 0;
+    }
+
+    pre {
+      white-space: pre-wrap;
+      word-break: break-word;
+      background: #1f2937;
+      padding: 1rem;
+      border-radius: 6px;
+      margin-top: 0.5rem;
+      color: #d1d5db;
+    }
+  </style>
+</head>
+<body>
+  <div id="container">Loading...</div>
+
+  <script type="module">
+    function escapeHTML(str) {
+  return (str || "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;");
+}
+
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
+    import { getDatabase, ref, get } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-database.js";
+
+    const config = JSON.parse(sessionStorage.getItem("firebaseConfig"));
+    const app = initializeApp(config);
+    const db = getDatabase(app);
+
+    const hKey = sessionStorage.getItem("hKey");
+    const pKey = sessionStorage.getItem("pKey");
+    const dbPrefix = sessionStorage.getItem("dbPrefix") || "savedcodes";
+
+
+    const path = `${dbPrefix}/headings/${hKey}/problems/${pKey}/problemData`;
+
+    get(ref(db, path)).then(snap => {
+      if (!snap.exists()) {
+        document.getElementById("container").innerHTML = "<h2>❌ No problem data found.</h2>";
+        return;
+      }
+
+      const data = snap.val();
+      console.log("Problem Data:", data);
+      if (data.site !== "leetcode") {
+        document.getElementById("container").innerHTML = `<h2>❌ Unsupported site: ${data.site}</h2>`;
+        return;
+      }
+
+      const container = document.getElementById("container");
+      container.innerHTML = `
+        <h1>${data.title}</h1>
+        <div class="tags">
+          <span class="tag ${data.difficulty.toLowerCase()}">${data.difficulty}</span>
+          ${data.topics?.map(t => `<span class="tag gray">${t}</span>`).join("") || ""}
+        </div>
+
+        <div class="section">
+          <h3>📝 Description</h3>
+          <div class="description-text">${escapeHTML(data.description).replace(/\n/g, "<br>")}</div>
+
+        </div>
+      `;
+
+      // Examples
+      if (data.examples?.length) {
+        container.innerHTML += `<div class="section"><h3>📌 Examples</h3></div>`;
+        const exampleSection = document.createElement("div");
+        data.examples.forEach(ex => {
+          const block = document.createElement("div");
+          block.className = "example-block";
+          block.innerHTML = `<strong>${ex.title}</strong><br>${ex.lines.join("<br>")}`;
+          exampleSection.appendChild(block);
+        });
+        container.appendChild(exampleSection);
+      }
+
+      // Constraints
+      if (data.constraints?.length) {
+        container.innerHTML += `
+          <div class="section">
+            <h3>📋 Constraints</h3>
+            <ul>${data.constraints.map(c => `<li>${c}</li>`).join("")}</ul>
+          </div>
+        `;
+      }
+
+      // Follow-up
+      if (data.followup) {
+        container.innerHTML += `
+          <div class="section">
+            <h3>🔎 Follow-up</h3>
+            <pre>${data.followup}</pre>
+          </div>
+        `;
+      }
+    });
+  </script>
+</body>
+</html>

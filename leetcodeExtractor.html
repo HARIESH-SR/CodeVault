@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>LeetCode Problem Extractor</title>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="leetcodeStyle.css" rel="stylesheet">
+</head>
+<body>
+  <h1>🧠 LeetCode Problem Extractor</h1>
+
+  <textarea id="rawInput" placeholder="Paste entire LeetCode problem text here..."></textarea>
+  <button onclick="extract()">Extract</button>
+  <button onclick="saveProblemData()">💾 Save Problem</button>
+
+  <div id="renderedOutput"></div>
+
+  <script src="leetcodeScript.js"></script>
+</body>
+</html>
