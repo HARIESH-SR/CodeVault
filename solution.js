@@ -30,6 +30,7 @@ const langNameToId = {
 const savedSolution = sessionStorage.getItem("solutionDraft") || "{}";
 const hKey = sessionStorage.getItem("hKey");
 const pKey = sessionStorage.getItem("pKey");
+
 let autoMaximizeOnFocus = false;
 document.getElementById("autoMaxToggle").addEventListener("change", (e) => {
   autoMaximizeOnFocus = e.target.checked;
@@ -403,6 +404,27 @@ if (["cpp", "java", "c", "php"].includes(langName)) {
         .catch(err => document.getElementById('output').innerText = '❌ Error: ' + err);
 }
 const dbPrefix = sessionStorage.getItem("dbPrefix") || "savedcodes";
+const problemPath = `${dbPrefix}/headings/${hKey}/problems/${pKey}`;
+firebase.database().ref(problemPath + "/problemData").once("value")
+  .then(snapshot => {
+    if (snapshot.exists()) {
+      const data = snapshot.val();
+      const site = (data.site || "").toLowerCase(); // Normalize to lowercase for safety
+
+      let fileToOpen = "problemdata.html"; // Default fallback
+      if (site === "leetcode") {
+        fileToOpen = "leetcodeproblemdata.html";
+      } else if (site === "gfg") {
+        fileToOpen = "gfgproblemdata.html";
+      }
+
+      const btn = document.getElementById("problemDataBtn");
+      btn.style.display = "inline-block";
+      btn.onclick = () => {
+        window.open(fileToOpen, "_blank");
+      };
+    }
+  });
 function saveSolution() {
     const langName = document.getElementById("lang").value;
      const langId = langNameToId[langName]; // ✅ Get ID here
@@ -419,6 +441,7 @@ function saveSolution() {
         languageVersion: getLanguageVersion(langName),
         languageId: langId
     };
+    
 
 const probRef = db.ref(`${dbPrefix}/headings/${hKey}/problems/${pKey}`);
     probRef.update({ solutions: solutionObj }).then(() => {
@@ -683,3 +706,14 @@ toggleCheckbox.addEventListener("change", (e) => {
   autoMaximizeOnFocus = e.target.checked;
   sessionStorage.setItem("autoMaximizeOnFocus", autoMaximizeOnFocus);
 });
+function redirectToExtractor(select) {
+  const site = select.value;
+
+  if (site === "leetcode") {
+    window.open("leetcodeExtractor.html", "_blank");
+  } else if (site === "gfg") {
+    window.open("gfgExtractor.html", "_blank");
+  }
+
+  select.selectedIndex = 0; // Reset dropdown
+}
