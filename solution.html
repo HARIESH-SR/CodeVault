@@ -34,7 +34,13 @@
         <option value="sqlite">SQLite</option>
         <option value="mysql">MySQL</option>
       </select>
-
+       <select onchange="redirectToExtractor(this)">
+  <option selected disabled>📥 Extract From...</option>
+  <option value="leetcode">LeetCode</option>
+  <option value="gfg">GeeksForGeeks</option>
+</select>
+    <!-- Inside your solution.html -->
+<button id="problemDataBtn" style="display: none;">📘 Problem Data</button>
       <button onclick="runCode()" title="Run (Ctrl + Enter)">▶</button>
       <button onclick="saveSolution()" title="Save (Ctrl + S)">💾</button>
       <button class="font-btn" onclick="changeFontSize('editor', -1)" title="Decrease editor font size">A−</button>
