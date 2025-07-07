@@ -372,7 +372,11 @@ mystdout.getvalue()
 
   return;
 }
-
+if (["cpp", "java", "c","php"].includes(langName)) {
+  document.getElementById("output").innerText = `⚡ Running in Render backend server - ${langName.toUpperCase()}...`;
+  await runRemoteRender(langName, code, input);
+  return;
+}
 if (["cpp", "java", "c", "php"].includes(langName)) {
   document.getElementById("output").innerText = `⚡ Running in backend server - ${langName.toUpperCase()}...`;
   await runRemoteReplit(langName, code, input);
