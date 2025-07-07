@@ -220,7 +220,28 @@ async function runRemoteReplit(langName, code, input) {
     isOutputSaved = true;
   }
 }
+async function runRemoteRender(langName, code, input) {
+  const endpoint = `https://compiler-backend-x97q.onrender.com/run-${langName}`;
+  
+  try {
+    const response = await fetch(endpoint, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ code, input }),
+    });
 
+    const result = await response.json();
+    const output = result.output || result.error || "⚠️ No output";
+
+    lastRawOutput = output;
+    document.getElementById("output").innerText = output;
+    isOutputSaved = false;
+  } catch (err) {
+    document.getElementById("output").innerText = "❌ Error: " + err.message;
+    lastRawOutput = "";
+    isOutputSaved = true;
+  }
+}
 
 async function runCode() {
         const editorContainer = document.getElementById('editor');
