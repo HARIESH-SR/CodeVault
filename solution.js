@@ -405,26 +405,39 @@ if (["cpp", "java", "c", "php"].includes(langName)) {
 }
 const dbPrefix = sessionStorage.getItem("dbPrefix") || "savedcodes";
 const problemPath = `${dbPrefix}/headings/${hKey}/problems/${pKey}`;
-firebase.database().ref(problemPath + "/problemData").once("value")
-  .then(snapshot => {
-    if (snapshot.exists()) {
-      const data = snapshot.val();
-      const site = (data.site || "").toLowerCase(); // Normalize to lowercase for safety
+const btn = document.getElementById("problemDataBtn");
+btn.style.display = "none";
 
-      let fileToOpen = "problemdata.html"; // Default fallback
+firebase.database().ref(problemPath + "/problemData").on("value", (snapshot) => {
+  if (snapshot.exists()) {
+    btn.style.display = "inline-block";
+  } else {
+    btn.style.display = "none";
+  }
+});
+
+
+// Step 2: On click, re-fetch latest data and open correct file
+btn.onclick = () => {
+    
+  firebase.database().ref(problemPath + "/problemData").once("value")
+    .then(snapshot => {
+      if (!snapshot.exists()) return alert("No problem data found.");
+
+      const data = snapshot.val();
+      const site = (data.site || "").toLowerCase();
+
+      let fileToOpen = "problemdata.html";
       if (site === "leetcode") {
         fileToOpen = "leetcodeproblemdata.html";
       } else if (site === "gfg") {
         fileToOpen = "gfgproblemdata.html";
       }
 
-      const btn = document.getElementById("problemDataBtn");
-      btn.style.display = "inline-block";
-      btn.onclick = () => {
-        window.open(fileToOpen, "_blank");
-      };
-    }
-  });
+      window.open(fileToOpen, "_blank");
+    });
+};
+
 function saveSolution() {
     const langName = document.getElementById("lang").value;
      const langId = langNameToId[langName]; // ✅ Get ID here
