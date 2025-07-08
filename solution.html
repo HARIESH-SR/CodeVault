@@ -41,6 +41,23 @@
 </select>
     <!-- Inside your solution.html -->
 <button id="problemDataBtn" style="display: none;">📘 Problem Data</button>
+      <div id="serverStatus" style="
+  margin-left: 0px;
+  padding: 4px;
+  background-color: #999;
+  color: white;
+  font-size: 16px;
+  border-radius: 50%;
+  width: 15px;
+  height: 15px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Segoe UI', sans-serif;
+  cursor: default;
+" title="Checking server...">
+  ⏳
+</div>
       <button onclick="runCode()" title="Run (Ctrl + Enter)">▶</button>
       <button onclick="saveSolution()" title="Save (Ctrl + S)">💾</button>
       <button class="font-btn" onclick="changeFontSize('editor', -1)" title="Decrease editor font size">A−</button>
