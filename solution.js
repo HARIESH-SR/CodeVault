@@ -199,8 +199,10 @@ editor.onDidType(() => {
 
 let lastRawOutput = "";
 const apiKey = sessionStorage.getItem("judge0Key");
+const repliturl = sessionStorage.getItem("repliturl");
+window.renderurl = sessionStorage.getItem("renderurl");
 async function runRemoteReplit(langName, code, input) {
-  const endpoint = `https://cc546d14-07a2-41c6-919e-c57a3502e00c-00-2eslduvvsfou7.kirk.replit.dev/run-${langName}`;
+  const endpoint = `${repliturl}/run-${langName}`;
   try {
     const response = await fetch(endpoint, {
       method: "POST",
@@ -221,7 +223,7 @@ async function runRemoteReplit(langName, code, input) {
   }
 }
 async function runRemoteRender(langName, code, input) {
-  const endpoint = `https://compiler-backend-x97q.onrender.com/run-${langName}`;
+  const endpoint = `${renderurl}/run-${langName}`;
   
   try {
     const response = await fetch(endpoint, {
