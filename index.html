@@ -54,17 +54,25 @@
 
     window.location.href = "main.html";
   }
-  else if (user === "tempname" && pass === "temppass") {
-    sessionStorage.setItem("dbPrefix", "progress");
-    sessionStorage.setItem("judge0Key", "");
-    sessionStorage.setItem("username", "");
-    sessionStorage.setItem("renderurl", "");
+  else if (user === "Adithyan P" && pass === "adip") {
+    sessionStorage.setItem("dbPrefix", "savedcodes");
+    sessionStorage.setItem("judge0Key", "nope");
+    sessionStorage.setItem("username", "Adithyan P");
+    sessionStorage.setItem("renderurl", "https://compiler-backend-x97q.onrender.com");
     sessionStorage.setItem("repliturl", "");
 
     // Save Firebase config as JSON string
     sessionStorage.setItem("firebaseConfig", JSON.stringify(
       {
-        //Paste your Firebase config here
+        
+        apiKey: "AIzaSyCiMrq8MPWjuEvI_yKxf7xSvlr3vQtCjZ4",
+        authDomain: "adicodestorage.firebaseapp.com",
+        databaseURL: "https://adicodestorage-default-rtdb.firebaseio.com",
+        projectId: "adicodestorage",
+        storageBucket: "adicodestorage.firebasestorage.app",
+        messagingSenderId: "93547790464",
+        appId: "1:93547790464:web:46244e3751df46d14ce665",
+        measurementId: "G-WPN55WNE2V"
       }
   ));
 
