@@ -7,7 +7,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="index.css">
-  <script src="render-ping.js"></script>
+
 </head>
 <body>
   <div class="branding">Code Storage</div>
@@ -35,7 +35,8 @@
     sessionStorage.setItem("dbPrefix", "savedcodes");
     sessionStorage.setItem("judge0Key", "009ec64d36mshebee8defed7ea35p115ef9jsnb1b6ce3aa962");
     sessionStorage.setItem("username", "Hariesh S R");
-
+     sessionStorage.setItem("renderurl", "https://compiler-backend-x97q.onrender.com");
+    sessionStorage.setItem("repliturl", "https://cc546d14-07a2-41c6-919e-c57a3502e00c-00-2eslduvvsfou7.kirk.replit.dev");
     // Save Firebase config as JSON string
     sessionStorage.setItem("firebaseConfig", JSON.stringify(
       {
@@ -54,9 +55,11 @@
     window.location.href = "main.html";
   }
   else if (user === "tempname" && pass === "temppass") {
-    sessionStorage.setItem("dbPrefix", "savedcodes");
-    sessionStorage.setItem("judge0Key", "paste judge0 ApiKey the key here");
-    sessionStorage.setItem("username", "name");
+    sessionStorage.setItem("dbPrefix", "progress");
+    sessionStorage.setItem("judge0Key", "");
+    sessionStorage.setItem("username", "");
+    sessionStorage.setItem("renderurl", "");
+    sessionStorage.setItem("repliturl", "");
 
     // Save Firebase config as JSON string
     sessionStorage.setItem("firebaseConfig", JSON.stringify(
