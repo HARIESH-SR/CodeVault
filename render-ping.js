@@ -1,18 +1,9 @@
 const renderurl = sessionStorage.getItem("renderurl");
-function keepRenderAwake() {
-  // ⏩ Immediate ping on load
-  fetch(`${renderurl}/ping`)
-    .then(() => console.log("🟢 Initial Ping"))
-    .catch(() => console.log("🔴 Initial Ping Failed"));
+// ⏩ One-time ping on page load to wake server
+fetch(`${renderurl}/ping`)
+  .then(() => console.log("🟢 Initial Ping"))
+  .catch(() => console.log("🔴 Initial Ping Failed"));
 
-  // 🔁 Ping every 12 minutes (720,000 ms)
-  setInterval(() => {
-    fetch(`${renderurl}/ping`)
-      .then(() => console.log("🟢 Pinged Render"))
-      .catch(() => console.log("🔴 Failed to ping Render"));
-  }, 12 * 60 * 1000); // 12 minutes in milliseconds
-}
-keepRenderAwake();
 document.addEventListener("DOMContentLoaded", showServerStatus);
 
 function showServerStatus() {
@@ -38,8 +29,8 @@ function showServerStatus() {
         if (!isServerAwake) {
           // 🔄 Server just woke up — reduce check frequency
           clearInterval(checkInterval);
-          checkInterval = setInterval(checkStatus, 10 * 60 * 1000); // every 10 minutes
-          console.log("✅ Server woke up. Reduced check interval to 10 minutes.");
+          checkInterval = setInterval(checkStatus, 13 * 60 * 1000); // every 13 minutes
+          console.log("✅ Server woke up. Reduced check interval to 13 minutes.");
           isServerAwake = true;
         }
         setStatus(true, "Server Online");
