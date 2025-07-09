@@ -19,6 +19,11 @@ function resetInactivityTimer() {
 function autoLogout() {
   window.skipBeforeUnload = true; 
   // Slight delay to allow flag to register before unload
+   if (window.renderPingInterval) {
+    clearInterval(window.renderPingInterval);
+    console.log("🛑 Render ping interval stopped due to auto logout.");
+  }
+  
   setTimeout(() => {
     sessionStorage.clear();
     localStorage.removeItem("lastActive");
