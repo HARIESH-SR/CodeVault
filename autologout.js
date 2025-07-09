@@ -1,5 +1,5 @@
-const INACTIVITY_LIMIT = 1 * 60 * 1000; // 40 minutes
-const WARNING_TIME = INACTIVITY_LIMIT - 0.5 * 60 * 1000; // Show warning after 38 minutes
+const INACTIVITY_LIMIT = 2 * 60 * 1000; // 40 minutes
+const WARNING_TIME = INACTIVITY_LIMIT - 1 * 60 * 1000; // Show warning after 38 minutes
 let lastInteractionTime = Date.now();
 const logoutKey = "forceLogout";
 let warningShown = false;
