@@ -48,7 +48,7 @@ function hideWarning() {
 }
 
 // 🖱️ Listen to user actions
-["click", "mousemove", "keydown", "scroll", "touchstart"].forEach(event =>
+["click", "keydown", "scroll", "touchstart"].forEach(event =>
   document.addEventListener(event, resetInactivityTimer)
 );
 
