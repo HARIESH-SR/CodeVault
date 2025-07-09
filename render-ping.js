@@ -29,7 +29,7 @@ function showServerStatus() {
         if (!isServerAwake) {
           // 🔄 Server just woke up — reduce check frequency
           clearInterval(checkInterval);
-          checkInterval = setInterval(checkStatus, 13 * 60 * 1000); // every 13 minutes
+          checkInterval = setInterval(checkStatus, 1 * 60 * 1000); // every 13 minutes
           console.log("✅ Server woke up. Reduced check interval to 13 minutes.");
           isServerAwake = true;
         }
