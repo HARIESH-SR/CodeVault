@@ -1,5 +1,5 @@
-const INACTIVITY_LIMIT = 2 * 60 * 1000; // 40 minutes
-const WARNING_TIME = INACTIVITY_LIMIT - 1 * 60 * 1000; // Show warning after 38 minutes
+const INACTIVITY_LIMIT = 1 * 60 * 1000; // 40 minutes
+const WARNING_TIME = INACTIVITY_LIMIT - 0.5 * 60 * 1000; // Show warning after 38 minutes
 let lastInteractionTime = Date.now();
 const logoutKey = "forceLogout";
 let warningShown = false;
@@ -18,10 +18,13 @@ function resetInactivityTimer() {
 // 🚪 Perform logout
 function autoLogout() {
   window.skipBeforeUnload = true; 
-  sessionStorage.clear();
-  localStorage.removeItem("lastActive");
-  localStorage.setItem(logoutKey, Date.now()); // Notify other tabs
-  window.location.href = "index.html";
+  // Slight delay to allow flag to register before unload
+  setTimeout(() => {
+    sessionStorage.clear();
+    localStorage.removeItem("lastActive");
+    localStorage.setItem(logoutKey, Date.now()); // Notify other tabs
+    window.location.href = "index.html";
+  }, 10); // 🔁 10ms delay ensures `beforeunload` reads updated flag
 }
 
 // ⚠️ Show warning popup
