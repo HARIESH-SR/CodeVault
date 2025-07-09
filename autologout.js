@@ -17,6 +17,7 @@ function resetInactivityTimer() {
 
 // 🚪 Perform logout
 function autoLogout() {
+  window.skipBeforeUnload = true; 
   sessionStorage.clear();
   localStorage.removeItem("lastActive");
   localStorage.setItem(logoutKey, Date.now()); // Notify other tabs
