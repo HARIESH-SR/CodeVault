@@ -1,3 +1,4 @@
+window.renderPingInterval = null; 
 const renderurl = sessionStorage.getItem("renderurl");
 // ⏩ One-time ping on page load to wake server
 fetch(`${renderurl}/ping`)
