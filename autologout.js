@@ -1,5 +1,5 @@
-const INACTIVITY_LIMIT = 40 * 60 * 1000; // 1 hour
-const WARNING_TIME = INACTIVITY_LIMIT - 60 * 1000; // Show warning after 59 minutes
+const INACTIVITY_LIMIT = 40 * 60 * 1000; // 40 minutes
+const WARNING_TIME = INACTIVITY_LIMIT - 2 * 60 * 1000; // Show warning after 38 minutes
 let lastInteractionTime = Date.now();
 const logoutKey = "forceLogout";
 let warningShown = false;
@@ -34,7 +34,7 @@ function showWarning() {
                 border:1px solid #ffc107;border-radius:8px;box-shadow:0 0 10px rgba(0,0,0,0.1);
                 font-family:sans-serif;z-index:9999;">
       ⚠️ You've been inactive for a while.<br>
-      You will be logged out in 1 minute unless you interact.
+      You will be logged out in 2 minute unless you interact.
     </div>`;
   document.body.appendChild(div);
   warningShown = true;
