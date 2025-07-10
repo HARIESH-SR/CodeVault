@@ -26,7 +26,7 @@ function autoLogout() {
   
   setTimeout(() => {
     sessionStorage.clear();
-    localStorage.removeItem("lastActive");
+    localStorage.clear();
     localStorage.setItem(logoutKey, Date.now()); // Notify other tabs
     window.location.href = "index.html";
   }, 60); // 🔁 10ms delay ensures `beforeunload` reads updated flag
