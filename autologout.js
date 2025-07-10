@@ -23,7 +23,8 @@ function autoLogout() {
     clearInterval(window.renderPingInterval);
     console.log("🛑 Render ping interval stopped due to auto logout.");
   }
-  
+  console.log("⏳ Auto logout initiated, skipBeforeUnload = ", window.skipBeforeUnload);
+
   setTimeout(() => {
     sessionStorage.clear();
     localStorage.clear();
