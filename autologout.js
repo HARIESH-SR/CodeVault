@@ -17,21 +17,21 @@ function resetInactivityTimer() {
 
 // 🚪 Perform logout
 function autoLogout() {
-  window.skipBeforeUnload = true; 
-  // Slight delay to allow flag to register before unload
-   if (window.renderPingInterval) {
+  console.log("⏳ Auto logout initiated.");
+  window.skipBeforeUnload = true;
+
+  if (window.renderPingInterval) {
     clearInterval(window.renderPingInterval);
     console.log("🛑 Render ping interval stopped due to auto logout.");
   }
-  console.log("⏳ Auto logout initiated, skipBeforeUnload = ", window.skipBeforeUnload);
 
-  setTimeout(() => {
-    sessionStorage.clear();
-    localStorage.clear();
-    localStorage.setItem(logoutKey, Date.now()); // Notify other tabs
-    window.location.href = "index.html";
-  }, 1000); // 🔁 10ms delay ensures `beforeunload` reads updated flag
+  sessionStorage.clear();
+  localStorage.clear();
+  localStorage.setItem(logoutKey, Date.now());
+
+  window.location.href = "index.html";
 }
+
 
 // ⚠️ Show warning popup
 function showWarning() {
