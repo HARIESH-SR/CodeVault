@@ -37,16 +37,20 @@ function showServerStatus() {
         }
         setStatus(true, "Server Online");
       })
-      .catch(() => {
-        if (isServerAwake) {
-          // ❌ Server just went down — increase check frequency
-          clearInterval(checkInterval);
-          checkInterval = setInterval(checkStatus, 60 * 1000); // every 1 minute
-          console.log("⚠️ Server seems down. Increased check interval to 1 minute.");
-          isServerAwake = false;
-        }
-        setStatus(false, "Server Sleeping");
-      });
+      .catch((err) => {
+  if (!isServerAwake) {
+    // 🔇 Suppress noisy CORS logs while server is sleeping
+    console.log("⏳ Waiting for server to wake (CORS error likely)");
+  } else {
+    console.error("🔴 Ping failed:", err);
+    // ❌ Server just went down — increase check frequency
+    clearInterval(checkInterval);
+    checkInterval = setInterval(checkStatus, 60 * 1000); // every 1 minute
+    console.log("⚠️ Server seems down. Increased check interval to 1 minute.");
+    isServerAwake = false;
+  }
+  setStatus(false, "Server Sleeping");
+});
   }
 
   checkStatus(); // Immediate check
