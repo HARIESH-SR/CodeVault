@@ -29,7 +29,7 @@ function autoLogout() {
     localStorage.removeItem("lastActive");
     localStorage.setItem(logoutKey, Date.now()); // Notify other tabs
     window.location.href = "index.html";
-  }, 10); // 🔁 10ms delay ensures `beforeunload` reads updated flag
+  }, 60); // 🔁 10ms delay ensures `beforeunload` reads updated flag
 }
 
 // ⚠️ Show warning popup
