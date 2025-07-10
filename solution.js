@@ -496,13 +496,15 @@ const probRef = db.ref(`${dbPrefix}/headings/${hKey}/problems/${pKey}`);
     });
 }
 
-window.addEventListener('beforeunload', (e) => {
-    if (window.skipBeforeUnload) return; 
+function handleBeforeUnload(e) {
+    if (window.skipBeforeUnload) return;
     if (!isSaved || !isInputSaved || !isOutputSaved) {
         e.preventDefault();
-        e.returnValue = ''; // Required for modern browsers to show confirmation dialog
+        e.returnValue = '';
     }
-});
+}
+window.addEventListener('beforeunload', handleBeforeUnload);
+
 
 
 function handleClose() {
