@@ -19,7 +19,7 @@ function resetInactivityTimer() {
 function autoLogout() {
   console.log("⏳ Auto logout initiated.");
   window.skipBeforeUnload = true;
-
+  window.removeEventListener("beforeunload", handleBeforeUnload);
   if (window.renderPingInterval) {
     clearInterval(window.renderPingInterval);
     console.log("🛑 Render ping interval stopped due to auto logout.");
