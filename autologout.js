@@ -30,7 +30,7 @@ function autoLogout() {
     localStorage.clear();
     localStorage.setItem(logoutKey, Date.now()); // Notify other tabs
     window.location.href = "index.html";
-  }, 300); // 🔁 10ms delay ensures `beforeunload` reads updated flag
+  }, 1000); // 🔁 10ms delay ensures `beforeunload` reads updated flag
 }
 
 // ⚠️ Show warning popup
