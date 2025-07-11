@@ -61,10 +61,17 @@ let currentLangName = document.getElementById("lang").value;
 
 require.config({
     paths: {
-        'vs': 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.34.1/min/vs'
+        'vs': 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.52.2/min/vs'
     }
 });
 require(['vs/editor/editor.main'], function () {
+    fetch("https://cdn.jsdelivr.net/npm/monaco-themes@0.4.0/themes/Night Owl.json")
+  .then(res => res.json())
+  .then(theme => {
+    monaco.editor.defineTheme("night-owl", theme);
+    monaco.editor.setTheme("night-owl");
+  });
+
     let solObj = {};
     try {
         solObj = JSON.parse(savedSolution);
@@ -96,7 +103,7 @@ const monacoLang = (initialLang === "mysql" || initialLang === "sqlite") ? "sql"
     editor = monaco.editor.create(document.getElementById('editor'), {
         value: initialCode,
         language: monacoLang,
-        theme: 'vs-dark',
+        theme: 'night-owl',
         automaticLayout: true,
         minimap: {
             enabled: false
@@ -186,6 +193,9 @@ editor.onDidType(() => {
         document.getElementById('output').innerHTML = storedOutput ?
             `<span class='clr-str'>Stored Output (${formatTimestamp(storedTimestamp)}):</span>\n\n${storedOutput}` :
             'Output will appear here...';
+        
+            const monacoLang = (newLangName === "mysql" || newLangName === "sqlite") ? "sql" : newLangName;
+    monaco.editor.setModelLanguage(editor.getModel(), monacoLang);
 
         isSaved = true; // Switching means we're clean at start
         isInputSaved = true;
