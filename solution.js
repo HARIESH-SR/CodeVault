@@ -61,7 +61,7 @@ let currentLangName = document.getElementById("lang").value;
 
 require.config({
     paths: {
-        'vs': 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.34.1/min/vs'
+        'vs': 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.25.2/min/vs'
     }
 });
 require(['vs/editor/editor.main'], function () {
