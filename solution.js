@@ -61,7 +61,7 @@ let currentLangName = document.getElementById("lang").value;
 
 require.config({
     paths: {
-        'vs': 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.52.2/min/vs'
+        'vs': 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.32.0/min/vs'
     }
 });
 require(['vs/editor/editor.main'], function () {
@@ -118,9 +118,6 @@ const monacoLang = (initialLang === "mysql" || initialLang === "sqlite") ? "sql"
 
     });
     window.editor = editor;
-    setTimeout(() => {
-  editor.layout(); // Ensures height is re-evaluated correctly
-}, 50);
     editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.Enter, function () {
     runCode();
 });
