@@ -186,6 +186,8 @@ editor.onDidType(() => {
         document.getElementById('output').innerHTML = storedOutput ?
             `<span class='clr-str'>Stored Output (${formatTimestamp(storedTimestamp)}):</span>\n\n${storedOutput}` :
             'Output will appear here...';
+          const monacoLang = (newLangName === "mysql" || newLangName === "sqlite") ? "sql" : newLangName;
+        monaco.editor.setModelLanguage(editor.getModel(), monacoLang);
 
         isSaved = true; // Switching means we're clean at start
         isInputSaved = true;
