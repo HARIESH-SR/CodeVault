@@ -61,10 +61,16 @@ let currentLangName = document.getElementById("lang").value;
 
 require.config({
     paths: {
-        'vs': 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.32.0/min/vs'
+        'vs': 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.51.0/min/vs'
     }
 });
 require(['vs/editor/editor.main'], function () {
+    fetch("https://cdn.jsdelivr.net/npm/monaco-themes@0.4.0/themes/Night Owl.json")
+  .then(res => res.json())
+  .then(theme => {
+    monaco.editor.defineTheme("night-owl", theme);
+    monaco.editor.setTheme("night-owl");
+  });
     let solObj = {};
     try {
         solObj = JSON.parse(savedSolution);
@@ -141,13 +147,14 @@ editor.onDidFocusEditorWidget(() => {
 editor.onDidType(() => {
   // Trigger on first keypress after run
   if (autoMaximizeOnFocus) {
-    maximizeEditor();
+    maximizeEditor()
   }
 });
 
 
     editor.updateOptions({
-        fontSize: 16
+        fontSize: 16,
+        
     });
 
     document.getElementById('inputArea').value = initialInput;
