@@ -70,57 +70,6 @@ require(['vs/editor/editor.main'], function () {
   .then(theme => {
     monaco.editor.defineTheme("night-owl", theme);
     monaco.editor.setTheme("night-owl");
-        monaco.languages.registerCompletionItemProvider('python', {
-      provideCompletionItems: () => {
-        return {
-          suggestions: [
-            {
-              label: 'leetcodetemp',
-              kind: monaco.languages.CompletionItemKind.Snippet,
-              insertText: [
-                'def main():',
-                '    # Example input',
-                '    ${2:args} = ${3:input}',
-                '',
-                '    result = ${1:function_name}(${2})',
-                '    print(result)',
-                '',
-                'if __name__ == "__main__":',
-                '    main()'
-              ].join('\n'),
-              insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
-              documentation: 'Call LeetCode-style function and print result (Python)'
-            }
-          ]
-        };
-      }
-    });
-
-    monaco.languages.registerCompletionItemProvider('cpp', {
-      provideCompletionItems: () => {
-        return {
-          suggestions: [
-            {
-              label: 'leetcodetemp',
-              kind: monaco.languages.CompletionItemKind.Snippet,
-              insertText: [
-                'int main() {',
-                '    // Example input',
-                '    ${2:args} = ${3:input};',
-                '',
-                '    auto result = ${1:function_name}(${2});',
-                '    std::cout << result << std::endl;',
-                '    return 0;',
-                '}'
-              ].join('\n'),
-              insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
-              documentation: 'Call LeetCode-style function and print result (C++)'
-            }
-          ]
-        };
-      }
-    });
-
   });
     let solObj = {};
     try {
