@@ -118,7 +118,9 @@ const monacoLang = (initialLang === "mysql" || initialLang === "sqlite") ? "sql"
 
     });
     window.editor = editor;
-
+    setTimeout(() => {
+  editor.layout(); // Ensures height is re-evaluated correctly
+}, 50);
     editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.Enter, function () {
     runCode();
 });
