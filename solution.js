@@ -124,6 +124,8 @@ const monacoLang = (initialLang === "mysql" || initialLang === "sqlite") ? "sql"
 
     });
     window.editor = editor;
+    registerLeetCodeFunctionSnippets(monaco, editor);
+
     editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.Enter, function () {
     runCode();
 });
