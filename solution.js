@@ -557,7 +557,7 @@ function copyTextFromEditor() {
 
 
 function changeFontSize(target, delta) {
-    const min = 5,
+    const min = 7,
         max = 70;
     if (target === "editor") {
         editorFontSize = Math.min(max, Math.max(min, editorFontSize + delta));
