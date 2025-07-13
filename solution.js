@@ -771,3 +771,12 @@ function redirectToExtractor(select) {
 
   select.selectedIndex = 0; // Reset dropdown
 }
+const controls = document.getElementById("controls");
+
+controls.addEventListener("wheel", function (e) {
+// Only scroll horizontally and prevent vertical scroll
+if (e.deltaY !== 0) {
+    e.preventDefault();
+    controls.scrollLeft += e.deltaY;
+}
+}, { passive: false }); // passive:false lets us use preventDefault()
