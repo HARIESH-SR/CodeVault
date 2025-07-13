@@ -1,6 +1,10 @@
 function registerLeetCodeFunctionSnippets(monaco, editor) {
-  const snippets = {
-    python: `
+  const snippetsByKeyword = {
+    leetcodefunction: {
+      label: "leetcodefunction",
+      doc: "LeetCode-style test case function runner",
+      perLangSnippets: {
+        python: `
 #Type your function here
 
 TestCases = int(input())
@@ -12,9 +16,9 @@ for _ in range(TestCases):
     output_to_print = functionName(enter_the_args)  # Replace with function name and pass the input
 
     print(output_to_print)
-`.trim(),
+        `.trim(),
 
-    cpp: `
+        cpp: `
 #include <iostream>
 using namespace std;
 
@@ -35,9 +39,9 @@ int main() {
     }
     return 0;
 }
-`.trim(),
+        `.trim(),
 
-    java: `
+        java: `
 import java.util.*;
 public class Main {
     public static void main(String[] args) {
@@ -57,9 +61,9 @@ public class Main {
 
     //Type your function here
 }
-`.trim(),
+        `.trim(),
 
-    c: `
+        c: `
 #include <stdio.h>
 
 int main() {
@@ -75,39 +79,89 @@ int main() {
     }
     return 0;
 }
-`.trim()
+        `.trim()
+      }
+    },
+    
+    boiler: {
+      label: "boiler",
+      doc: "Basic boilerplate code",
+      perLangSnippets: {
+        python: `
+def main():
+    # Your code starts here
+    pass
+
+if __name__ == "__main__":
+    main()
+        `.trim(),
+
+        cpp: `
+#include <iostream>
+using namespace std;
+
+int main() {
+    // Your code starts here
+    return 0;
+}
+        `.trim(),
+
+        java: `
+public class Main {
+    public static void main(String[] args) {
+        // Your code starts here
+    }
+}
+        `.trim(),
+
+        c: `
+#include <stdio.h>
+
+int main() {
+    // Your code starts here
+    return 0;
+}
+        `.trim()
+      }
+    }
   };
 
-  const supportedLangs = Object.keys(snippets);
+  const allLangs = ["python", "cpp", "java", "c"];
 
-  supportedLangs.forEach(lang => {
+  allLangs.forEach(lang => {
     monaco.languages.registerCompletionItemProvider(lang, {
-      triggerCharacters: [],
+     
       provideCompletionItems: (model, position) => {
         try {
           const word = model.getWordUntilPosition(position).word;
-          if (!'leetcodefunction'.startsWith(word)) return { suggestions: [] };
-
           const range = {
             startLineNumber: position.lineNumber,
             endLineNumber: position.lineNumber,
             startColumn: position.column - word.length,
-            endColumn: position.column,
+            endColumn: position.column
           };
 
-          return {
-            suggestions: [
-              {
-                label: "leetcodefunction",
-                kind: monaco.languages.CompletionItemKind.Snippet,
-                insertText: snippets[lang],
-                insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
-                documentation: "LeetCode-style test case function runner",
-                range,
-                sortText: "zzz"
+          const suggestions = [];
+
+          for (const keyword in snippetsByKeyword) {
+            if (keyword.startsWith(word)) {
+              const item = snippetsByKeyword[keyword];
+              const snippet = item.perLangSnippets[lang];
+              if (snippet) {
+                suggestions.push({
+                  label: item.label,
+                  kind: monaco.languages.CompletionItemKind.Snippet,
+                  insertText: snippet,
+                  insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
+                  documentation: item.doc,
+                  range,
+                  sortText: "zzz" + item.label
+                });
               }
-            ]
-          };
+            }
+          }
+
+          return { suggestions };
         } catch (e) {
           if (e.name !== "Canceled") console.error(e);
           return { suggestions: [] };
