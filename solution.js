@@ -120,7 +120,10 @@ const monacoLang = (initialLang === "mysql" || initialLang === "sqlite") ? "sql"
         parameterHints: {
             enabled: true
         },
-        mouseWheelZoom: true
+        mouseWheelZoom: true,
+        stickyScroll: {
+          enabled: false
+        }
 
     });
     window.editor = editor;
