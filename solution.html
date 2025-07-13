@@ -1,169 +1,150 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <title>Solution Editor</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=1">
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
-  <script src="https://cdn.jsdelivr.net/pyodide/v0.23.4/full/pyodide.js"></script>
-  <script src="https://cjrtnc.leaningtech.com/loader.js"></script>
-  <script src="render-ping.js"></script>
-  <script src="autologout.js"></script>
-  <script src="snippets.js"></script>
-  <link rel="stylesheet" href="solution.css">
+    <head>
+        <meta charset="UTF-8" />
+        <title>Solution Editor</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=1">
+        <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+        <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+        <script src="https://cdn.jsdelivr.net/pyodide/v0.23.4/full/pyodide.js"></script>
+        <script src="https://cjrtnc.leaningtech.com/loader.js"></script>
+        <script src="render-ping.js"></script>
+        <script src="autologout.js"></script>
+        <script src="snippets.js"></script>
+        <link rel="stylesheet" href="solution.css">
+    </head>
+    <body>
+        <div id="top-bar">
+            <div id="problemTitle">Solution Title</div>
+            <div id="controls">
+                <select id="lang">
+                    <option value="python">Python 3.8</option>
+                    <option value="cpp">C++ 9</option>
+                    <option value="java">Java 13</option>
+                    <option value="javascript">JavaScript</option>
+                    <option value="c">C</option>
+                    <option value="php">PHP</option>
+                    <option value="ruby">Ruby</option>
+                    <option value="rust">Rust</option>
+                    <option value="swift">Swift</option>
+                    <option value="kotlin">Kotlin</option>
+                    <option value="go">Golang</option>
+                    <option value="typescript">TypeScript</option>
+                </select>
+                <button onclick="runCode()" id="run-btn" title="Run (Ctrl + Enter)">▶</button>
+                <div id="serverStatus" style="
+                    margin-left: 0px;
+                    padding: 4px;
+                    background-color: #999;
+                    color: white;
+                    font-size: 16px;
+                    border-radius: 50%;
+                    width: 15px;
+                    height: 15px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    font-family: 'Segoe UI', sans-serif;
+                    cursor: default;
+                    " title="Checking server...">
+                    ⏳
+                </div>
+                <button onclick="saveSolution()" title="Save (Ctrl + S)">💾</button>
+                <button class="font-btn" onclick="changeFontSize('editor', -1)" title="Decrease editor font size">A−</button>
+                <button class="font-btn" onclick="changeFontSize('editor', 1)" title="Increase editor font size">A+</button>
+                <button class="copy-btn" onclick="copyTextFromEditor()" title="Copy editor">Copy</button>
+                <button class="font-btn" onclick="toggleWordWrap()" title="word wrap">↩️</button>
+                <button class="font-btn" onclick="toggleFullScreenEditor()" title="Fullscreen editor">⛶</button>
+                <button onclick="maximizeEditor()" title="Maximize Editor">🖵 Editor</button>
+                <button onclick="maximizeIO()" title="Maximize Input/Output">🖵 IO</button>
+                <button onclick="resetLayout()" title="Reset Layout">🗗 Reset</button>
+                <label class="toggle-container" title="Maximize Editor on Focus">
+                <input type="checkbox" id="autoMaxToggle" />
+                <span class="custom-toggle"></span>
+                </label>
+                <select onchange="redirectToExtractor(this)">
+                    <option selected disabled>📥 Extract From...</option>
+                    <option value="leetcode">LeetCode</option>
+                    <option value="gfg">GeeksForGeeks</option>
+                </select>
+                <button id="problemDataBtn" style="display: none;">📘 Problem Data</button>
+                <button onclick="handleClose()" title="Close">❌</button>
+            </div>
+        </div>
+        <div id="editor" class="full-width"></div>
+        <div id="resizer"></div>
+        <div id="io-section">
+            <div id="inputContainer">
+                <textarea id="inputArea" placeholder="Type Input here..."></textarea>
+                <div class="font-controls">
+                    <button class="font-btn" onclick="changeFontSize('input', -1)" title="Decrease size">A−</button>
+                    <button class="font-btn" onclick="changeFontSize('input', 1)" title="Increase size">A+</button>
+                    <button class="copy-btn" onclick="copyText('inputArea')" title="copy">📋</button>
+                </div>
+            </div>
+            <div id="outputContainer">
+                <div id="output">Output will appear here...</div>
+                <div class="font-controls">
+                    <button class="font-btn" onclick="changeFontSize('output', -1)" title="Decrease size">A−</button>
+                    <button class="font-btn" onclick="changeFontSize('output', 1)" title="Increase size">A+</button>
+                    <button class="copy-btn" onclick="copyText('output')" title="copy">📋</button>
+                </div>
+            </div>
+        </div>
+        <script>
+            function maximizeEditor() {
+              const editorEl = document.getElementById("editor");
+              const ioSection = document.getElementById("io-section");
+              const resizer = document.getElementById("resizer");
+            
+              editorEl.classList.add("maximize-editor");
+              editorEl.classList.remove("hidden");
+              ioSection.classList.add("hidden");
+              resizer.classList.add("hidden");
+            
+              // Give browser a tiny delay to apply CSS changes, then resize Monaco
+              setTimeout(() => {
+                if (window.editor) {
+                  window.editor.layout();
+                }
+              }, 50);
+            }
+            
+            function maximizeIO() {
+              const editor = document.getElementById("editor");
+              const ioSection = document.getElementById("io-section");
+              const resizer = document.getElementById("resizer");
+            
+              editor.classList.add("hidden");
+              editor.classList.remove("maximize-editor");
+            
+              ioSection.classList.remove("hidden");
+              ioSection.classList.add("maximize-io");
+            
+              resizer.classList.add("hidden");
+            }
 
-  
-</head>
-<body>
-  <div id="top-bar">
-    <div id="problemTitle">Solution Title</div>
+            function resetLayout() {
+              const editor = document.getElementById("editor");
+              const ioSection = document.getElementById("io-section");
+              const resizer = document.getElementById("resizer");
+            
+              editor.classList.remove("maximize-editor", "hidden");
+              ioSection.classList.remove("maximize-io", "hidden");
+              resizer.classList.remove("hidden");
 
-    <div id="controls">
-      <select id="lang">
-        <option value="python">Python 3.8</option>
-        <option value="cpp">C++ 9</option>
-        <option value="java">Java 13</option>
-        <option value="javascript">JavaScript</option>
-        <option value="c">C</option>
-        <option value="php">PHP</option>
-        <option value="ruby">Ruby</option>
-        <option value="rust">Rust</option>
-        <option value="swift">Swift</option>
-        <option value="kotlin">Kotlin</option>
-        <option value="go">Golang</option>
-        <option value="typescript">TypeScript</option>
-        <option value="sqlite">SQLite</option>
-        <option value="mysql">MySQL</option>
-      </select>
-       <select onchange="redirectToExtractor(this)">
-  <option selected disabled>📥 Extract From...</option>
-  <option value="leetcode">LeetCode</option>
-  <option value="gfg">GeeksForGeeks</option>
-</select>
-    <!-- Inside your solution.html -->
-<button id="problemDataBtn" style="display: none;">📘 Problem Data</button>
-      <div id="serverStatus" style="
-  margin-left: 0px;
-  padding: 4px;
-  background-color: #999;
-  color: white;
-  font-size: 16px;
-  border-radius: 50%;
-  width: 15px;
-  height: 15px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-family: 'Segoe UI', sans-serif;
-  cursor: default;
-" title="Checking server...">
-  ⏳
-</div>
-      <button onclick="runCode()" title="Run (Ctrl + Enter)">▶</button>
-      <button onclick="saveSolution()" title="Save (Ctrl + S)">💾</button>
-      <button class="font-btn" onclick="changeFontSize('editor', -1)" title="Decrease editor font size">A−</button>
-      <button class="font-btn" onclick="changeFontSize('editor', 1)" title="Increase editor font size">A+</button>
-      <button class="copy-btn" onclick="copyTextFromEditor()" title="Copy editor">🖫</button>
-      <button class="font-btn" onclick="toggleWordWrap()" title="word wrap">↩️</button>
-      <button class="font-btn" onclick="toggleFullScreenEditor()" title="Fullscreen editor">⛶</button>
-      <button onclick="maximizeEditor()" title="Maximize Editor">🖵 Editor</button>
-      <button onclick="maximizeIO()" title="Maximize Input/Output">🖵 IO</button>
-      <button onclick="resetLayout()" title="Reset Layout">🗗 Reset</button>
-      <label class="toggle-container" title="Maximize Editor on Focus">
-  <input type="checkbox" id="autoMaxToggle" />
-  <span class="custom-toggle"></span>
-</label>
-
-
-      <button onclick="handleClose()" title="Close">❌</button>
-    </div>
-  </div>
-
-  <div id="editor" class="full-width"></div>
-  <div id="resizer"></div>
-
-  <div id="io-section">
-    <div id="inputContainer">
-      <textarea id="inputArea" placeholder="Type Input here..."></textarea>
-      <div class="font-controls">
-        <button class="font-btn" onclick="changeFontSize('input', -1)" title="Decrease size">A−</button>
-        <button class="font-btn" onclick="changeFontSize('input', 1)" title="Increase size">A+</button>
-        <button class="copy-btn" onclick="copyText('inputArea')" title="copy">📋</button>
-      </div>
-    </div>
-    <div id="outputContainer">
-      <div id="output">Output will appear here...</div>
-      <div class="font-controls">
-        <button class="font-btn" onclick="changeFontSize('output', -1)" title="Decrease size">A−</button>
-        <button class="font-btn" onclick="changeFontSize('output', 1)" title="Increase size">A+</button>
-        <button class="copy-btn" onclick="copyText('output')" title="copy">📋</button>
-      </div>
-    </div>
-  </div>
-
- <script>
-function maximizeEditor() {
-  const editorEl = document.getElementById("editor");
-  const ioSection = document.getElementById("io-section");
-  const resizer = document.getElementById("resizer");
-
-  editorEl.classList.add("maximize-editor");
-  editorEl.classList.remove("hidden");
-  ioSection.classList.add("hidden");
-  resizer.classList.add("hidden");
-
-  // Give browser a tiny delay to apply CSS changes, then resize Monaco
-  setTimeout(() => {
-    if (window.editor) {
-      window.editor.layout();
-    }
-  }, 50);
-}
-
-
-
-function maximizeIO() {
-  const editor = document.getElementById("editor");
-  const ioSection = document.getElementById("io-section");
-  const resizer = document.getElementById("resizer");
-
-  editor.classList.add("hidden");
-  editor.classList.remove("maximize-editor");
-
-  ioSection.classList.remove("hidden");
-  ioSection.classList.add("maximize-io");
-
-  resizer.classList.add("hidden");
-}
-
-
-
-function resetLayout() {
-  const editor = document.getElementById("editor");
-  const ioSection = document.getElementById("io-section");
-  const resizer = document.getElementById("resizer");
-
-  editor.classList.remove("maximize-editor", "hidden");
-  ioSection.classList.remove("maximize-io", "hidden");
-  resizer.classList.remove("hidden");
-
- 
-
-  setTimeout(() => {
-    if (window.editor) {
-      window.editor.layout();
-    }
-  }, 50);
-}
-
-
-
-</script>
-
-
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.34.1/min/vs/loader.min.js"></script>
-  <script src="solution.js"></script>
-</body>
+              setTimeout(() => {
+                if (window.editor) {
+                  window.editor.layout();
+                }
+              }, 50);
+            }
+            
+            
+            
+        </script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.34.1/min/vs/loader.min.js"></script>
+        <script src="solution.js"></script>
+    </body>
 </html>
