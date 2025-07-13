@@ -120,10 +120,14 @@ const monacoLang = (initialLang === "mysql" || initialLang === "sqlite") ? "sql"
         parameterHints: {
             enabled: true
         },
-        mouseWheelZoom: true,
+         /*
+        //if u want to stop stick scroll feature remove the multiline comment
         stickyScroll: {
           enabled: false
-        }
+        },
+        */
+        mouseWheelZoom: true
+       
 
     });
     window.editor = editor;
