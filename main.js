@@ -1,4 +1,34 @@
-import { remove} from "https://www.gstatic.com/firebasejs/11.9.1/firebase-database.js";
+// 🔁 Load Firebase config first
+let firebaseConfig;
+let dbPrefix; // Declare globally so it's accessible everywhere
+
+try {
+  firebaseConfig = JSON.parse(sessionStorage.getItem("firebaseConfig"));
+  if (!firebaseConfig) throw new Error("Missing config");
+} catch {
+  alert("Missing Firebase config. Please log in again.");
+  window.location.href = "index.html";
+}
+
+// ✅ Now import Firebase modules
+import { remove } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-database.js";
+import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-auth.js";
+import {
+  initializeApp
+} from "https://www.gstatic.com/firebasejs/11.9.1/firebase-app.js";
+import {
+  getDatabase,
+  ref,
+  get,
+  update,
+  onValue
+} from "https://www.gstatic.com/firebasejs/11.9.1/firebase-database.js";
+
+// ✅ Now it's safe to initialize Firebase
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
+const auth = getAuth(app);
+
 
 window.deleteHeading = async function(hKey) {
   const baseRef = ref(db, dbPrefix);
@@ -104,33 +134,21 @@ window.deleteProblem = async function(hKey, pKey) {
 };
 
 
-
-// Import Firebase modules
-import {
-    initializeApp
-} from "https://www.gstatic.com/firebasejs/11.9.1/firebase-app.js";
-import {
-    getDatabase,
-    ref,
-    get,
-    update,
-    onValue
-} from "https://www.gstatic.com/firebasejs/11.9.1/firebase-database.js";
-
-// Firebase config
-let firebaseConfig;
-try {
-    firebaseConfig = JSON.parse(sessionStorage.getItem("firebaseConfig"));
-    if (!firebaseConfig) throw new Error("Missing config");
-} catch {
-    alert("Missing Firebase config. Please log in again.");
+onAuthStateChanged(auth, user => {
+  if (user) {
+    const uid = user.uid;
+    dbPrefix = `users/${uid}/savedcodes`;       // ✅ Set dbPrefix here
+    window.dbPrefix = dbPrefix;                 // ✅ Optional: expose globally
+    renderSavedCodes();                         // ✅ Now safe to use
+  } else {
+    alert("Not logged in. Redirecting to login.");
     window.location.href = "index.html";
-}
+  }
+});
 
-const dbPrefix = sessionStorage.getItem("dbPrefix") || "savedcodes";
-// Init Firebase
-const app = initializeApp(firebaseConfig);
-const db = getDatabase(app);
+
+
+
 const username = sessionStorage.getItem("username") || "Guest";
 document.getElementById("usernameDisplay").textContent = `👤 ${username}`;
 
@@ -437,7 +455,7 @@ document.addEventListener('click', () => {
   document.querySelectorAll(".dropdown-menu").forEach(menu => menu.style.display = "none");
 });
 
-renderSavedCodes();
+
 window.addProblem = function (hKey) {
     const input = document.getElementById(`${hKey}-newProbTitle`);
     const title = input.value.trim();
@@ -524,50 +542,25 @@ document.getElementById("addHeadingBtn").addEventListener("click", () => {
         });
     });
 });
-onValue(ref(db, dbPrefix), () => {
-    
+onAuthStateChanged(auth, user => {
+  if (user) {
+    const uid = user.uid;
+    dbPrefix = `users/${uid}/savedcodes`;
+    window.dbPrefix = dbPrefix;
+
+    // ✅ Now safe to use dbPrefix
+    onValue(ref(db, dbPrefix), () => {
+      renderSavedCodes();
+    });
+
     renderSavedCodes();
-});
-currentlyOpenForm = null;
-
-window.toggleAddForm = function(hKey) {
-  const form = document.getElementById(`addForm-${hKey}`);
-  const input = document.getElementById(`${hKey}-newProbTitle`);
-  const detailsEl = form?.closest('details');
-
-  if (!form || !input || !detailsEl) return;
-
-  const isCurrentlyOpen = form.style.display === "block";
-
-  // Close any previously open form
-  if (currentlyOpenForm && currentlyOpenForm !== form) {
-    currentlyOpenForm.style.display = "none";
-  }
-
-  if (isCurrentlyOpen) {
-    form.style.display = "none";
-    currentlyOpenForm = null;
   } else {
-    form.style.display = "block";
-    if (!detailsEl.open) detailsEl.open = true;
-    input.focus();
-    currentlyOpenForm = form;
-  }
-};
-
-// Close on outside click
-document.addEventListener('click', function (e) {
-  if (
-    currentlyOpenForm &&
-    !currentlyOpenForm.contains(e.target) &&
-    !e.target.classList.contains("add-problem-btn")
-  ) {
-    currentlyOpenForm.style.display = "none";
-    currentlyOpenForm = null;
+    alert("Not logged in. Redirecting to login.");
+    window.location.href = "index.html";
   }
 });
 
-
+currentlyOpenForm = null;
 
 window.handleEnter = function(event, hKey) {
   if (event.key === "Enter") {
