@@ -8,8 +8,23 @@ try {
     alert("Missing Firebase config. Please log in again.");
     window.location.href = "index.html";
 }
+const uid = sessionStorage.getItem("uid");
+
+if (!uid) {
+  alert("Missing UID. Please log in again.");
+  window.location.href = "index.html";
+}
+
+
 
 firebase.initializeApp(firebaseConfig);
+firebase.auth().onAuthStateChanged((user) => {
+  if (!user || user.uid !== uid) {
+    alert("Not authenticated. Please log in again.");
+    window.location.href = "index.html";
+  }
+});
+
 const db = firebase.database();
 const langNameToId = {
     python: "71",
@@ -453,7 +468,7 @@ const problemPath = `${dbPrefix}/headings/${hKey}/problems/${pKey}`;
 const btn = document.getElementById("problemDataBtn");
 btn.style.display = "none";
 
-firebase.database().ref(problemPath + "/problemData").on("value", (snapshot) => {
+firebase.database().ref(`users/${uid}/${problemPath}/problemData`).on("value", (snapshot) => {
   if (snapshot.exists()) {
     btn.style.display = "inline-block";
   } else {
@@ -465,7 +480,7 @@ firebase.database().ref(problemPath + "/problemData").on("value", (snapshot) => 
 // Step 2: On click, re-fetch latest data and open correct file
 btn.onclick = () => {
     
-  firebase.database().ref(problemPath + "/problemData").once("value")
+  firebase.database().ref(`users/${uid}/${problemPath}/problemData`).once("value")
     .then(snapshot => {
       if (!snapshot.exists()) return alert("No problem data found.");
 
@@ -500,8 +515,8 @@ function saveSolution() {
         languageId: langId
     };
     
+const probRef = db.ref(`users/${uid}/${dbPrefix}/headings/${hKey}/problems/${pKey}`);
 
-const probRef = db.ref(`${dbPrefix}/headings/${hKey}/problems/${pKey}`);
     probRef.update({ solutions: solutionObj }).then(() => {
         isSaved = true;
         isInputSaved = true;
