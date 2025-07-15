@@ -1,3 +1,4 @@
+// Initialize Firebase (use sessionStorage config)
 let db;
 try {
   const config = JSON.parse(sessionStorage.getItem("firebaseConfig"));
@@ -7,6 +8,8 @@ try {
   alert("Missing Firebase config. Please login again.");
 }
 
+let parsedProblemData;
+
 // Save to database
 function saveProblemData() {
   if (!parsedProblemData) {
@@ -14,36 +17,40 @@ function saveProblemData() {
     return;
   }
 
-     const hKey = sessionStorage.getItem("hKey");
-    const pKey = sessionStorage.getItem("pKey");
-    const dbPrefix = sessionStorage.getItem("dbPrefix") || "savedcodes";
+  const uid = sessionStorage.getItem("uid");
+  const hKey = sessionStorage.getItem("hKey");
+  const pKey = sessionStorage.getItem("pKey");
+  const dbPrefix = sessionStorage.getItem("dbPrefix") || "savedcodes";
 
-
-
-  if (!hKey || !pKey) {
-    alert("Missing stepKey/subKey/probKey. Cannot save.");
+  if (!uid || !hKey || !pKey) {
+    alert("Missing UID/hKey/pKey. Cannot save.");
     return;
   }
-  console.log(parsedProblemData)
-  const path = `${dbPrefix}/headings/${hKey}/problems/${pKey}`;
-  db.ref(path).update(parsedProblemData)
+
+  const path = `users/${uid}/${dbPrefix}/headings/${hKey}/problems/${pKey}/problemData`;
+
+  console.log("Session UID:", uid);
+  console.log("Parsed:", parsedProblemData);
+  console.log("Auth UID:", firebase.auth().currentUser?.uid);
+
+  db.ref(path)
+    .set(parsedProblemData.problemData)
     .then(() => alert("✅ Problem saved to database"))
     .catch(err => alert("❌ Error saving problem: " + err.message));
 }
 
-
+// Extract from textarea
 function extract() {
   const rawText = document.getElementById("rawInput").value.trim();
-  const isType2 = rawText.toLowerCase().includes("your task:");
   const output = document.getElementById("renderedOutput");
   output.innerHTML = "";
 
-  const result = isType2 ? parseType2(rawText) : parseType1(rawText);
-  output.innerHTML = result;
-  console.log("Parsed Data:", parsedProblemData);
+  const isType2 = rawText.toLowerCase().includes("your task:");
+  const html = isType2 ? parseType2(rawText) : parseType1(rawText);
 
+  output.innerHTML = html;
+  console.log("Parsed Data:", parsedProblemData);
 }
-let parsedProblemData
 
 function parseType2(text) {
   const lines = text.split("\n").map(l => l.trim()).filter(Boolean);
