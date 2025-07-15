@@ -3,8 +3,9 @@
 <head>
   <meta charset="UTF-8" />
   <title>GFG Problem Viewer</title>
-  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
+ <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script> <!-- ✅ FIXED -->
   <script src="autologout.js"></script>
   <style>
     body {
@@ -103,18 +104,38 @@
   </div>
 
   <script>
-    const config = JSON.parse(sessionStorage.getItem("firebaseConfig"));
-    firebase.initializeApp(config);
-    const db = firebase.database();
+   let db;
+try {
+  const config = JSON.parse(sessionStorage.getItem("firebaseConfig"));
+  const app = firebase.initializeApp(config);
+  db = firebase.database(app);
+} catch (err) {
+  alert("Missing Firebase config. Please login again.");
+}
 
-    const hKey = sessionStorage.getItem("hKey");
-    const pKey = sessionStorage.getItem("pKey");
-    const dbPrefix = sessionStorage.getItem("dbPrefix") || "savedcodes";
+    const uid = sessionStorage.getItem("uid");
+  const hKey = sessionStorage.getItem("hKey");
+  const pKey = sessionStorage.getItem("pKey");
+  const dbPrefix = sessionStorage.getItem("dbPrefix") || "savedcodes";
+  firebase.auth().onAuthStateChanged(user => {
+  if (!user) {
+    alert("Not logged in");
+    return;
+  }
 
 
-    const path = `${dbPrefix}/headings/${hKey}/problems/${pKey}/problemData`;
+  if (user.uid !== uid) {
+    alert("Session UID mismatch with logged-in user.");
+  }
+});
 
-    
+
+  if (!uid || !hKey || !pKey) {
+    alert("Missing UID/hKey/pKey. Cannot save.");
+   
+  }
+
+  const path = `users/${uid}/${dbPrefix}/headings/${hKey}/problems/${pKey}/problemData`;
 
     firebase.database().ref(path).once("value").then(snap => {
       if (!snap.exists()) {
