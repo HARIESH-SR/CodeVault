@@ -3,8 +3,10 @@
 <head>
   <meta charset="UTF-8" />
   <title>LeetCode Problem Viewer</title>
-  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
+ <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script> <!-- ✅ FIXED -->
+
   <script src="autologout.js"></script>
   <style>
     body {
@@ -92,17 +94,38 @@
 
     import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
     import { getDatabase, ref, get } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-database.js";
+let db;
+try {
+  const config = JSON.parse(sessionStorage.getItem("firebaseConfig"));
+  const app = firebase.initializeApp(config);
+  db = firebase.database(app);
+} catch (err) {
+  alert("Missing Firebase config. Please login again.");
+}
 
-    const config = JSON.parse(sessionStorage.getItem("firebaseConfig"));
-    const app = initializeApp(config);
-    const db = getDatabase(app);
+    const uid = sessionStorage.getItem("uid");
+  const hKey = sessionStorage.getItem("hKey");
+  const pKey = sessionStorage.getItem("pKey");
+  const dbPrefix = sessionStorage.getItem("dbPrefix") || "savedcodes";
+  firebase.auth().onAuthStateChanged(user => {
+  if (!user) {
+    alert("Not logged in");
+    return;
+  }
 
-    const hKey = sessionStorage.getItem("hKey");
-    const pKey = sessionStorage.getItem("pKey");
-    const dbPrefix = sessionStorage.getItem("dbPrefix") || "savedcodes";
+
+  if (user.uid !== uid) {
+    alert("Session UID mismatch with logged-in user.");
+  }
+});
 
 
-    const path = `${dbPrefix}/headings/${hKey}/problems/${pKey}/problemData`;
+  if (!uid || !hKey || !pKey) {
+    alert("Missing UID/hKey/pKey. Cannot save.");
+   
+  }
+
+  const path = `users/${uid}/${dbPrefix}/headings/${hKey}/problems/${pKey}/problemData`;
 
     get(ref(db, path)).then(snap => {
       if (!snap.exists()) {
