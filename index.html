@@ -1,638 +1,95 @@
-{
-  "users": {
-    "ASp9AsHGSzcBUB3II7pvk8w0RHv1": {
-      "config": {
-        "judge0Key": "009ec64d36mshebee8defed7ea35p115ef9jsnb1b6ce3aa962",
-        "renderUrl": "https://compiler-backend-x97q.onrender.com"
-      },
-      "savedcodes": {
-        "hcount": 7,
-        "headings": {
-          "h1": {
-            "heading": "Random Problems",
-            "pcount": 3,
-            "problems": {
-              "p1": {
-                "problemData": {
-                  "constraints": [
-                    "nums1.length == m",
-                    "nums2.length == n",
-                    "0 <= m <= 1000",
-                    "0 <= n <= 1000",
-                    "1 <= m + n <= 2000",
-                    "-106 <= nums1[i], nums2[i] <= 106",
-                    "Seen this question in a real interview before?"
-                  ],
-                  "createdAt": "2025-07-08T12:26:24.720Z",
-                  "description": "Given two sorted arrays nums1 and nums2 of size m and n respectively, return the median of the two sorted arrays.\nThe overall run time complexity should be O(log (m+n)).",
-                  "difficulty": "Hard",
-                  "examples": [
-                    {
-                      "lines": [
-                        "Input: nums1 = [1,3], nums2 = [2]",
-                        "Output: 2.00000",
-                        "Explanation: merged array = [1,2,3] and median is 2."
-                      ],
-                      "title": "Example 1:"
-                    },
-                    {
-                      "lines": [
-                        "Input: nums1 = [1,2], nums2 = [3,4]",
-                        "Output: 2.50000",
-                        "Explanation: merged array = [1,2,3,4] and median is (2 + 3) / 2 = 2.5."
-                      ],
-                      "title": "Example 2:"
-                    }
-                  ],
-                  "followup": "",
-                  "site": "leetcode",
-                  "title": "4. Median of Two Sorted Arrays",
-                  "topics": [
-                    "Array",
-                    "Binary Search",
-                    "Divide and Conquer"
-                  ]
-                },
-                "solutions": {
-                  "cpp": {
-                    "code": "#include<iostream>\r\nint main(){\r\n    int x;\r\n    std::cin>>x;\r\n    std::cout<<x+100;\r\n\r\n}",
-                    "input": "515",
-                    "languageId": "54",
-                    "languageVersion": "C++ (GCC 9.2.0)",
-                    "output": "615",
-                    "timestamp": "2025-07-03T18:54:57.542Z"
-                  },
-                  "java": {
-                    "code": "import java.util.Scanner;\r\n\r\npublic class Main {\r\n    public static void main(String[] args) {\r\n        Scanner sc = new Scanner(System.in);\r\n\r\n        // Read an integer\r\n        int a = sc.nextInt();\r\n\r\n        // Read another integer\r\n        int b = sc.nextInt();\r\n\r\n        // Output their sum\r\n        System.out.println(\"Sum: \" + (a + b));\r\n    }\r\n}\r\n",
-                    "input": "5\n100",
-                    "languageId": "62",
-                    "languageVersion": "Java (OpenJDK 13.0.1)",
-                    "output": "Sum: 105\n",
-                    "timestamp": "2025-07-15T09:18:13.349Z"
-                  },
-                  "python": {
-                    "code": "a,b=map(int,input().split())\r\nprint(a+b+10)",
-                    "input": "5 10",
-                    "languageId": "71",
-                    "languageVersion": "Python 3.8.1",
-                    "output": "25\n",
-                    "timestamp": "2025-07-15T09:03:55.179Z"
-                  }
-                },
-                "title": "kel"
-              },
-              "p2": {
-                "solutions": {
-                  "python": {
-                    "code": "print(\"Hello\")",
-                    "input": "3\n1\n1\n1\n1\n0\n1\n2\n",
-                    "languageId": "71",
-                    "languageVersion": "Python 3.8.1",
-                    "output": "Hello\n",
-                    "timestamp": "2025-07-15T07:04:02.832Z"
-                  }
-                },
-                "title": "hello"
-              },
-              "p3": {
-                "title": "sdf"
-              }
-            }
-          },
-          "h2": {
-            "heading": "xompiler",
-            "pcount": 2,
-            "problems": {
-              "p1": {
-                "title": "sdf"
-              },
-              "p2": {
-                "problemData": {
-                  "constraints": [
-                    "1 ≤ n ≤ 109"
-                  ],
-                  "createdAt": "2025-07-15T05:43:07.690Z",
-                  "description": "Given a number n, determine whether it is a prime number or not.\nNote: A prime number is a number greater than 1 that has no positive divisors other than 1 and itself.",
-                  "difficulty": "easy",
-                  "examples": [
-                    "Input: n = 7\nOutput: true\nExplanation: 7 has exactly two divisors: 1 and 7, making it a prime number.",
-                    "Input: n = 25\nOutput: false\nExplanation: 25 has more than two divisors: 1, 5, and 25, so it is not a prime number.",
-                    "Input: n = 1\nOutput: false\nExplanation: 1 has only one divisor (1 itself), which is not sufficient for it to be considered prime."
-                  ],
-                  "site": "gfg",
-                  "tags": "VMWareAmazonSAP Labs",
-                  "title": "Prime Number"
-                },
-                "solutions": {
-                  "c": {
-                    "code": "#include <stdio.h>\r\n\r\nint main() {\r\n    for (int i = 1; i <= 5; i++) {\r\n        printf(\"%d\\n\", i*i);\r\n    }\r\n    return 0;\r\n}\r\n",
-                    "input": "",
-                    "languageId": "50",
-                    "languageVersion": "C (GCC 9.4.0)",
-                    "output": "1\n4\n9\n16\n25\n",
-                    "timestamp": "2025-07-05T19:12:53.492Z"
-                  },
-                  "cpp": {
-                    "code": "#include <iostream>\r\nusing namespace std;\r\n\r\nint main() {\r\n    for (int i = 1; i <= 150; i++) {\r\n        cout << i*i << endl;\r\n    }\r\n    return 0;\r\n}\r\n",
-                    "input": "156",
-                    "languageId": "54",
-                    "languageVersion": "C++ (GCC 9.2.0)",
-                    "output": "1\n4\n9\n16\n25\n36\n49\n64\n81\n100\n121\n144\n169\n196\n225\n256\n289\n324\n361\n400\n441\n484\n529\n576\n625\n676\n729\n784\n841\n900\n961\n1024\n1089\n1156\n1225\n1296\n1369\n1444\n1521\n1600\n1681\n1764\n1849\n1936\n2025\n2116\n2209\n2304\n2401\n2500\n2601\n2704\n2809\n2916\n3025\n3136\n3249\n3364\n3481\n3600\n3721\n3844\n3969\n4096\n4225\n4356\n4489\n4624\n4761\n4900\n5041\n5184\n5329\n5476\n5625\n5776\n5929\n6084\n6241\n6400\n6561\n6724\n6889\n7056\n7225\n7396\n7569\n7744\n7921\n8100\n8281\n8464\n8649\n8836\n9025\n9216\n9409\n9604\n9801\n10000\n10201\n10404\n10609\n10816\n11025\n11236\n11449\n11664\n11881\n12100\n12321\n12544\n12769\n12996\n13225\n13456\n13689\n13924\n14161\n14400\n14641\n14884\n15129\n15376\n15625\n15876\n16129\n16384\n16641\n16900\n17161\n17424\n17689\n17956\n18225\n18496\n18769\n19044\n19321\n19600\n19881\n20164\n20449\n20736\n21025\n21316\n21609\n21904\n22201\n22500\n",
-                    "timestamp": "2025-07-15T05:42:23.100Z"
-                  },
-                  "go": {
-                    "code": "package main\r\n\r\nimport \"fmt\"\r\n\r\nfunc main() {\r\n\tfor i := 1; i <= 200; i++ {\r\n\t\tfmt.Println(i)\r\n\t}\r\n}\r\n",
-                    "input": "",
-                    "languageId": "60",
-                    "languageVersion": "go",
-                    "output": "1\n2\n3\n4\n5\n6\n7\n8\n9\n10\n11\n12\n13\n14\n15\n16\n17\n18\n19\n20\n21\n22\n23\n24\n25\n26\n27\n28\n29\n30\n31\n32\n33\n34\n35\n36\n37\n38\n39\n40\n41\n42\n43\n44\n45\n46\n47\n48\n49\n50\n51\n52\n53\n54\n55\n56\n57\n58\n59\n60\n61\n62\n63\n64\n65\n66\n67\n68\n69\n70\n71\n72\n73\n74\n75\n76\n77\n78\n79\n80\n81\n82\n83\n84\n85\n86\n87\n88\n89\n90\n91\n92\n93\n94\n95\n96\n97\n98\n99\n100\n101\n102\n103\n104\n105\n106\n107\n108\n109\n110\n111\n112\n113\n114\n115\n116\n117\n118\n119\n120\n121\n122\n123\n124\n125\n126\n127\n128\n129\n130\n131\n132\n133\n134\n135\n136\n137\n138\n139\n140\n141\n142\n143\n144\n145\n146\n147\n148\n149\n150\n151\n152\n153\n154\n155\n156\n157\n158\n159\n160\n161\n162\n163\n164\n165\n166\n167\n168\n169\n170\n171\n172\n173\n174\n175\n176\n177\n178\n179\n180\n181\n182\n183\n184\n185\n186\n187\n188\n189\n190\n191\n192\n193\n194\n195\n196\n197\n198\n199\n200",
-                    "timestamp": "2025-07-05T18:53:54.608Z"
-                  },
-                  "java": {
-                    "code": "public class Main {\r\n    public static void main(String[] args) {\r\n        for (int i = 1; i <= 150; i++) {\r\n            System.out.println(i*i);\r\n        }\r\n    }\r\n}\r\n",
-                    "input": "10 20",
-                    "languageId": "62",
-                    "languageVersion": "Java (OpenJDK 13.0.1)",
-                    "output": "1\n4\n9\n16\n25\n36\n49\n64\n81\n100\n121\n144\n169\n196\n225\n256\n289\n324\n361\n400\n441\n484\n529\n576\n625\n676\n729\n784\n841\n900\n961\n1024\n1089\n1156\n1225\n1296\n1369\n1444\n1521\n1600\n1681\n1764\n1849\n1936\n2025\n2116\n2209\n2304\n2401\n2500\n2601\n2704\n2809\n2916\n3025\n3136\n3249\n3364\n3481\n3600\n3721\n3844\n3969\n4096\n4225\n4356\n4489\n4624\n4761\n4900\n5041\n5184\n5329\n5476\n5625\n5776\n5929\n6084\n6241\n6400\n6561\n6724\n6889\n7056\n7225\n7396\n7569\n7744\n7921\n8100\n8281\n8464\n8649\n8836\n9025\n9216\n9409\n9604\n9801\n10000\n10201\n10404\n10609\n10816\n11025\n11236\n11449\n11664\n11881\n12100\n12321\n12544\n12769\n12996\n13225\n13456\n13689\n13924\n14161\n14400\n14641\n14884\n15129\n15376\n15625\n15876\n16129\n16384\n16641\n16900\n17161\n17424\n17689\n17956\n18225\n18496\n18769\n19044\n19321\n19600\n19881\n20164\n20449\n20736\n21025\n21316\n21609\n21904\n22201\n22500\n",
-                    "timestamp": "2025-07-10T11:47:20.516Z"
-                  },
-                  "mysql": {
-                    "code": "gfhfhf",
-                    "input": "",
-                    "languageId": "",
-                    "languageVersion": "mysql",
-                    "output": "",
-                    "timestamp": "2025-07-05T19:08:42.794Z"
-                  },
-                  "php": {
-                    "code": "<?php\r\nfor ($i = 1; $i <= 200; $i++) {\r\n    echo $i . \"\\n\";\r\n}\r\n?>\r\n",
-                    "input": "Hariesh",
-                    "languageId": "68",
-                    "languageVersion": "PHP 7.4.19",
-                    "output": "1\n2\n3\n4\n5\n6\n7\n8\n9\n10\n11\n12\n13\n14\n15\n16\n17\n18\n19\n20\n21\n22\n23\n24\n25\n26\n27\n28\n29\n30\n31\n32\n33\n34\n35\n36\n37\n38\n39\n40\n41\n42\n43\n44\n45\n46\n47\n48\n49\n50\n51\n52\n53\n54\n55\n56\n57\n58\n59\n60\n61\n62\n63\n64\n65\n66\n67\n68\n69\n70\n71\n72\n73\n74\n75\n76\n77\n78\n79\n80\n81\n82\n83\n84\n85\n86\n87\n88\n89\n90\n91\n92\n93\n94\n95\n96\n97\n98\n99\n100\n101\n102\n103\n104\n105\n106\n107\n108\n109\n110\n111\n112\n113\n114\n115\n116\n117\n118\n119\n120\n121\n122\n123\n124\n125\n126\n127\n128\n129\n130\n131\n132\n133\n134\n135\n136\n137\n138\n139\n140\n141\n142\n143\n144\n145\n146\n147\n148\n149\n150\n151\n152\n153\n154\n155\n156\n157\n158\n159\n160\n161\n162\n163\n164\n165\n166\n167\n168\n169\n170\n171\n172\n173\n174\n175\n176\n177\n178\n179\n180\n181\n182\n183\n184\n185\n186\n187\n188\n189\n190\n191\n192\n193\n194\n195\n196\n197\n198\n199\n200\n",
-                    "timestamp": "2025-07-05T18:48:44.223Z"
-                  },
-                  "python": {
-                    "code": "print(\"Hello\")",
-                    "input": "",
-                    "languageId": "71",
-                    "languageVersion": "Python 3.8.1",
-                    "output": "Hello\n",
-                    "timestamp": "2025-07-15T05:42:11.123Z"
-                  },
-                  "ruby": {
-                    "code": "# main.rb\r\nname = gets.chomp\r\nputs \"Hello, #{name}!\"\r\n",
-                    "input": "Hariesh",
-                    "languageId": "72",
-                    "languageVersion": "Ruby 2.7.2",
-                    "output": "Hello, Hariesh!\n",
-                    "timestamp": "2025-07-05T17:47:07.387Z"
-                  },
-                  "sqlite": {
-                    "code": "-- Create a new table\r\nCREATE TABLE students (\r\n    id INTEGER PRIMARY KEY,\r\n    name TEXT NOT NULL,\r\n    age INTEGER,\r\n    grade TEXT\r\n);\r\n\r\n-- Insert some sample data\r\nINSERT INTO students (name, age, grade) VALUES ('Alice', 20, 'A');\r\nINSERT INTO students (name, age, grade) VALUES ('Bob', 22, 'B');\r\nINSERT INTO students (name, age, grade) VALUES ('Charlie', 21, 'A');\r\n\r\n-- Query all students\r\nSELECT * FROM students;\r\n\r\n-- Query students with grade 'A'\r\nSELECT name FROM students WHERE grade = 'A';\r\n\r\n-- Update a student's grade\r\nUPDATE students SET grade = 'A+' WHERE name = 'Bob';\r\n\r\n-- Delete a student\r\nDELETE FROM students WHERE name = 'Charlie';\r\n\r\n-- Final check\r\nSELECT * FROM students;\r\n",
-                    "input": "",
-                    "languageId": "82",
-                    "languageVersion": "SQLite 3.31.1",
-                    "output": "Result 1:\nid | name | age | grade\n-----------------------\n1 | Alice | 20 | A\n2 | Bob | 22 | A+\n\nResult 2:\nname\n----\nAlice\n\nResult 3:\nid | name | age | grade\n-----------------------\n1 | Alice | 20 | A\n2 | Bob | 22 | A+",
-                    "timestamp": "2025-07-05T18:51:34.522Z"
-                  }
-                },
-                "title": "xompiler"
-              }
-            }
-          },
-          "h3": {
-            "heading": "sdf",
-            "pcount": 0
-          },
-          "h4": {
-            "heading": "tcs",
-            "pcount": 1,
-            "problems": {
-              "p1": {
-                "title": "fuck"
-              }
-            }
-          },
-          "h5": {
-            "heading": "Guru",
-            "pcount": 1,
-            "problems": {
-              "p1": {
-                "problemData": {
-                  "constraints": [
-                    "2 <= nums.length <= 104",
-                    "-109 <= nums[i] <= 109",
-                    "-109 <= target <= 109",
-                    "Only one valid answer exists."
-                  ],
-                  "createdAt": "2025-07-11T12:52:34.472Z",
-                  "description": "Given an array of integers nums and an integer target, return indices of the two numbers such that they add up to target.\nYou may assume that each input would have exactly one solution, and you may not use the same element twice.\nYou can return the answer in any order.",
-                  "difficulty": "Easy",
-                  "examples": [
-                    {
-                      "lines": [
-                        "Input: nums = [2,7,11,15], target = 9",
-                        "Output: [0,1]",
-                        "Explanation: Because nums[0] + nums[1] == 9, we return [0, 1]."
-                      ],
-                      "title": "Example 1:"
-                    },
-                    {
-                      "lines": [
-                        "Input: nums = [3,2,4], target = 6",
-                        "Output: [1,2]"
-                      ],
-                      "title": "Example 2:"
-                    },
-                    {
-                      "lines": [
-                        "Input: nums = [3,3], target = 6",
-                        "Output: [0,1]"
-                      ],
-                      "title": "Example 3:"
-                    }
-                  ],
-                  "followup": "",
-                  "site": "leetcode",
-                  "title": "1. Two Sum",
-                  "topics": [
-                    "Array",
-                    "Hash Table"
-                  ]
-                },
-                "solutions": {
-                  "python": {
-                    "code": "# Swap function\r\ndef swapList(list):\r\n    \r\n    # Storing the first and last element \r\n    # as a pair in a tuple variabsdle get\r\n    get = list[-1], list[0]\r\n    \r\n    # unpacking those elements\r\n    list[0], list[-1] = get\r\n    \r\n    return list\r\n    \r\n# Driver code\r\nnewList = [12, 35, 9, 56, 24]\r\nprint(swapList(newList))",
-                    "input": "",
-                    "languageId": "71",
-                    "languageVersion": "Python 3.8.1",
-                    "output": "",
-                    "timestamp": "2025-07-15T04:51:05.795Z"
-                  }
-                },
-                "title": "Shit"
-              }
-            }
-          },
-          "h6": {
-            "heading": "Java Basics",
-            "pcount": 3,
-            "problems": {
-              "p1": {
-                "solutions": {
-                  "java": {
-                    "code": "// This is the name of the class. Java programs must be inside a class.\r\n//Filename of the program should be same as this class name for example here this Filename should be Main.java\r\npublic class Main {\r\n\r\n    // This is the main method - the entry point of any Java program.\r\n    public static void main(String[] args) {\r\n\r\n        // Your code starts here\r\n        System.out.println(\"Hello, Java!\"); // This prints text to the screen\r\n\r\n    }\r\n}\r\n",
-                    "input": "",
-                    "languageId": "62",
-                    "languageVersion": "Java (OpenJDK 13.0.1)",
-                    "output": "Hello, Java!\n",
-                    "timestamp": "2025-07-14T13:28:29.700Z"
-                  }
-                },
-                "title": "1. Hello World in Java - Java Basics"
-              },
-              "p2": {
-                "solutions": {
-                  "java": {
-                    "code": "// Importing Scanner class to read input from the user\r\nimport java.util.Scanner;\r\n\r\n\r\npublic class Main {\r\n    public static void main(String[] args) {\r\n\r\n        // Creating a Scanner object to read input\r\n        Scanner scan = new Scanner(System.in);\r\n\r\n        // Reading an integer value from the user\r\n        int x = scan.nextInt();\r\n\r\n        // Printing the input value using string concatenation\r\n        System.out.println(\"The value is \" + x + \".\");\r\n    }\r\n}\r\n",
-                    "input": "5",
-                    "languageId": "62",
-                    "languageVersion": "Java (OpenJDK 13.0.1)",
-                    "output": "The value is 5.\n",
-                    "timestamp": "2025-07-14T13:47:18.188Z"
-                  }
-                },
-                "title": "2. Input/Output in Java - Java Basics"
-              },
-              "p3": {
-                "title": "3. Reading an Integer in Java - Java Basics"
-              }
-            }
-          },
-          "h7": {
-            "heading": "sdfdsf",
-            "pcount": 0
-          }
-        }
-      }
-    },
-    "iOsAObuFKlfEdtdAd1NtSEGnnAj1": {
-      "config": {
-        "judge0Key": "009ec64d36mshebee8defed7ea35p115ef9jsnb1b6ce3aa962",
-        "renderUrl": "https://compiler-backend-x97q.onrender.com"
-      },
-      "savedcodes": {
-        "hcount": 7,
-        "headings": {
-          "h1": {
-            "heading": "Random Problems",
-            "pcount": 3,
-            "problems": {
-              "p1": {
-                "problemData": {
-                  "constraints": [
-                    "nums1.length == m",
-                    "nums2.length == n",
-                    "0 <= m <= 1000",
-                    "0 <= n <= 1000",
-                    "1 <= m + n <= 2000",
-                    "-106 <= nums1[i], nums2[i] <= 106",
-                    "Seen this question in a real interview before?"
-                  ],
-                  "createdAt": "2025-07-08T12:26:24.720Z",
-                  "description": "Given two sorted arrays nums1 and nums2 of size m and n respectively, return the median of the two sorted arrays.\nThe overall run time complexity should be O(log (m+n)).",
-                  "difficulty": "Hard",
-                  "examples": [
-                    {
-                      "lines": [
-                        "Input: nums1 = [1,3], nums2 = [2]",
-                        "Output: 2.00000",
-                        "Explanation: merged array = [1,2,3] and median is 2."
-                      ],
-                      "title": "Example 1:"
-                    },
-                    {
-                      "lines": [
-                        "Input: nums1 = [1,2], nums2 = [3,4]",
-                        "Output: 2.50000",
-                        "Explanation: merged array = [1,2,3,4] and median is (2 + 3) / 2 = 2.5."
-                      ],
-                      "title": "Example 2:"
-                    }
-                  ],
-                  "followup": "",
-                  "site": "leetcode",
-                  "title": "4. Median of Two Sorted Arrays",
-                  "topics": [
-                    "Array",
-                    "Binary Search",
-                    "Divide and Conquer"
-                  ]
-                },
-                "solutions": {
-                  "cpp": {
-                    "code": "#include<iostream>\r\nint main(){\r\n    int x;\r\n    std::cin>>x;\r\n    std::cout<<x+100;\r\n\r\n}",
-                    "input": "515",
-                    "languageId": "54",
-                    "languageVersion": "C++ (GCC 9.2.0)",
-                    "output": "615",
-                    "timestamp": "2025-07-03T18:54:57.542Z"
-                  },
-                  "java": {
-                    "code": "import java.util.Scanner;\r\n\r\npublic class Main {\r\n    public static void main(String[] args) {\r\n        Scanner sc = new Scanner(System.in);\r\n\r\n        // Read an integer\r\n        int a = sc.nextInt();\r\n\r\n        // Read another integer\r\n        int b = sc.nextInt();\r\n\r\n        // Output their sum\r\n        System.out.println(\"Sum: \" + (a + b));\r\n    }\r\n}\r\n",
-                    "input": "5\n100",
-                    "languageId": "62",
-                    "languageVersion": "Java (OpenJDK 13.0.1)",
-                    "output": "Sum: 105\n",
-                    "timestamp": "2025-07-15T09:18:13.349Z"
-                  },
-                  "python": {
-                    "code": "a,b=map(int,input().split())\r\nprint(a+b+10)",
-                    "input": "5 10",
-                    "languageId": "71",
-                    "languageVersion": "Python 3.8.1",
-                    "output": "25\n",
-                    "timestamp": "2025-07-15T09:03:55.179Z"
-                  }
-                },
-                "title": "kel"
-              },
-              "p2": {
-                "solutions": {
-                  "python": {
-                    "code": "print(\"Hello\")",
-                    "input": "3\n1\n1\n1\n1\n0\n1\n2\n",
-                    "languageId": "71",
-                    "languageVersion": "Python 3.8.1",
-                    "output": "Hello\n",
-                    "timestamp": "2025-07-15T07:04:02.832Z"
-                  }
-                },
-                "title": "hello"
-              },
-              "p3": {
-                "title": "sdf"
-              }
-            }
-          },
-          "h2": {
-            "heading": "xompiler",
-            "pcount": 2,
-            "problems": {
-              "p1": {
-                "title": "sdf"
-              },
-              "p2": {
-                "problemData": {
-                  "constraints": [
-                    "1 ≤ n ≤ 109"
-                  ],
-                  "createdAt": "2025-07-15T05:43:07.690Z",
-                  "description": "Given a number n, determine whether it is a prime number or not.\nNote: A prime number is a number greater than 1 that has no positive divisors other than 1 and itself.",
-                  "difficulty": "easy",
-                  "examples": [
-                    "Input: n = 7\nOutput: true\nExplanation: 7 has exactly two divisors: 1 and 7, making it a prime number.",
-                    "Input: n = 25\nOutput: false\nExplanation: 25 has more than two divisors: 1, 5, and 25, so it is not a prime number.",
-                    "Input: n = 1\nOutput: false\nExplanation: 1 has only one divisor (1 itself), which is not sufficient for it to be considered prime."
-                  ],
-                  "site": "gfg",
-                  "tags": "VMWareAmazonSAP Labs",
-                  "title": "Prime Number"
-                },
-                "solutions": {
-                  "c": {
-                    "code": "#include <stdio.h>\r\n\r\nint main() {\r\n    for (int i = 1; i <= 5; i++) {\r\n        printf(\"%d\\n\", i*i);\r\n    }\r\n    return 0;\r\n}\r\n",
-                    "input": "",
-                    "languageId": "50",
-                    "languageVersion": "C (GCC 9.4.0)",
-                    "output": "1\n4\n9\n16\n25\n",
-                    "timestamp": "2025-07-05T19:12:53.492Z"
-                  },
-                  "cpp": {
-                    "code": "#include <iostream>\r\nusing namespace std;\r\n\r\nint main() {\r\n    for (int i = 1; i <= 150; i++) {\r\n        cout << i*i << endl;\r\n    }\r\n    return 0;\r\n}\r\n",
-                    "input": "156",
-                    "languageId": "54",
-                    "languageVersion": "C++ (GCC 9.2.0)",
-                    "output": "1\n4\n9\n16\n25\n36\n49\n64\n81\n100\n121\n144\n169\n196\n225\n256\n289\n324\n361\n400\n441\n484\n529\n576\n625\n676\n729\n784\n841\n900\n961\n1024\n1089\n1156\n1225\n1296\n1369\n1444\n1521\n1600\n1681\n1764\n1849\n1936\n2025\n2116\n2209\n2304\n2401\n2500\n2601\n2704\n2809\n2916\n3025\n3136\n3249\n3364\n3481\n3600\n3721\n3844\n3969\n4096\n4225\n4356\n4489\n4624\n4761\n4900\n5041\n5184\n5329\n5476\n5625\n5776\n5929\n6084\n6241\n6400\n6561\n6724\n6889\n7056\n7225\n7396\n7569\n7744\n7921\n8100\n8281\n8464\n8649\n8836\n9025\n9216\n9409\n9604\n9801\n10000\n10201\n10404\n10609\n10816\n11025\n11236\n11449\n11664\n11881\n12100\n12321\n12544\n12769\n12996\n13225\n13456\n13689\n13924\n14161\n14400\n14641\n14884\n15129\n15376\n15625\n15876\n16129\n16384\n16641\n16900\n17161\n17424\n17689\n17956\n18225\n18496\n18769\n19044\n19321\n19600\n19881\n20164\n20449\n20736\n21025\n21316\n21609\n21904\n22201\n22500\n",
-                    "timestamp": "2025-07-15T05:42:23.100Z"
-                  },
-                  "go": {
-                    "code": "package main\r\n\r\nimport \"fmt\"\r\n\r\nfunc main() {\r\n\tfor i := 1; i <= 200; i++ {\r\n\t\tfmt.Println(i)\r\n\t}\r\n}\r\n",
-                    "input": "",
-                    "languageId": "60",
-                    "languageVersion": "go",
-                    "output": "1\n2\n3\n4\n5\n6\n7\n8\n9\n10\n11\n12\n13\n14\n15\n16\n17\n18\n19\n20\n21\n22\n23\n24\n25\n26\n27\n28\n29\n30\n31\n32\n33\n34\n35\n36\n37\n38\n39\n40\n41\n42\n43\n44\n45\n46\n47\n48\n49\n50\n51\n52\n53\n54\n55\n56\n57\n58\n59\n60\n61\n62\n63\n64\n65\n66\n67\n68\n69\n70\n71\n72\n73\n74\n75\n76\n77\n78\n79\n80\n81\n82\n83\n84\n85\n86\n87\n88\n89\n90\n91\n92\n93\n94\n95\n96\n97\n98\n99\n100\n101\n102\n103\n104\n105\n106\n107\n108\n109\n110\n111\n112\n113\n114\n115\n116\n117\n118\n119\n120\n121\n122\n123\n124\n125\n126\n127\n128\n129\n130\n131\n132\n133\n134\n135\n136\n137\n138\n139\n140\n141\n142\n143\n144\n145\n146\n147\n148\n149\n150\n151\n152\n153\n154\n155\n156\n157\n158\n159\n160\n161\n162\n163\n164\n165\n166\n167\n168\n169\n170\n171\n172\n173\n174\n175\n176\n177\n178\n179\n180\n181\n182\n183\n184\n185\n186\n187\n188\n189\n190\n191\n192\n193\n194\n195\n196\n197\n198\n199\n200",
-                    "timestamp": "2025-07-05T18:53:54.608Z"
-                  },
-                  "java": {
-                    "code": "public class Main {\r\n    public static void main(String[] args) {\r\n        for (int i = 1; i <= 150; i++) {\r\n            System.out.println(i*i);\r\n        }\r\n    }\r\n}\r\n",
-                    "input": "10 20",
-                    "languageId": "62",
-                    "languageVersion": "Java (OpenJDK 13.0.1)",
-                    "output": "1\n4\n9\n16\n25\n36\n49\n64\n81\n100\n121\n144\n169\n196\n225\n256\n289\n324\n361\n400\n441\n484\n529\n576\n625\n676\n729\n784\n841\n900\n961\n1024\n1089\n1156\n1225\n1296\n1369\n1444\n1521\n1600\n1681\n1764\n1849\n1936\n2025\n2116\n2209\n2304\n2401\n2500\n2601\n2704\n2809\n2916\n3025\n3136\n3249\n3364\n3481\n3600\n3721\n3844\n3969\n4096\n4225\n4356\n4489\n4624\n4761\n4900\n5041\n5184\n5329\n5476\n5625\n5776\n5929\n6084\n6241\n6400\n6561\n6724\n6889\n7056\n7225\n7396\n7569\n7744\n7921\n8100\n8281\n8464\n8649\n8836\n9025\n9216\n9409\n9604\n9801\n10000\n10201\n10404\n10609\n10816\n11025\n11236\n11449\n11664\n11881\n12100\n12321\n12544\n12769\n12996\n13225\n13456\n13689\n13924\n14161\n14400\n14641\n14884\n15129\n15376\n15625\n15876\n16129\n16384\n16641\n16900\n17161\n17424\n17689\n17956\n18225\n18496\n18769\n19044\n19321\n19600\n19881\n20164\n20449\n20736\n21025\n21316\n21609\n21904\n22201\n22500\n",
-                    "timestamp": "2025-07-10T11:47:20.516Z"
-                  },
-                  "mysql": {
-                    "code": "gfhfhf",
-                    "input": "",
-                    "languageId": "",
-                    "languageVersion": "mysql",
-                    "output": "",
-                    "timestamp": "2025-07-05T19:08:42.794Z"
-                  },
-                  "php": {
-                    "code": "<?php\r\nfor ($i = 1; $i <= 200; $i++) {\r\n    echo $i . \"\\n\";\r\n}\r\n?>\r\n",
-                    "input": "Hariesh",
-                    "languageId": "68",
-                    "languageVersion": "PHP 7.4.19",
-                    "output": "1\n2\n3\n4\n5\n6\n7\n8\n9\n10\n11\n12\n13\n14\n15\n16\n17\n18\n19\n20\n21\n22\n23\n24\n25\n26\n27\n28\n29\n30\n31\n32\n33\n34\n35\n36\n37\n38\n39\n40\n41\n42\n43\n44\n45\n46\n47\n48\n49\n50\n51\n52\n53\n54\n55\n56\n57\n58\n59\n60\n61\n62\n63\n64\n65\n66\n67\n68\n69\n70\n71\n72\n73\n74\n75\n76\n77\n78\n79\n80\n81\n82\n83\n84\n85\n86\n87\n88\n89\n90\n91\n92\n93\n94\n95\n96\n97\n98\n99\n100\n101\n102\n103\n104\n105\n106\n107\n108\n109\n110\n111\n112\n113\n114\n115\n116\n117\n118\n119\n120\n121\n122\n123\n124\n125\n126\n127\n128\n129\n130\n131\n132\n133\n134\n135\n136\n137\n138\n139\n140\n141\n142\n143\n144\n145\n146\n147\n148\n149\n150\n151\n152\n153\n154\n155\n156\n157\n158\n159\n160\n161\n162\n163\n164\n165\n166\n167\n168\n169\n170\n171\n172\n173\n174\n175\n176\n177\n178\n179\n180\n181\n182\n183\n184\n185\n186\n187\n188\n189\n190\n191\n192\n193\n194\n195\n196\n197\n198\n199\n200\n",
-                    "timestamp": "2025-07-05T18:48:44.223Z"
-                  },
-                  "python": {
-                    "code": "print(\"Hello\")",
-                    "input": "",
-                    "languageId": "71",
-                    "languageVersion": "Python 3.8.1",
-                    "output": "Hello\n",
-                    "timestamp": "2025-07-15T05:42:11.123Z"
-                  },
-                  "ruby": {
-                    "code": "# main.rb\r\nname = gets.chomp\r\nputs \"Hello, #{name}!\"\r\n",
-                    "input": "Hariesh",
-                    "languageId": "72",
-                    "languageVersion": "Ruby 2.7.2",
-                    "output": "Hello, Hariesh!\n",
-                    "timestamp": "2025-07-05T17:47:07.387Z"
-                  },
-                  "sqlite": {
-                    "code": "-- Create a new table\r\nCREATE TABLE students (\r\n    id INTEGER PRIMARY KEY,\r\n    name TEXT NOT NULL,\r\n    age INTEGER,\r\n    grade TEXT\r\n);\r\n\r\n-- Insert some sample data\r\nINSERT INTO students (name, age, grade) VALUES ('Alice', 20, 'A');\r\nINSERT INTO students (name, age, grade) VALUES ('Bob', 22, 'B');\r\nINSERT INTO students (name, age, grade) VALUES ('Charlie', 21, 'A');\r\n\r\n-- Query all students\r\nSELECT * FROM students;\r\n\r\n-- Query students with grade 'A'\r\nSELECT name FROM students WHERE grade = 'A';\r\n\r\n-- Update a student's grade\r\nUPDATE students SET grade = 'A+' WHERE name = 'Bob';\r\n\r\n-- Delete a student\r\nDELETE FROM students WHERE name = 'Charlie';\r\n\r\n-- Final check\r\nSELECT * FROM students;\r\n",
-                    "input": "",
-                    "languageId": "82",
-                    "languageVersion": "SQLite 3.31.1",
-                    "output": "Result 1:\nid | name | age | grade\n-----------------------\n1 | Alice | 20 | A\n2 | Bob | 22 | A+\n\nResult 2:\nname\n----\nAlice\n\nResult 3:\nid | name | age | grade\n-----------------------\n1 | Alice | 20 | A\n2 | Bob | 22 | A+",
-                    "timestamp": "2025-07-05T18:51:34.522Z"
-                  }
-                },
-                "title": "xompiler"
-              }
-            }
-          },
-          "h3": {
-            "heading": "sdf",
-            "pcount": 0
-          },
-          "h4": {
-            "heading": "tcs",
-            "pcount": 1,
-            "problems": {
-              "p1": {
-                "title": "fuck"
-              }
-            }
-          },
-          "h5": {
-            "heading": "Guru",
-            "pcount": 1,
-            "problems": {
-              "p1": {
-                "problemData": {
-                  "constraints": [
-                    "2 <= nums.length <= 104",
-                    "-109 <= nums[i] <= 109",
-                    "-109 <= target <= 109",
-                    "Only one valid answer exists."
-                  ],
-                  "createdAt": "2025-07-11T12:52:34.472Z",
-                  "description": "Given an array of integers nums and an integer target, return indices of the two numbers such that they add up to target.\nYou may assume that each input would have exactly one solution, and you may not use the same element twice.\nYou can return the answer in any order.",
-                  "difficulty": "Easy",
-                  "examples": [
-                    {
-                      "lines": [
-                        "Input: nums = [2,7,11,15], target = 9",
-                        "Output: [0,1]",
-                        "Explanation: Because nums[0] + nums[1] == 9, we return [0, 1]."
-                      ],
-                      "title": "Example 1:"
-                    },
-                    {
-                      "lines": [
-                        "Input: nums = [3,2,4], target = 6",
-                        "Output: [1,2]"
-                      ],
-                      "title": "Example 2:"
-                    },
-                    {
-                      "lines": [
-                        "Input: nums = [3,3], target = 6",
-                        "Output: [0,1]"
-                      ],
-                      "title": "Example 3:"
-                    }
-                  ],
-                  "followup": "",
-                  "site": "leetcode",
-                  "title": "1. Two Sum",
-                  "topics": [
-                    "Array",
-                    "Hash Table"
-                  ]
-                },
-                "solutions": {
-                  "python": {
-                    "code": "# Swap function\r\ndef swapList(list):\r\n    \r\n    # Storing the first and last element \r\n    # as a pair in a tuple variabsdle get\r\n    get = list[-1], list[0]\r\n    \r\n    # unpacking those elements\r\n    list[0], list[-1] = get\r\n    \r\n    return list\r\n    \r\n# Driver code\r\nnewList = [12, 35, 9, 56, 24]\r\nprint(swapList(newList))",
-                    "input": "",
-                    "languageId": "71",
-                    "languageVersion": "Python 3.8.1",
-                    "output": "",
-                    "timestamp": "2025-07-15T04:51:05.795Z"
-                  }
-                },
-                "title": "Shit"
-              }
-            }
-          },
-          "h6": {
-            "heading": "Java Basics",
-            "pcount": 3,
-            "problems": {
-              "p1": {
-                "solutions": {
-                  "java": {
-                    "code": "// This is the name of the class. Java programs must be inside a class.\r\n//Filename of the program should be same as this class name for example here this Filename should be Main.java\r\npublic class Main {\r\n\r\n    // This is the main method - the entry point of any Java program.\r\n    public static void main(String[] args) {\r\n\r\n        // Your code starts here\r\n        System.out.println(\"Hello, Java!\"); // This prints text to the screen\r\n\r\n    }\r\n}\r\n",
-                    "input": "",
-                    "languageId": "62",
-                    "languageVersion": "Java (OpenJDK 13.0.1)",
-                    "output": "Hello, Java!\n",
-                    "timestamp": "2025-07-14T13:28:29.700Z"
-                  }
-                },
-                "title": "1. Hello World in Java - Java Basics"
-              },
-              "p2": {
-                "solutions": {
-                  "java": {
-                    "code": "// Importing Scanner class to read input from the user\r\nimport java.util.Scanner;\r\n\r\n\r\npublic class Main {\r\n    public static void main(String[] args) {\r\n\r\n        // Creating a Scanner object to read input\r\n        Scanner scan = new Scanner(System.in);\r\n\r\n        // Reading an integer value from the user\r\n        int x = scan.nextInt();\r\n\r\n        // Printing the input value using string concatenation\r\n        System.out.println(\"The value is \" + x + \".\");\r\n    }\r\n}\r\n",
-                    "input": "5",
-                    "languageId": "62",
-                    "languageVersion": "Java (OpenJDK 13.0.1)",
-                    "output": "The value is 5.\n",
-                    "timestamp": "2025-07-14T13:47:18.188Z"
-                  }
-                },
-                "title": "2. Input/Output in Java - Java Basics"
-              },
-              "p3": {
-                "title": "3. Reading an Integer in Java - Java Basics"
-              }
-            }
-          },
-          "h7": {
-            "heading": "sdfdsf",
-            "pcount": 0
-          }
-        }
-      }
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Code Container - Login</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="index.css">
+
+  <!-- Firebase -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
+</head>
+<body>
+  <div class="branding">Code Container</div>
+
+  <div class="login-container">
+    <img src="https://img.icons8.com/ios-filled/100/code.png" alt="Logo" class="logo" />
+    <h2>Welcome Back</h2>
+    <input type="email" id="username" placeholder="Email" />
+    <input type="password" id="password" placeholder="Password" />
+    <button id="loginBtn">Login</button>
+    <div id="loginError" style="display:none; color:red;">Invalid credentials</div>
+  </div>
+
+ <script>
+  const loginBtn = document.getElementById('loginBtn');
+  const usernameEl = document.getElementById('username');
+  const passwordEl = document.getElementById('password');
+  const errorEl = document.getElementById('loginError');
+
+  // ✅ Only one Firebase config
+  const firebaseConfig = {
+    apiKey: "AIzaSyDDfMZ8pr7RfvaWCS3v0BaelPnAcRknn5c",
+    authDomain: "mycodes-f9798.firebaseapp.com",
+    databaseURL: "https://mycodes-f9798-default-rtdb.firebaseio.com",
+    projectId: "mycodes-f9798",
+    storageBucket: "mycodes-f9798.appspot.com",
+    messagingSenderId: "709454901938",
+    appId: "1:709454901938:web:aad7896ed3f7ecb17a4fab",
+    measurementId: "G-QMQQQ0SH3E"
+  };
+
+  // Initialize Firebase once
+  if (!firebase.apps.length) {
+    firebase.initializeApp(firebaseConfig);
+  }
+
+  async function attemptLogin() {
+    const email = usernameEl.value.trim();
+    const password = passwordEl.value.trim();
+
+    loginBtn.textContent = "Logging in...";
+    loginBtn.disabled = true;
+    errorEl.style.display = 'none';
+
+    try {
+      const userCredential = await firebase.auth().signInWithEmailAndPassword(email, password);
+      const uid = userCredential.user.uid;
+
+      const db = firebase.database();
+      const snapshot = await db.ref(`users/${uid}`).get();
+      const userData = snapshot.val();
+
+      if (!userData) throw new Error("User data not found in database");
+
+      // ✅ Save session data
+      sessionStorage.setItem("uid", uid);
+      sessionStorage.setItem("firebaseConfig", JSON.stringify(firebaseConfig));
+      sessionStorage.setItem("username", userData.username || email);
+      sessionStorage.setItem("dbPrefix", "savedcodes");
+      sessionStorage.setItem("judge0Key", userData.config?.judge0Key || "");
+      sessionStorage.setItem("renderurl", userData.config?.renderUrl || "");
+      sessionStorage.setItem("repliturl", userData.config?.replitUrl || "");
+
+      window.location.href = "main.html";
+    } catch (error) {
+      console.error("Login failed:", error);
+      errorEl.textContent = "Login failed: " + (error.message || "Invalid credentials");
+      errorEl.style.display = 'block';
+      loginBtn.textContent = "Login";
+      loginBtn.disabled = false;
     }
   }
-}
+
+  loginBtn.addEventListener('click', attemptLogin);
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') attemptLogin();
+  });
+</script>
+
+</body>
+</html>
