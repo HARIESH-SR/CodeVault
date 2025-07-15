@@ -15,19 +15,21 @@ function saveProblemData() {
     return;
   }
 
+  const uid = sessionStorage.getItem("uid");
   const hKey = sessionStorage.getItem("hKey");
-    const pKey = sessionStorage.getItem("pKey");
-    const dbPrefix = sessionStorage.getItem("dbPrefix") || "savedcodes";
+  const pKey = sessionStorage.getItem("pKey");
+  const dbPrefix = sessionStorage.getItem("dbPrefix") || "savedcodes";
 
-
-    const path = `${dbPrefix}/headings/${hKey}/problems/${pKey}`;
-
-  if (!hKey || !pKey) {
-    alert("Missing stepKey/subKey/probKey. Cannot save.");
+  if (!uid || !hKey || !pKey) {
+    alert("Missing UID/hKey/pKey. Please try again.");
     return;
   }
 
-  db.ref(path).update(window.parsedProblemData)
+  const path = `users/${uid}/${dbPrefix}/headings/${hKey}/problems/${pKey}/problemData`;
+  console.log("Session UID:", sessionStorage.getItem("uid"));
+console.log("Auth UID:", firebase.auth().currentUser?.uid);
+  db.ref(path)
+    .set(window.parsedProblemData.problemData)
     .then(() => alert("✅ Problem saved to database"))
     .catch(err => alert("❌ Error saving problem: " + err.message));
 }
