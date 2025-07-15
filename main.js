@@ -475,7 +475,7 @@ window.editSolution = function (hKey, pKey) {
         sessionStorage.setItem("hKey", hKey);
         sessionStorage.setItem("pKey", pKey);
 
-        window.open("solution.html");
+        window.location.href = "solution.html"; // ← open in same tab
     });
 };
 
@@ -660,7 +660,7 @@ window.insertProblemAbove = async function(hKey, pKey) {
     sessionStorage.setItem("hKey", hKey);
     sessionStorage.setItem("pKey", newKey);
 
-    window.open("solution.html");
+    window.location.href = "solution.html"; // ← open in same tab
   } catch (err) {
     console.error("Error inserting problem above:", err);
     alert("Failed to insert problem.");
