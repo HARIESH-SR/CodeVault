@@ -20,7 +20,6 @@ if (!uid) {
 firebase.initializeApp(firebaseConfig);
 firebase.auth().onAuthStateChanged((user) => {
   if (!user || user.uid !== uid) {
-    alert("Not authenticated. Please log in again.");
     window.location.href = "index.html";
   }
 });
