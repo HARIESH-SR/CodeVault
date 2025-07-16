@@ -204,8 +204,13 @@
 
       try {
         const userCredential = await firebase.auth().createUserWithEmailAndPassword(email, password);
-        const uid = userCredential.user.uid;
+        const user = userCredential.user;
+        const uid = user.uid;
 
+        // Send email verification
+        await user.sendEmailVerification();
+
+        // Save user data in database
         await firebase.database().ref(`users/${uid}`).set({
           username: username || email,
           createdAt: new Date().toISOString(),
@@ -216,30 +221,31 @@
           }
         });
 
-        alert("✅ Account created successfully. You can now log in!");
+        alert("✅ Account created successfully.\n\nWe've sent a verification link to your email. Please verify it before logging in.");
+
         window.location.href = "index.html";
       } catch (error) {
-  console.error("Signup error:", error);
+          console.error("Signup error:", error);
 
-  let msg = "Something went wrong. Please try again.";
+          let msg = "Something went wrong. Please try again.";
 
-  switch (error.code) {
-    case "auth/email-already-in-use":
-      msg = "This email is already registered.";
-      break;
-    case "auth/invalid-email":
-      msg = "Please enter a valid email address.";
-      break;
-    case "auth/weak-password":
-      msg = "Password should be at least 6 characters.";
-      break;
-    case "auth/network-request-failed":
-      msg = "Network error. Check your internet connection.";
-      break;
-    case "auth/too-many-requests":
-      msg = "Too many attempts. Try again later.";
-      break;
-    // You can add more cases if needed
+          switch (error.code) {
+            case "auth/email-already-in-use":
+              msg = "This email is already registered.";
+              break;
+            case "auth/invalid-email":
+              msg = "Please enter a valid email address.";
+              break;
+            case "auth/weak-password":
+              msg = "Password should be at least 6 characters.";
+              break;
+            case "auth/network-request-failed":
+              msg = "Network error. Check your internet connection.";
+              break;
+            case "auth/too-many-requests":
+              msg = "Too many attempts. Try again later.";
+              break;
+            // You can add more cases if needed
   }
 
   signupError.textContent = msg;
