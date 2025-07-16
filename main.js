@@ -134,20 +134,6 @@ window.deleteProblem = async function(hKey, pKey) {
 };
 
 
-onAuthStateChanged(auth, user => {
-  if (user) {
-    const uid = user.uid;
-    dbPrefix = `users/${uid}/savedcodes`;       // ✅ Set dbPrefix here
-    window.dbPrefix = dbPrefix;                 // ✅ Optional: expose globally
-    renderSavedCodes();                         // ✅ Now safe to use
-  } else {
-    alert("Not logged in. Redirecting to login.");
-    window.location.href = "index.html";
-  }
-});
-
-
-
 
 const username = sessionStorage.getItem("username") || "Guest";
 document.getElementById("usernameDisplay").textContent = `👤 ${username}`;
@@ -555,7 +541,7 @@ onAuthStateChanged(auth, user => {
 
     renderSavedCodes();
   } else {
-    alert("Not logged in. Redirecting to login.");
+ 
     window.location.href = "index.html";
   }
 });
