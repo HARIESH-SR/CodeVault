@@ -36,7 +36,7 @@
   // ✅ Check if email is verified
         if (!user.emailVerified) {
             await firebase.auth().signOut();
-            errorEl.textContent = "We've sent a verification link to your email. Please verify it before logging in.\n\n If you don't see it, check your Spam or Promotions folder.";
+            errorEl.textContent = "We've sent a verification link to your email. Please verify it before logging in. If you don't see it, check your Spam or Promotions folder.";
             errorEl.style.display = "block";
             loginBtn.textContent = "Login";
             loginBtn.disabled = false;
