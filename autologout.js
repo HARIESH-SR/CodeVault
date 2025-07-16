@@ -8,6 +8,7 @@ let warningShown = false;
 function resetInactivityTimer() {
   lastInteractionTime = Date.now();
   localStorage.setItem("lastActive", String(lastInteractionTime));
+  localStorage.setItem("activityPing", String(Date.now())); 
 
   // Remove warning if it's visible
   if (warningShown) {
@@ -19,7 +20,10 @@ function resetInactivityTimer() {
 function autoLogout() {
   console.log("⏳ Auto logout initiated.");
   window.skipBeforeUnload = true;
+  if (typeof handleBeforeUnload === "function") {
   window.removeEventListener("beforeunload", handleBeforeUnload);
+}
+
   if (window.renderPingInterval) {
     clearInterval(window.renderPingInterval);
     console.log("🛑 Render ping interval stopped due to auto logout.");
@@ -29,8 +33,14 @@ function autoLogout() {
   localStorage.clear();
   localStorage.setItem(logoutKey, Date.now());
 
-  window.location.href = "index.html";
+
+    window.location.href = "index.html";
+ // 50–100ms is enough
+ auth.signOut().finally(() => {
+    window.location.href = "index.html";
+  });
 }
+window.autoLogout = autoLogout;
 
 
 // ⚠️ Show warning popup
@@ -76,12 +86,37 @@ setInterval(() => {
 }, 30 * 1000); // check every 30 sec
 
 // 🔁 React to logout in other tabs
+// 🔁 React to logout in other tabs
 window.addEventListener("storage", (event) => {
   if (event.key === logoutKey) {
     sessionStorage.clear();
-    window.location.href = "index.html";
+    window.skipBeforeUnload = true;
+    window.onbeforeunload = null;
+
+    if (window.renderPingInterval) {
+      clearInterval(window.renderPingInterval);
+    }
+
+    // 🔐 Sign out if Firebase is initialized
+    try {
+      if (typeof firebase !== "undefined" && firebase.auth) {
+        firebase.auth().signOut().finally(() => {
+          window.location.href = "index.html";
+        });
+      } else {
+        window.location.href = "index.html";
+      }
+    } catch {
+      window.location.href = "index.html";
+    }
+  }
+
+  if (event.key === "activityPing") {
+    hideWarning();
   }
 });
+
+
 
 // 🟢 Start tracking
 resetInactivityTimer();
