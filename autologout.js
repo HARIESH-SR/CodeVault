@@ -1,5 +1,5 @@
-const INACTIVITY_LIMIT = 40 * 60 * 1000; // 40 minutes
-const WARNING_TIME = INACTIVITY_LIMIT - 2 * 60 * 1000; // Show warning after 38 minutes
+const INACTIVITY_LIMIT = 1 * 60 * 1000; // 40 minutes
+const WARNING_TIME = INACTIVITY_LIMIT - 30 * 1000; // Show warning after 38 minutes
 let lastInteractionTime = Date.now();
 const logoutKey = "forceLogout";
 let warningShown = false;
@@ -120,3 +120,57 @@ window.addEventListener("storage", (event) => {
 
 // 🟢 Start tracking
 resetInactivityTimer();
+function manualLogout() {
+  const channel = new BroadcastChannel("logout-channel");
+  let unsavedExists = false;
+  const activeTabs = new Set();
+
+  //alert("🔔 Logout requested, broadcasting unsaved check...");
+
+  // Send check to all tabs
+  channel.postMessage({ type: "checkUnsavedChanges" });
+
+  const handleResponse = (event) => {
+    const { type, hasUnsaved, tabId } = event.data || {};
+    if (type === "unsavedCheckResult" && tabId) {
+      if (!activeTabs.has(tabId)) {
+        activeTabs.add(tabId);
+        if (hasUnsaved) unsavedExists = true;
+       // alert(`📨 Received from ${tabId}: hasUnsaved=${hasUnsaved}`);
+      }
+    }
+  };
+
+  function proceedLogout() {
+    channel.removeEventListener("message", handleResponse);
+
+    if (unsavedExists) {
+      const confirmLogout = confirm("⚠️ Some tabs have unsaved changes. Logout anyway?");
+      if (confirmLogout) {
+       // alert("✅ Logout confirmed despite unsaved changes.");
+        broadcastLogout();
+      } else {
+       // alert("❌ Logout cancelled due to unsaved changes.");
+        localStorage.setItem("logoutCancelled", Date.now());
+      }
+    } else {
+      //alert("✅ No unsaved changes found. Logging out.");
+      broadcastLogout();
+    }
+  }
+
+  function broadcastLogout() {
+    localStorage.setItem("forceLogout", Date.now());
+    autoLogout(); // make sure this exists in scope
+  }
+
+  // Listen for responses from other tabs
+  channel.addEventListener("message", handleResponse);
+
+  // Fallback after 5s
+  setTimeout(() => {
+    //alert("⌛ Timeout reached. Proceeding to logout decision...");
+    proceedLogout();
+  }, 1000);
+}
+window.manualLogout = manualLogout;
