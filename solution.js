@@ -801,3 +801,33 @@ if (e.deltaY !== 0) {
     controls.scrollLeft += e.deltaY;
 }
 }, { passive: false }); // passive:false lets us use preventDefault()
+// Add this to your solution.js file
+// Set up broadcast channel listener for logout coordination
+const logoutChannel = new BroadcastChannel("logout-channel");
+
+// Generate a unique tab ID
+const tabId = `solution-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+
+// Listen for messages from other tabs
+logoutChannel.addEventListener("message", (event) => {
+    const { type } = event.data || {};
+    
+    if (type === "checkUnsavedChanges") {
+        // Check if there are any unsaved changes
+        const hasUnsaved = !isSaved || !isInputSaved || !isOutputSaved;
+        
+        // Respond back to the requesting tab
+        logoutChannel.postMessage({
+            type: "unsavedCheckResult",
+            hasUnsaved: hasUnsaved,
+            tabId: tabId
+        });
+        
+        console.log(`Tab ${tabId} reporting unsaved changes: ${hasUnsaved}`);
+    }
+});
+
+// Optional: Clean up when tab is closed
+window.addEventListener("beforeunload", () => {
+    logoutChannel.close();
+});
