@@ -831,3 +831,547 @@ logoutChannel.addEventListener("message", (event) => {
 window.addEventListener("beforeunload", () => {
     logoutChannel.close();
 });
+/*
+async function askGemini() {
+  const promptInput = document.getElementById("aiPrompt");
+  const prompt = promptInput?.value.trim();
+  const code = window.editor?.getValue() || "";
+
+  if (!prompt) {
+    alert("Please enter a prompt.");
+    return;
+  }
+
+  const fullPrompt = `${prompt}\n\nHere is the code:\n${code}`;
+  const aiResponseBox = document.getElementById("aiResponse");
+  aiResponseBox.innerText = "🤖 Gemini is thinking...";
+
+  const apiKey = "AIzaSyBiwGzVZ1mMCGAOAeKpxCkALctJTBFrE7o"; // Replace with your actual API key
+  const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
+
+  const requestBody = {
+    contents: [{ parts: [{ text: fullPrompt }] }]
+  };
+
+  try {
+    const res = await fetch(url, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "X-goog-api-key": apiKey
+      },
+      body: JSON.stringify(requestBody)
+    });
+
+    const data = await res.json();
+
+    if (!res.ok || data.error) {
+      const errMsg = data?.error?.message || "Unknown error";
+      aiResponseBox.innerText = `❌ ${errMsg}`;
+      return;
+    }
+
+    const result = data?.candidates?.[0]?.content?.parts?.[0]?.text || "⚠️ No response from Gemini.";
+
+    // ✅ Set formatted HTML
+    aiResponseBox.innerHTML = formatGeminiMarkdown(result);
+  } catch (err) {
+    aiResponseBox.innerText = "❌ Network error: " + err.message;
+  }
+}
+*/
+// ✅ Formats markdown to HTML (bold + code blocks)
+function formatGeminiMarkdown(text) {
+  // Convert **bold** to <strong>
+  let html = text.replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>");
+
+  // Convert code blocks: ```lang\n...\n```
+  html = html.replace(/```(\w+)?\n([\s\S]*?)```/g, (match, lang, code) => {
+    const safeCode = code.replace(/</g, "&lt;").replace(/>/g, "&gt;");
+    return `<pre class="code-block"><code class="language-${lang || 'plaintext'}">${safeCode}</code></pre>`;
+  });
+
+  return `<div style="white-space: pre-wrap; line-height: 1.6;">${html}</div>`;
+}
+
+/*
+async function askGemini() {
+  const promptInput = document.getElementById("aiPrompt");
+  const prompt = promptInput?.value.trim();
+  const code = window.editor?.getValue() || "";
+
+  if (!prompt) {
+    alert("Please enter a prompt.");
+    return;
+  }
+
+  const fullPrompt = `${prompt}\n\nHere is the code:\n${code}`;
+  const aiResponseBox = document.getElementById("aiResponse");
+  aiResponseBox.innerText = "🤖 Gemini is thinking...";
+
+  console.log("🟡 Sending prompt to Gemini:", fullPrompt);
+
+  const apiKey = "AIzaSyBiwGzVZ1mMCGAOAeKpxCkALctJTBFrE7o"; // Replace with your real API key
+  const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
+
+  const requestBody = {
+    contents: [
+      {
+        parts: [{ text: fullPrompt }]
+      }
+    ]
+  };
+
+  try {
+    const res = await fetch(url, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "X-goog-api-key": apiKey
+      },
+      body: JSON.stringify(requestBody)
+    });
+
+    const data = await res.json();
+
+    if (!res.ok || data.error) {
+      const errMsg = data?.error?.message || "Unknown error";
+      console.error("❌ Gemini API Error:", data.error);
+      aiResponseBox.innerHTML = `❌ ${errMsg}`;
+      return;
+    }
+
+    const result = data?.candidates?.[0]?.content?.parts?.[0]?.text;
+    console.log("✅ Gemini response:", result);
+
+    aiResponseBox.innerText = cconvertMarkdownToHTML(result) || "⚠️ No response from Gemini.";
+  } catch (err) {
+    console.error("❌ Network error:", err);
+    aiResponseBox.innerText = "❌ Network error: " + err.message;
+  }
+}
+*/
+/*
+async function askGemini() {
+  const promptInput = document.getElementById("aiPrompt");
+  const prompt = promptInput?.value.trim();
+  const code = window.editor?.getValue() || "";
+
+  if (!prompt) {
+    alert("Please enter a prompt.");
+    return;
+  }
+
+  const fullPrompt = `${prompt}\n\nHere is the code:\n${code}`;
+  const aiResponseBox = document.getElementById("aiResponse");
+  aiResponseBox.innerHTML = "🤖 Gemini is thinking...";
+
+  console.log("🟡 Sending prompt to Gemini:", fullPrompt);
+
+  const apiKey = "AIzaSyBiwGzVZ1mMCGAOAeKpxCkALctJTBFrE7o"; // Replace with your actual key
+  const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
+
+  const requestBody = {
+    contents: [{ parts: [{ text: fullPrompt }] }]
+  };
+
+  try {
+    const res = await fetch(url, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "X-goog-api-key": apiKey
+      },
+      body: JSON.stringify(requestBody)
+    });
+
+    const data = await res.json();
+
+    if (!res.ok || data.error) {
+      const errMsg = data?.error?.message || "Unknown error";
+      console.error("❌ Gemini API Error:", data.error);
+      aiResponseBox.innerHTML = `❌ ${errMsg}`;
+      return;
+    }
+
+    const result = data?.candidates?.[0]?.content?.parts?.[0]?.text;
+    console.log("✅ Gemini response:", result);
+
+    aiResponseBox.innerHTML = convertMarkdownToHTML(result || "⚠️ No response from Gemini.");
+  } catch (err) {
+    console.error("❌ Network error:", err);
+    aiResponseBox.innerHTML = "❌ Network error: " + err.message;
+  }
+}
+*/
+async function askGemini() {
+  const promptInput = document.getElementById("aiPrompt");
+  const prompt = promptInput?.value.trim();
+  const code = window.editor?.getValue() || "";
+
+  if (!prompt) {
+    alert("Please enter a prompt.");
+    return;
+  }
+
+  const fullPrompt = `${prompt}\n\nHere is the code:\n${code}`;
+  const aiResponseBox = document.getElementById("aiResponse");
+  aiResponseBox.innerHTML = "🤖 Gemini is thinking...";
+
+  const apiKey = sessionStorage.getItem("geminiApiKey"); // Your Gemini API Key
+  const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
+  const requestBody = {
+    contents: [{ parts: [{ text: fullPrompt }] }]
+  };
+
+  let retries = 4;
+  let delay = 1500; // initial delay in ms
+
+  for (let attempt = 1; attempt <= retries; attempt++) {
+    aiResponseBox.innerHTML = `🤖 Gemini is thinking...<br>⏳ Attempt ${attempt} of ${retries}...`;
+
+    try {
+      const res = await fetch(url, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "X-goog-api-key": apiKey
+        },
+        body: JSON.stringify(requestBody)
+      });
+
+      const data = await res.json();
+
+      if (!res.ok || data.error) {
+        const errMsg = data?.error?.message || "Unknown error";
+        console.warn(`⚠️ Error from Gemini (Attempt ${attempt}):`, errMsg);
+
+        if (errMsg.toLowerCase().includes("overloaded") && attempt < retries) {
+          await new Promise(r => setTimeout(r, delay * attempt));
+          continue;
+        }
+
+        aiResponseBox.innerHTML = `❌ ${errMsg}`;
+        return;
+      }
+
+      const result = data?.candidates?.[0]?.content?.parts?.[0]?.text || "⚠️ Empty response";
+      aiResponseBox.innerHTML = convertMarkdownToHTML(result);
+      return;
+
+    } catch (err) {
+      console.warn(`🌐 Network error (Attempt ${attempt}):`, err.message);
+
+      if (attempt < retries) {
+        aiResponseBox.innerHTML = `🌐 Network error: ${err.message}<br>🔁 Retrying attempt ${attempt + 1}...`;
+        await new Promise(r => setTimeout(r, delay * attempt));
+      } else {
+        aiResponseBox.innerHTML = `❌ Final error after ${retries} attempts:<br>${err.message}`;
+      }
+    }
+  }
+}
+
+// Utility to convert Markdown-ish text to rich HTML
+function convertMarkdownToHTML(markdown) {
+  if (!markdown) return "";
+
+  let html = markdown;
+
+  // Escape HTML inside code blocks
+  function escapeHTML(str) {
+    return str
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;");
+  }
+
+  // Convert fenced code blocks
+  html = html.replace(/```(\w+)?\n([\s\S]*?)```/g, (_, lang, code) => {
+    return `<pre><code class="language-${lang || ''}">${escapeHTML(code)}</code></pre>`;
+  });
+
+  // Convert inline code
+  html = html.replace(/`([^`]+)`/g, "<code>$1</code>");
+
+  // Bold text
+  html = html.replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>");
+
+  // Headings
+  html = html.replace(/^### (.*)$/gim, "<h3>$1</h3>");
+  html = html.replace(/^## (.*)$/gim, "<h2>$1</h2>");
+  html = html.replace(/^# (.*)$/gim, "<h1>$1</h1>");
+
+  // Line breaks
+  html = html.replace(/\n/g, "<br>");
+
+  return html;
+}
+
+// ✅ Helper to convert **bold** to <strong>
+
+
+function escapeHTML(str) {
+  return str.replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;");
+}
+
+/*
+// ✅ Main Gemini ask function
+async function askGemini() {
+  const promptInput = document.getElementById("aiPrompt");
+  const prompt = promptInput?.value.trim();
+  const code = window.editor?.getValue() || "";
+
+  if (!prompt) {
+    alert("Please enter a prompt.");
+    return;
+  }
+
+  const fullPrompt = `${prompt}\n\nHere is the code:\n${code}`;
+  const aiResponseBox = document.getElementById("aiResponse");
+  aiResponseBox.innerText = "🤖 Gemini is thinking...";
+
+  console.log("🟡 Sending prompt to Gemini:", fullPrompt);
+
+  const apiKey = "AIzaSyBiwGzVZ1mMCGAOAeKpxCkALctJTBFrE7o"; // ✅ Replace with your actual API key
+  const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
+
+  const requestBody = {
+    contents: [
+      {
+        parts: [{ text: fullPrompt }]
+      }
+    ]
+  };
+
+  try {
+    const res = await fetch(url, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "X-goog-api-key": apiKey
+      },
+      body: JSON.stringify(requestBody)
+    });
+
+    const data = await res.json();
+
+    if (!res.ok || data.error) {
+      const errMsg = data?.error?.message || "Unknown error";
+      console.error("❌ Gemini API Error:", data.error);
+      aiResponseBox.innerText = `❌ ${errMsg}`;
+      return;
+    }
+
+    const result = data?.candidates?.[0]?.content?.parts?.[0]?.text || "⚠️ No response from Gemini.";
+    console.log("✅ Gemini response:", result);
+
+    const formatted = convertMarkdownToHTML(result);
+    aiResponseBox.innerHTML = `<pre style="white-space: pre-wrap;">${formatted}</pre>`;
+
+  } catch (err) {
+    console.error("❌ Network error:", err);
+    aiResponseBox.innerText = "❌ Network error: " + err.message;
+  }
+}
+*/
+document.addEventListener('click', function(e) {
+  // Copy code
+  if (e.target.classList.contains('copy-code-btn')) {
+    const pre = e.target.parentElement.querySelector('pre code');
+    const code = pre ? pre.innerText : '';
+    if (code) {
+      navigator.clipboard.writeText(code).then(() => {
+        e.target.innerText = 'Copied!';
+        setTimeout(() => { e.target.innerText = 'Copy'; }, 1200);
+      });
+    }
+  }
+  // Copy code to Editor
+  if (e.target.classList.contains('send-to-editor-btn')) {
+    const pre = e.target.parentElement.querySelector('pre code');
+    const code = pre ? pre.innerText : '';
+    if (code && window.editor) {
+      window.editor.setValue(code);
+      e.target.innerText = 'Sent!';
+      setTimeout(() => { e.target.innerText = 'To Editor'; }, 1200);
+    }
+  }
+});
+
+function openGeminiChat() {
+  document.body.classList.add('chat-open');
+  document.getElementById('gemini-chat-panel').classList.add('open');
+  document.getElementById('chat-overlay').style.display = 'block';
+  document.getElementById('chatPromptInput').focus();
+}
+function closeGeminiChat() {
+  document.body.classList.remove('chat-open');
+  document.getElementById('gemini-chat-panel').classList.remove('open');
+  document.getElementById('chat-overlay').style.display = 'none';
+}
+
+// Optional: ESC closes chat for better UX
+document.addEventListener('keydown',function(e){
+  if(e.key==='Escape') closeGeminiChat();
+});
+function openGeminiChat() {
+  document.body.classList.add('chat-open');
+  document.getElementById('gemini-chat-panel').classList.add('open');
+  document.getElementById('chat-overlay').style.display = 'block';
+  document.getElementById('chatPromptInput').focus();
+}
+function closeGeminiChat() {
+  document.body.classList.remove('chat-open');
+  document.getElementById('gemini-chat-panel').classList.remove('open');
+  document.getElementById('chat-overlay').style.display = 'none';
+}
+document.addEventListener('keydown',function(e){
+  if(e.key==='Escape') closeGeminiChat();
+});
+
+function makeCopyCodeBlock(code, toEditor = false) {
+  const safe = escapeHTML(code);
+  // Add a data-code attribute so JS can grab code easily
+  // Optionally: use "Copy code" or "Insert in Editor" depending on need
+  if (!toEditor) {
+    return `<div class="code-block-wrap">
+      <button class="copy-code-btn" title="Copy code">Copy</button>
+      <pre><code>${safe}</code></pre>
+    </div>`;
+  } else {
+    return `<div class="code-block-wrap">
+      <button class="copy-code-btn" title="Copy code">Copy</button>
+      <button class="send-to-editor-btn" title="Copy to Editor">To Editor</button>
+      <pre><code>${safe}</code></pre>
+    </div>`;
+  }
+}
+
+// To store whole chat turns
+let chatHistoryTurns = [];
+
+function chatAskGemini(event){
+  event.preventDefault();
+
+  const input = document.getElementById('chatPromptInput');
+  const msg = input.value.trim();
+  if (!msg) return;
+
+  // Optionally, clear input:
+  input.value = '';
+
+  // Gather context from checkboxes
+  let context = "";
+  if (document.getElementById('includeCodeBox').checked) {
+    context += `\n\nHere is the code:\n${window.editor?.getValue() || ""}`;
+  }
+  if (document.getElementById('includeInputBox').checked) {
+    context += `\n\nHere is the input:\n${document.getElementById('inputArea').value || ""}`;
+  }
+  if (document.getElementById('includeOutputBox').checked) {
+    context += `\n\nHere is the output:\n${document.getElementById('output').innerText || ""}`;
+  }
+
+  // Gather previous turns for context (last N exchanges, you decide; here, all)
+  let systemContext = chatHistoryTurns.map(turn =>
+    `User: ${turn.question}\nGemini: ${turn.answer}`
+  ).join("\n\n");
+
+  // Merge prompt
+  let fullPrompt =
+    (systemContext ? systemContext + "\n\n" : "") +
+    "User: " + msg + context + "\nGemini:";
+
+  // Show new bubbles
+  let chatHistory = document.getElementById('geminiChatHistory');
+  let userBubble = document.createElement('div');
+  userBubble.className = 'chat-bubble user';
+  userBubble.innerHTML = escapeHTML(msg);
+if (document.getElementById('includeCodeBox').checked) {
+  userBubble.innerHTML += `<div class="data-label">Code:</div><pre><code>${escapeHTML(window.editor?.getValue() || "")}</code></pre>`;
+}
+if (document.getElementById('includeInputBox').checked) {
+  userBubble.innerHTML += `<div class="data-label">Input:</div><pre><code>${escapeHTML(document.getElementById('inputArea').value || "")}</code></pre>`;
+}
+if (document.getElementById('includeOutputBox').checked) {
+ userBubble.innerHTML += `<div class="data-label">Output:</div><pre><code>${escapeHTML(document.getElementById('output').innerText || "")}</code></pre>`;
+}
+
+  chatHistory.appendChild(userBubble);
+
+  let geminiBubble = document.createElement('div');
+  geminiBubble.className = 'chat-bubble gemini';
+  geminiBubble.innerText = "🤖 Gemini is thinking...";
+  chatHistory.appendChild(geminiBubble);
+  chatHistory.scrollTop = chatHistory.scrollHeight;
+
+  askGeminiAPI(fullPrompt).then(resp => {
+    geminiBubble.innerHTML = resp;
+    chatHistoryTurns.push({question: msg, answer: resp});
+    chatHistory.scrollTop = chatHistory.scrollHeight;
+  }).catch(err=>{
+    geminiBubble.innerHTML = "❌ "+err;
+    chatHistory.scrollTop = chatHistory.scrollHeight;
+  });
+}
+
+
+// Example Gemini fetch logic for chat (optional, you can use your askGemini or convertMarkdownToHTML)
+async function askGeminiAPI(fullPrompt){
+  const apiKey = "AIzaSyBiwGzVZ1mMCGAOAeKpxCkALctJTBFrE7o"; // Put your key here
+  const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
+  const requestBody = {
+    contents: [{ parts: [{ text: fullPrompt }] }]
+  };
+  const retries = 3;
+  for(let attempt=1; attempt<=retries; attempt++){
+    try {
+      const res = await fetch(url, {
+        method: "POST",
+        headers: { "Content-Type": "application/json", "X-goog-api-key": apiKey },
+        body: JSON.stringify(requestBody)
+      });
+      const data = await res.json();
+      if (!res.ok || data.error) {
+        if(attempt < retries && String(data.error?.message||"").toLowerCase().includes('overload')) {
+          await new Promise(res=>setTimeout(res, attempt*1200));
+          continue;
+        }
+        return "❌ " + (data.error?.message || "Unknown error");
+      }
+      return convertMarkdownToHTML(data?.candidates?.[0]?.content?.parts?.[0]?.text || "⚠️ No response from Gemini.");
+    } catch (err) {
+      if(attempt < retries) {
+        await new Promise(res=>setTimeout(res, attempt*1200));
+        continue;
+      }
+      return "❌ " + err.message;
+    }
+  }
+}
+const chatPromptInput = document.getElementById('chatPromptInput');
+
+chatPromptInput.addEventListener('keydown', function(e) {
+  if (e.key === 'Enter' && !e.shiftKey) {
+    e.preventDefault();
+    // Find the form and submit it!
+    chatPromptInput.form.requestSubmit();
+  }
+  // If Shift+Enter, allow new line (default behavior)
+});
+
+// Automatically resize textarea as you type
+chatPromptInput.addEventListener('input', function() {
+  this.style.height = 'auto'; // shrink if needed
+  this.style.height = (Math.min(this.scrollHeight, 110)) + 'px';
+});
+
+
+
+
+
+
+
