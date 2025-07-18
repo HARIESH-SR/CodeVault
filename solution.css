@@ -606,7 +606,7 @@ body.chat-open #io-section {
 #gemini-chat-panel {
   position: fixed;
   top: 0; right: 0; height: 100vh;
-  width: 700px;
+  width: 1300px;
   display: flex;
   flex-direction: column;
 }
@@ -784,3 +784,483 @@ pre {
   color: #fff;
 }
 .copy-code-btn:hover, .send-to-editor-btn:hover { opacity: 1; background: #232b44; }
+.gemini-response {
+  white-space: pre-line;
+}
+.gemini-response {
+  background-color: #19263a;        /* darker blue background */
+  color: #eaeaea;                   /* light text color */
+  font-family: 'Fira Code', monospace;
+  font-size: 1rem;                  /* comfortable font size */
+  line-height: 1.6;                 /* more breathing room between lines */
+  padding: 1.2em 1.5em;
+  border-radius: 10px;
+  margin: 1.5em 0;
+  white-space: pre-line;
+  box-shadow: 0 1px 10px rgba(8, 14, 34, 0.1);
+}
+
+/* Paragraph spacing inside response */
+.gemini-response p {
+  margin-top: 1em;
+  margin-bottom: 1em;
+  text-indent: 1.2em;
+}
+
+/* Lists styling */
+.gemini-response ul,
+.gemini-response ol {
+  margin: 1.3em 0 1.3em 2em;
+  padding-left: 1em;
+  line-height: 1.7;
+}
+
+/* List items spacing */
+.gemini-response li {
+  margin-bottom: 0.7em;
+  font-size: 1.03em;
+  padding-left: 0.2em;
+  list-style-position: outside;
+}
+
+/* Inline code */
+.gemini-response code {
+  background: #232f4b;
+  color: #ffcb6b;
+  padding: 0.15em 0.4em;
+  border-radius: 4px;
+  font-size: 0.95em;
+  font-family: 'Fira Mono', monospace;
+  word-break: break-word;
+}
+
+/* Code blocks */
+.gemini-response pre {
+  background: #101830;
+  color: #b2c2f7;
+  border-radius: 7px;
+  margin: 1.8em 0 1.5em 0;
+  padding: 1.3em 1.2em;
+  overflow-x: auto;
+  font-size: 1em;
+  line-height: 1.6;
+  font-family: 'JetBrains Mono', monospace;
+  box-shadow: 0 2px 8px rgba(8, 14, 34, 0.13);
+}
+.gemini-response ul {
+  list-style: none; /* Remove default bullets */
+  padding-left: 0;
+  margin: 1.2em 0 1.2em 0;
+}
+
+.gemini-response ul li {
+  position: relative;
+  padding-left: 2.2em;
+  margin-bottom: 0.85em;
+  font-size: 1.08em;
+  line-height: 1.7;
+  background: transparent;
+}
+
+.gemini-response ul li::before {
+  content: '';
+  position: absolute;
+  left: 0.5em;
+  top: 0.87em;
+  width: 1em;
+  height: 1em;
+  background: linear-gradient(135deg, #ffe082, #22d3ee 90%);
+  border-radius: 50%;
+  box-shadow: 0 1px 5px rgba(34, 211, 238, 0.1);
+  display: inline-block;
+  transition: background 0.2s;
+}
+.gemini-response ul li:hover::before {
+  background: linear-gradient(135deg, #fd1d1d, #fcb045 70%);
+  box-shadow: 0 2px 10px rgba(253, 29, 29, 0.16);
+}
+.gemini-response ul li:hover {
+  background: rgba(34,211,238,0.06);
+  border-radius: 6px;
+}
+.gemini-response {
+  font-family: 'Inter', 'Segoe UI', 'Fira Code', monospace;
+  font-size: 1.1em;
+  color: #f1f6fa;
+  background: #182132;
+  padding: 1.3em 2em;
+  border-radius: 12px;
+  margin-top: 1em;
+  letter-spacing: 0.01em;
+}
+
+.gemini-response ul li {
+  margin-bottom: 1.1em;
+}
+.gemini-response ul {
+  list-style: none;
+  padding-left: 0;
+  margin: 1.7em 0 1.7em 0.3em;
+}
+
+/* Modern, soft bullet */
+.gemini-response ul li {
+  position: relative;
+  padding-left: 2.2em;
+  margin-bottom: 0.4em;
+  font-size: 1em;
+  background: transparent;
+  line-height: 1.85;
+  border-radius: 9px;
+  transition: background 0.15s;
+}
+
+.gemini-response ul li::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0.85em;
+  width: 1.05em;
+  height: 1.05em;
+  background: linear-gradient(120deg, #3a86ff, #00c6ff 80%);
+  border-radius: 50%;
+  box-shadow: 0 2px 8px rgba(58, 134, 255, 0.14);
+  display: inline-block;
+  transition: background 0.2s, box-shadow 0.2s;
+}
+
+/* Optional: Add gently animated highlight on hover/focus for interactivity */
+.gemini-response ul li:hover,
+.gemini-response ul li:focus-within {
+  background: rgba(94,213,255, 0.07);
+}
+
+.gemini-response ul li:hover::before,
+.gemini-response ul li:focus-within::before {
+  background: linear-gradient(120deg, #ffbe0b, #ff006e 90%);
+  box-shadow: 0 3px 14px rgba(255, 190, 11, 0.19);
+}
+.gemini-response ul {
+  list-style: none;
+  padding-left: 0;
+  margin: 1em 0 1em 0.8em;
+}
+
+.gemini-response ul li {
+  position: relative;
+  padding-left: 1.5em;
+  margin-bottom: 0.38em;
+  font-size: 1.05em;
+  line-height: 1.6;
+  /* keep your custom bullet ::before here */
+}
+.gemini-response ul,
+.gemini-response ol {
+  margin: 0.8em 0 0.8em 1.5em;
+  padding-left: 1em;
+  line-height: 1.5;
+}
+.gemini-response ul li:last-child {
+  margin-bottom: 0;
+}
+.gemini-response ul {
+  list-style: none;
+  padding-left: 0;
+  margin: 1em 0 1em 0.8em;
+}
+
+.gemini-response ul li {
+  position: relative;
+  padding-left: 2em;      /* room for the arrow */
+  margin-bottom: 0.4em;
+  font-size: 1.07em;
+  line-height: 1.5;
+}
+
+.gemini-response ul li::before {
+  content: '➔';              /* Unicode arrow */
+  position: absolute;
+  left: 0.1em;
+  top: 0.08em;
+  font-size: 1.18em;
+  color: #38bdf8;            /* Tailwind cyan, change as desired */
+  font-family: inherit;
+  font-weight: bold;
+  transition: color 0.2s;
+}
+
+.gemini-response ul li:hover::before {
+  color: #fbbe24;            /* Gold on hover, for interactivity */
+}
+.gemini-response ul {
+  list-style: none;
+  padding-left: 0;
+  margin: 1em 0 1em 0.8em;
+}
+
+.gemini-response ul li {
+  position: relative;
+  padding-left: 2em;      /* Space for the arrow */
+  margin-bottom: 0.4em;
+  font-size: 1.07em;
+  line-height: 1.5;
+}
+
+.gemini-response ul li::before {
+  content: '➔';              /* Unicode arrow */
+  position: absolute;
+  left: 0.1em;
+  top: 0.08em;
+  font-size: 1.18em;
+  color: #38bdf8;
+  font-family: inherit;
+  font-weight: bold;
+  background: none;           /* Ensure no background gradient */
+  box-shadow: none;           /* Remove shadow if left from before */
+  border-radius: 0;           /* Cancel any previous bullet shape */
+  width: auto; height: auto;  /* Reset from previous styles */
+  transition: color 0.2s;
+}
+
+.gemini-response ul li:hover::before {
+  color: #fbbe24;
+}
+.gemini-response ul li:hover {
+  background: rgba(94,213,255, 0.07);
+  border-radius: 6px;
+}
+.gemini-response ul li:hover::before,
+.gemini-response ul li:focus-within::before {
+  background: linear-gradient(120deg, #ffbe0b, #ff006e 90%);
+  /* May cause colored/gradient square if content is not '' */
+  box-shadow: 0 3px 14px rgba(255, 190, 11, 0.19);
+}
+.gemini-response ul li::before {
+  content: '➔';
+  position: absolute;
+  left: 0.1em;
+  top: 0.08em;
+  font-size: 1.18em;
+  color: #38bdf8;
+  font-family: inherit;
+  font-weight: bold;
+  background: none !important;     /* REMOVE any gradient/color */
+  box-shadow: none !important;     /* REMOVE glow or shape */
+  border-radius: 0 !important;     /* REMOVE roundness from earlier styles */
+  width: auto; height: auto;
+  transition: color 0.2s;
+}
+
+.gemini-response ul li:hover::before,
+.gemini-response ul li:focus-within::before {
+  color: #fbbe24;                  /* Only color changes */
+  background: none !important;     /* Ensures background doesn't show */
+  box-shadow: none !important;
+}
+.chat-options {
+  margin: 8px 16px;
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  color: #d6deeb;
+}
+
+.modern-checkbox {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 1.11em;
+  cursor: pointer;
+  user-select: none;
+  font-weight: 500;
+}
+
+.modern-checkbox input[type="checkbox"] {
+  opacity: 0;
+  width: 0;
+  height: 0;
+  position: absolute;
+}
+
+.checkmark {
+  width: 1.2em;
+  height: 1.2em;
+  border: 2px solid #82aaff;
+  background: #18233a;
+  border-radius: 7px;
+  display: inline-block;
+  box-sizing: border-box;
+  position: relative;
+  transition: border-color 0.2s, background 0.2s;
+  box-shadow: 0 1px 8px #0002;
+}
+
+.modern-checkbox input[type="checkbox"]:focus + .checkmark {
+  outline: 2px solid #ffd24c;
+  outline-offset: 2px;
+}
+.modern-checkbox input[type="checkbox"]:hover + .checkmark {
+  border-color: #ffd24c;
+}
+
+.checkmark::after {
+  content: "";
+  position: absolute;
+  left: 0.30em;
+  top: 0.04em;
+  width: 0.34em;
+  height: 0.65em;
+  border-right: 3px solid #ffd24c;
+  border-bottom: 3px solid #ffd24c;
+  border-radius: 1px;
+  opacity: 0;
+  transform: scale(0.55) rotate(18deg);
+  transition: all 0.16s cubic-bezier(.69,1.44,.34,1.18);
+}
+
+.modern-checkbox input[type="checkbox"]:checked + .checkmark {
+  background: rgb(14, 42, 78);
+  border-color: #ffd24c;
+}
+.modern-checkbox input[type="checkbox"]:checked + .checkmark::after {
+  opacity: 1;
+  transform: scale(1) rotate(43deg);
+}
+
+.label-text {
+  color: #d6deeb;
+  transition: color 0.16s;
+}
+
+.modern-checkbox:hover .label-text {
+  color: #ffd24c;
+}
+.chat-options {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #131c35;
+  padding: 0.5em 1.5em 0.5em 1em;
+  box-shadow: 0 2px 8px #00102708;
+  gap: 1em;
+  border-radius: 10px 10px 0 0;
+  min-height: 56px;
+  margin-bottom: 0.4em;
+}
+
+.chat-checkboxes {
+  display: flex;
+  align-items: center;
+  gap: 1.2em;
+  flex-wrap: wrap;
+}
+
+.chat-actions {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+}
+
+/* Clear Chat button styling */
+#clearGeminiChatBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5em;
+  font-family: inherit;
+  background: linear-gradient(120deg, #344e7a 70%, #00c6ff 100%);
+  color: #fffbe8;
+  border: none;
+  padding: 0.45em 1.2em;
+  border-radius: 7px;
+  font-size: 0.7em;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 2px 10px #00102722;
+  transition: background 0.17s, color 0.13s, transform 0.11s;
+  outline: none;
+  margin-right: 1em;
+}
+#clearGeminiChatBtn:hover, #clearGeminiChatBtn:focus {
+  background: linear-gradient(130deg, #ffd24c 40%, #e10050 100%);
+  color: #231c17;
+  transform: translateY(-2px) scale(1.04);
+}
+
+@media (max-width: 650px) {
+  .chat-options {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.6em;
+    padding: 0.6em 1em 0.6em 1em;
+  }
+  .chat-actions {
+    margin-left: 0;
+    justify-content: flex-end;
+  }
+  .chat-checkboxes {
+    flex-wrap: wrap;
+    gap: 0.8em;
+  }
+}
+.chat-prompts {
+  display: flex;
+  gap: 0.7em;
+  margin-bottom: 0.5em;
+  flex-wrap: wrap;
+}
+
+.prompt-btn {
+  background: linear-gradient(90deg, #313e59, #415d86);
+  color: #ffffff;
+  border: none;
+  border-radius: 6px;
+  padding: 4px 16px;
+  font-size: 0.99em;
+  font-weight: 500;
+  cursor: pointer;
+  box-shadow: 0 2px 8px #0010270c;
+  transition: background 0.18s, color 0.16s;
+}
+.prompt-btn:hover, .prompt-btn:focus {
+  background: linear-gradient(90deg, #ffe082 60%, #82aaff 100%);
+  color: #1d2233;
+  outline: none;
+}
+.chat-prompts {
+  display: flex;
+  gap: 0.7em;
+  margin-bottom: 0.6em;
+  flex-wrap: wrap;
+}
+
+.prompt-btn {
+  background: linear-gradient(90deg, #c792ea, #82aaff);
+  color: #000000;
+  border: none;
+  border-radius: 24px;
+  padding: 0.45em 1.35em;
+  font-size: 1em;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+  cursor: pointer;
+  box-shadow: 0 2px 8px #16103218;
+  transition: background 0.16s, color 0.16s, transform 0.1s;
+  outline: none;
+  margin-bottom: 0.18em;
+  position: relative;
+}
+
+.prompt-btn:hover, .prompt-btn:focus {
+  background: linear-gradient(90deg, #ffe082, #82aaff);
+  color: #222d3d;
+  transform: translateY(-2px) scale(1.045);
+  box-shadow: 0 4px 22px #c792ea33, 0 1.5px 10px #01111d14;
+}
+
+.prompt-btn:active {
+  background: linear-gradient(90deg, #bd6ffb, #307cf6 85%);
+  color: #fff;
+  transform: scale(0.97);
+  box-shadow: 0 1px 5px #1d2232;
+}
+
