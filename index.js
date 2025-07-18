@@ -65,6 +65,8 @@
       sessionStorage.setItem("judge0Key", userConf.judge0Key || globalConfig.judge0Key || "");
       sessionStorage.setItem("renderurl", userConf.renderUrl || globalConfig.renderUrl || "");
       sessionStorage.setItem("repliturl", userConf.replitUrl || globalConfig.replitUrl || "");
+      sessionStorage.setItem("geminiApiKey", userConf.geminiApiKey || globalConfig.geminiApiKey || "");
+
 
       window.location.href = "main.html";
 
