@@ -10,7 +10,420 @@
         <script src="https://cdn.jsdelivr.net/pyodide/v0.23.4/full/pyodide.js"></script>
         <script src="https://cjrtnc.leaningtech.com/loader.js"></script>
         <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/themes/prism-tomorrow.min.css" rel="stylesheet" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/prism.min.js"></script>
+<!-- Core languages -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/components/prism-core.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/components/prism-clike.min.js"></script>
+<!-- Programming languages -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/components/prism-python.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/components/prism-javascript.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/components/prism-java.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/components/prism-c.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/components/prism-cpp.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/components/prism-sql.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/components/prism-typescript.min.js"></script>
+        <style>
+            .gemini-response {
+                font-family: system-ui, -apple-system, sans-serif;
+                line-height: 1.6;
+                color: #d6deeb;
+                padding: 24px;
+                background: #011627;
+                border-radius: 12px;
+                margin: 16px 0;
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+                border: 1px solid #1d3b53;
+            }
 
+            .gemini-response p {
+                margin: 20px 0;
+                line-height: 1.8;
+                letter-spacing: 0.3px;
+                color: #a2aabc;
+            }
+
+            .gemini-response p:first-child {
+                margin-top: 0;
+            }
+
+            .gemini-response strong {
+                color: #c792ea;
+                font-weight: 600;
+                padding: 0 2px;
+            }
+
+            .gemini-response em {
+                color: #82aaff;
+                font-style: normal;
+                font-weight: 500;
+                padding: 0 2px;
+            }
+
+            .gemini-response .code-block {
+                position: relative;
+                background: #0b2942;
+                border-radius: 8px;
+                margin: 20px 0;
+                box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+                border: 1px solid #1d3b53;
+            }
+
+            .gemini-response .code-block-header {
+                display: flex;
+                justify-content: flex-end;
+                gap: 8px;
+                padding: 8px 12px;
+                background: #01111d;
+                border-bottom: 1px solid #1d3b53;
+            }
+
+            .gemini-response .code-block-button {
+                background: transparent;
+                border: 1px solid #1d3b53;
+                color: #82aaff;
+                padding: 4px 8px;
+                font-size: 12px;
+                border-radius: 4px;
+                cursor: pointer;
+                display: flex;
+                align-items: center;
+                gap: 4px;
+                transition: all 0.2s;
+            }
+
+            .gemini-response .code-block-button:hover {
+                background: #1d3b53;
+                color: #adccff;
+            }
+
+            .gemini-response pre {
+                margin: 0;
+                padding: 16px;
+            }
+
+            .gemini-response code {
+                font-family: 'JetBrains Mono', 'Fira Code', 'Consolas', monospace;
+                font-size: 14px;
+                letter-spacing: 0.5px;
+            }
+
+            .gemini-response ul, 
+            .gemini-response ol {
+                margin: 20px 0;
+                padding-left: 32px;
+                color: #a2aabc;
+            }
+
+            .gemini-response li {
+                margin: 12px 0;
+                position: relative;
+                padding-left: 8px;
+                line-height: 1.6;
+            }
+
+            .gemini-response ul li::before {
+                content: "→";
+                color: #82aaff;
+                position: absolute;
+                left: -20px;
+                top: 0;
+                font-weight: bold;
+                display: inline-block;
+            }
+
+            /* Spacing between consecutive lists */
+            .gemini-response ul + ul,
+            .gemini-response ol + ol,
+            .gemini-response ul + ol,
+            .gemini-response ol + ul {
+                margin-top: -12px;
+            }
+
+            /* Better spacing after headings */
+            .gemini-response h1 + p,
+            .gemini-response h2 + p,
+            .gemini-response h3 + p {
+                margin-top: 12px;
+            }
+
+            /* Better spacing before lists */
+            .gemini-response p + ul,
+            .gemini-response p + ol {
+                margin-top: -8px;
+            }
+
+            .gemini-response ol {
+                counter-reset: item;
+            }
+
+            .gemini-response ol li {
+                counter-increment: item;
+            }
+
+            .gemini-response ol li::before {
+                content: counter(item) ".";
+                color: #82aaff;
+                position: absolute;
+                left: -24px;
+                font-weight: 500;
+            }
+
+            .gemini-response h1,
+            .gemini-response h2,
+            .gemini-response h3 {
+                color: #82aaff;
+                font-weight: 600;
+                letter-spacing: 0.3px;
+                position: relative;
+            }
+
+            .gemini-response h1 {
+                font-size: 24px;
+                margin: 32px 0 20px;
+                padding-bottom: 12px;
+                border-bottom: 1px solid #1d3b53;
+            }
+
+            .gemini-response h2 {
+                font-size: 20px;
+                margin: 28px 0 16px;
+                padding-bottom: 8px;
+            }
+
+            .gemini-response h3 {
+                font-size: 18px;
+                margin: 24px 0 14px;
+                color: #c792ea;
+            }
+
+            .gemini-response a {
+                color: #82aaff;
+                text-decoration: none;
+                border-bottom: 1px dashed #82aaff40;
+                transition: all 0.2s;
+            }
+
+            .gemini-response a:hover {
+                color: #adccff;
+                border-bottom-color: #adccff;
+            }
+
+            .gemini-response blockquote {
+                margin: 16px 0;
+                padding: 12px 20px;
+                background: #0b2942;
+                border-left: 4px solid #82aaff;
+                border-radius: 4px;
+                color: #a2aabc;
+            }
+
+            .code-block-wrap {
+                position: relative;
+                margin: 16px 0;
+                background: #0b2942;
+                border-radius: 10px;
+                overflow: hidden;
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+                border: 1px solid #1d3b53;
+            }
+
+            .code-block-header {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                padding: 10px 16px;
+                background: #01111d;
+                border-bottom: 1px solid #1d3b53;
+            }
+
+            .code-language {
+                color: #969696;
+                font-size: 12px;
+                text-transform: uppercase;
+            }
+
+            .copy-code-btn,
+            .send-to-editor-btn {
+                background: transparent;
+                border: none;
+                color: #969696;
+                cursor: pointer;
+                padding: 4px 8px;
+                margin-left: 8px;
+                border-radius: 4px;
+                transition: all 0.2s;
+            }
+
+            .copy-code-btn:hover,
+            .send-to-editor-btn:hover {
+                background: #404040;
+                color: #fff;
+            }
+
+            .gemini-thinking {
+                text-align: center;
+                padding: 20px;
+                color: #90caf9;
+            }
+
+            .thinking-animation .dots {
+                animation: dots 1.5s infinite;
+            }
+
+            @keyframes dots {
+                0%, 20% { content: '.'; }
+                40% { content: '..'; }
+                60% { content: '...'; }
+                80%, 100% { content: ''; }
+            }
+
+            .gemini-error {
+                background: #2c1515;
+                color: #ff6b6b;
+                padding: 16px;
+                border-radius: 8px;
+                margin: 16px 0;
+            }
+
+            .gemini-response h1,
+            .gemini-response h2,
+            .gemini-response h3 {
+                color: #90caf9;
+                margin-top: 24px;
+                margin-bottom: 16px;
+            }
+
+            .gemini-response p {
+                margin: 12px 0;
+            }
+
+            .gemini-response ul,
+            .gemini-response ol {
+                margin: 12px 0;
+                padding-left: 24px;
+            }
+
+            .gemini-response li {
+                margin: 6px 0;
+            }
+
+            /* Improve inline code appearance */
+            .gemini-response code:not(pre code) {
+                background: #363636;
+                padding: 2px 6px;
+                border-radius: 4px;
+                color: #89ddff;
+            }
+
+            /* Add a subtle scrollbar for code blocks */
+            .gemini-response pre {
+                overflow-x: auto;
+                scrollbar-width: thin;
+                scrollbar-color: #404040 #2d2d2d;
+            }
+
+            .gemini-response pre::-webkit-scrollbar {
+                height: 8px;
+            }
+
+            .gemini-response pre::-webkit-scrollbar-track {
+                background: #2d2d2d;
+            }
+
+            .gemini-response pre::-webkit-scrollbar-thumb {
+                background: #404040;
+                border-radius: 4px;
+            }
+
+            /* Night Owl Theme Chat Styles */
+            #gemini-chat-panel {
+                background: #011627;
+                border-left: 1px solid #1d3b53;
+            }
+
+            .chat-bubble {
+                padding: 12px 16px;
+                border-radius: 12px;
+                max-width: 85%;
+                margin: 8px 0;
+                font-size: 15px;
+                line-height: 1.5;
+                color: #d6deeb;
+            }
+
+            .chat-bubble.user {
+                background: #1d3b53;
+                align-self: flex-end;
+                border-bottom-right-radius: 4px;
+                color: #d6deeb;
+            }
+
+            .chat-bubble.assistant {
+                background: #0b2942;
+                align-self: flex-start;
+                border-bottom-left-radius: 4px;
+                color: #d6deeb;
+            }
+
+            #chatPromptInput:focus {
+                border-color: #82aaff;
+                outline: none;
+            }
+
+            #chatAskGeminiBtn:hover {
+                background: #2d4b63;
+            }
+
+            #close-gemini-btn:hover {
+                color: #c792ea !important;
+            }
+
+            /* Custom scrollbar for chat */
+            #geminiChatHistory::-webkit-scrollbar {
+                width: 8px;
+            }
+
+            #geminiChatHistory::-webkit-scrollbar-track {
+                background: #011627;
+            }
+
+            #geminiChatHistory::-webkit-scrollbar-thumb {
+                background: #1d3b53;
+                border-radius: 4px;
+            }
+
+            #geminiChatHistory::-webkit-scrollbar-thumb:hover {
+                background: #2d4b63;
+            }
+
+            /* Chat options hover effects */
+            .chat-options label:hover span {
+                color: #82aaff;
+            }
+
+            /* Thinking animation with Night Owl colors */
+            .gemini-thinking {
+                color: #82aaff !important;
+                background: #0b2942;
+                border-radius: 8px;
+                margin: 8px 0;
+            }
+
+            .thinking-animation {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                gap: 8px;
+            }
+
+            /* Error message styling */
+            .gemini-error {
+                background: #ab0326;
+                color: #ffd6d6;
+                border-left: 4px solid #ff2d55;
+            }
+        </style>
         <script src="render-ping.js"></script>
         <script src="autologout.js"></script>
         <script src="snippets.js"></script>
@@ -69,7 +482,7 @@
                     " title="Checking server...">
                     ⏳
                 </div>
-                <button id="openGeminiBtn" type="button" style="background:#2d3c68;color:#ffe082;border-radius:4px;margin-left:10px;font-weight:bold;" onclick="openGeminiChat()">Ask Gemini</button>
+                <button id="openGeminiBtn" type="button" style="background:#2d3c68;color:#ffe082;border-radius:4px;margin-left:10px;font-weight:bold;" onclick="openGeminiChat()">Ask AI Assistant</button>
 
                 <button onclick="saveSolution()" title="Save (Ctrl + S)">💾</button>
                 <button class="font-btn" onclick="changeFontSize('editor', -1)" title="Decrease editor font size">A−</button>
@@ -118,27 +531,67 @@
 <div id="chat-overlay" onclick="closeGeminiChat()" style="display:none;"></div>
 
 <div id="gemini-chat-panel" tabindex="-1" aria-label="Gemini Chat" style="display:none;">
-  <div class="gemini-chat-header" style="padding: 9px 14px 4px 13px; font-weight: 600; color: #ffe082; font-size: 18px; display: flex; align-items: center; justify-content: space-between;">
-    <span>🤖 Gemini AI Assistant</span>
-    <button id="close-gemini-btn" onclick="closeGeminiChat()" aria-label="Close" style="border:none;background:none;color:#aaa;font-size:24px;font-weight:bold;cursor:pointer;">×</button>
+  <div class="gemini-chat-header" style="padding: 12px 16px; font-weight: 600; color: #c792ea; font-size: 18px; display: flex; align-items: center; justify-content: space-between; background: #011627; border-bottom: 1px solid #1d3b53;">
+    <span style="display: flex; align-items: center; gap: 8px;">
+      
+      <span style="background: linear-gradient(90deg, #c792ea, #82aaff); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;">AI Assistant</span>
+    </span>
+    <div class="chat-actions">
+    <button id="clearGeminiChatBtn" type="button">
+      🗑️ Clear Chat
+    </button>
   </div>
-  <div class="gemini-chat-body" id="geminiChatHistory" style="flex:1 1 auto;overflow-y:auto;padding:10px 17px 4px 16px;background:#20223b;display:flex;flex-direction:column;"></div>
+    <button id="close-gemini-btn" onclick="closeGeminiChat()" aria-label="Close" style="border:none; background:none; color:#5f7e97; font-size:24px; font-weight:bold; cursor:pointer; transition: color 0.2s;">×</button>
+    
+  </div>
+  <div class="gemini-chat-body" id="geminiChatHistory" style="flex:1 1 auto; overflow-y:auto; padding:16px; background:#011627; display:flex; flex-direction:column; gap:12px;"></div>
     <!-- Chat options checkboxes START -->
-  <div class="chat-options" style="margin: 0 0 7px 0; display: flex; gap: 12px; align-items: center;">
-    <label><input type="checkbox" id="includeCodeBox" checked> Code</label>
-    <label><input type="checkbox" id="includeInputBox"> Input</label>
-    <label><input type="checkbox" id="includeOutputBox"> Output</label>
+     
+<div class="chat-options" >
+  <div class="chat-prompts">
+  <button class="prompt-btn" data-prompt="explain">Explain Code</button>
+  <button class="prompt-btn" data-prompt="comment">Add Comments</button>
+  <button class="prompt-btn" data-prompt="error">Fix Errors</button>
+  <button class="prompt-btn" data-prompt="optimize">Optimize Code</button>
+  <!-- Add more as desired -->
+</div>
+
+  <div class="chat-checkboxes" id="chatOptionsBar">
+    <label class="modern-checkbox">
+      <input type="checkbox" id="includeCodeBox" checked>
+      <span class="checkmark"></span>
+      <span class="label-text">Code</span>
+    </label>
+    <label class="modern-checkbox">
+      <input type="checkbox" id="includeInputBox">
+      <span class="checkmark"></span>
+      <span class="label-text">Input</span>
+    </label>
+    <label class="modern-checkbox">
+      <input type="checkbox" id="includeOutputBox">
+      <span class="checkmark"></span>
+      <span class="label-text">Output</span>
+    </label>
+    <!-- Problem Data checkbox is dynamically injected here -->
   </div>
+</div>
+
+
+
   <!-- Chat options checkboxes END -->
-  <form class="gemini-chat-input" onsubmit="chatAskGemini(event)" style="display:flex;gap:7px;padding:9px 15px 19px 15px;background:#222644;border-top:1px solid #353b4d;">
-    <textarea id="chatPromptInput" autocomplete="off" placeholder="Type a prompt..." rows="1"
-    style="font-size:15px;flex:1 1 0; border-radius:5px; border:1px solid #31364d; background:#23263a; color:#fff;
-    padding:7px 10px; resize:none; overflow-y:auto; min-height:38px; max-height:110px;"></textarea>
-    <button id="chatAskGeminiBtn" type="submit" aria-label="Send" style="display:flex;align-items:center;justify-content:center;width:44px;height:40px;">
-  <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
-    <path d="M11 17V5M11 5L5 11M11 5L17 11" stroke="#FFF" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
-  </svg>
-</button>
+  <form class="gemini-chat-input" onsubmit="chatAskGemini(event)" style="display:flex; gap:8px; padding:12px 16px 16px; background:#011627; border-top:1px solid #1d3b53;">
+    <textarea id="chatPromptInput" autocomplete="off" placeholder="Ask AI something..." rows="1"
+    style="font-size:15px; flex:1 1 0; border-radius:6px; border:1px solid #1d3b53; background:#0b2942; color:#d6deeb;
+    padding:10px 12px; resize:none; overflow-y:auto; min-height:42px; max-height:120px; transition: border-color 0.2s;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);" placeholder="Ask AI something..."></textarea>
+    <button id="chatAskGeminiBtn" type="submit" aria-label="Send" 
+    style="display:flex; align-items:center; justify-content:center; width:44px; height:42px; 
+    background:#1d3b53; border:none; border-radius:6px; cursor:pointer; transition:all 0.2s;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);">
+      <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
+        <path d="M11 17V5M11 5L5 11M11 5L17 11" stroke="#82aaff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </button>
   
 </form>
 
@@ -192,8 +645,132 @@
                 }
               }, 50);
             }
-            
-            
+
+            function wrapCodeBlocksWithButtons() {
+              const responses = document.querySelectorAll('.gemini-response pre');
+              responses.forEach(pre => {
+                if (!pre.parentElement.classList.contains('code-block')) {
+                  const wrapper = document.createElement('div');
+                  wrapper.className = 'code-block';
+                  
+                  const header = document.createElement('div');
+                  header.className = 'code-block-header';
+                  
+                  const copyBtn = document.createElement('button');
+                  copyBtn.className = 'code-block-button';
+                  copyBtn.innerHTML = 'Copy';
+                  copyBtn.onclick = () => copyCodeBlock(pre);
+                  
+                  const editorBtn = document.createElement('button');
+                  editorBtn.className = 'code-block-button';
+                  editorBtn.innerHTML = 'Copy to Editor';
+                  editorBtn.onclick = () => copyToEditor(pre);
+                  
+                  header.appendChild(copyBtn);
+                  header.appendChild(editorBtn);
+                  
+                  pre.parentNode.insertBefore(wrapper, pre);
+                  wrapper.appendChild(header);
+                  wrapper.appendChild(pre);
+                }
+              });
+            }
+
+            function copyCodeBlock(pre) {
+              try {
+                // Get the code element or use pre if no code element exists
+                const codeElement = pre.querySelector('code') || pre;
+                
+                // Preserve line breaks and indentation
+                let code = codeElement.innerHTML
+                  .replace(/<[^>]+>/g, '') // Remove HTML tags but keep their content
+                  .replace(/&lt;/g, '<')   // Decode HTML entities
+                  .replace(/&gt;/g, '>')
+                  .replace(/&amp;/g, '&')
+                  .replace(/\n{3,}/g, '\n\n'); // Normalize multiple line breaks
+                
+                // Fallback copy method using execCommand
+                const textarea = document.createElement('textarea');
+                textarea.value = code;
+                textarea.style.position = 'fixed';
+                textarea.style.opacity = '0';
+                document.body.appendChild(textarea);
+                textarea.select();
+                
+                const successful = document.execCommand('copy');
+                document.body.removeChild(textarea);
+                
+                if (successful) {
+                  const copyBtn = pre.parentElement.querySelector('.code-block-button');
+                  const originalText = copyBtn.innerHTML;
+                  copyBtn.innerHTML = '✓ Copied!';
+                  setTimeout(() => {
+                    copyBtn.innerHTML = originalText;
+                  }, 2000);
+                } else {
+                  throw new Error('Copy failed');
+                }
+              } catch (err) {
+                console.error('Copy failed:', err);
+                alert('Failed to copy code to clipboard');
+              }
+            }
+
+            function copyToEditor(pre) {
+              try {
+                // Get the code element or use pre if no code element exists
+                const codeElement = pre.querySelector('code') || pre;
+                
+                // Preserve formatting by getting the formatted content
+                let code = codeElement.innerHTML
+                  .replace(/<[^>]+>/g, '') // Remove HTML tags but keep their content
+                  .replace(/&lt;/g, '<')   // Decode HTML entities
+                  .replace(/&gt;/g, '>')
+                  .replace(/&amp;/g, '&')
+                  .replace(/\n{3,}/g, '\n\n'); // Normalize multiple line breaks
+                
+                if (window.editor) {
+                  const model = window.editor.getModel();
+                  const position = window.editor.getPosition();
+                  
+                  // Insert the code with proper formatting
+                  window.editor.executeEdits('', [{
+                    range: {
+                      startLineNumber: position.lineNumber,
+                      startColumn: position.column,
+                      endLineNumber: position.lineNumber,
+                      endColumn: position.column
+                    },
+                    text: code
+                  }]);
+                  
+                  // Format the document after insertion
+                  setTimeout(() => {
+                    window.editor.trigger('keyboard', 'editor.action.formatDocument');
+                  }, 100);
+                  
+                  window.editor.focus();
+                }
+              } catch (err) {
+                console.error('Copy to editor failed:', err);
+                alert('Failed to copy code to editor');
+              }
+            }
+
+            // Add mutation observer to handle dynamically added code blocks
+            const observer = new MutationObserver((mutations) => {
+              mutations.forEach((mutation) => {
+                if (mutation.addedNodes.length) {
+                  wrapCodeBlocksWithButtons();
+                }
+              });
+            });
+
+            // Start observing the chat history for changes
+            observer.observe(document.getElementById('geminiChatHistory'), {
+              childList: true,
+              subtree: true
+            });
             
         </script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.34.1/min/vs/loader.min.js"></script>
