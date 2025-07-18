@@ -1,5 +1,5 @@
 window.skipBeforeUnload = false;
-
+let problemDataValue = null;
 let firebaseConfig;
 try {
     firebaseConfig = JSON.parse(sessionStorage.getItem("firebaseConfig"));
@@ -72,6 +72,7 @@ let isInputSaved = true;
 let isOutputSaved = true;
 let solutionObj;
 let currentLangName = document.getElementById("lang").value;
+
 
 require.config({
     paths: {
@@ -844,7 +845,7 @@ async function askGemini() {
 
   const fullPrompt = `${prompt}\n\nHere is the code:\n${code}`;
   const aiResponseBox = document.getElementById("aiResponse");
-  aiResponseBox.innerText = "🤖 Gemini is thinking...";
+  aiResponseBox.innerText = "AI is thinking...";
 
   const apiKey = "Paste key"; // Replace with your actual API key
   const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
@@ -881,18 +882,7 @@ async function askGemini() {
 }
 */
 // ✅ Formats markdown to HTML (bold + code blocks)
-function formatGeminiMarkdown(text) {
-  // Convert **bold** to <strong>
-  let html = text.replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>");
 
-  // Convert code blocks: ```lang\n...\n```
-  html = html.replace(/```(\w+)?\n([\s\S]*?)```/g, (match, lang, code) => {
-    const safeCode = code.replace(/</g, "&lt;").replace(/>/g, "&gt;");
-    return `<pre class="code-block"><code class="language-${lang || 'plaintext'}">${safeCode}</code></pre>`;
-  });
-
-  return `<div style="white-space: pre-wrap; line-height: 1.6;">${html}</div>`;
-}
 
 /*
 async function askGemini() {
@@ -1016,19 +1006,33 @@ async function askGemini() {
 
   const fullPrompt = `${prompt}\n\nHere is the code:\n${code}`;
   const aiResponseBox = document.getElementById("aiResponse");
-  aiResponseBox.innerHTML = "🤖 Gemini is thinking...";
+  aiResponseBox.innerHTML = `
+    <div class="gemini-thinking">
+      <div class="thinking-animation">
+        <span>Thinking</span>
+        <span class="dots">...</span>
+      </div>
+    </div>`;
 
-  const apiKey = sessionStorage.getItem("geminiApiKey"); // Your Gemini API Key
+  const apiKey = sessionStorage.getItem("geminiApiKey");
   const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
   const requestBody = {
     contents: [{ parts: [{ text: fullPrompt }] }]
   };
 
   let retries = 4;
-  let delay = 1500; // initial delay in ms
+  let delay = 1500;
 
   for (let attempt = 1; attempt <= retries; attempt++) {
-    aiResponseBox.innerHTML = `🤖 Gemini is thinking...<br>⏳ Attempt ${attempt} of ${retries}...`;
+    if (attempt > 1) {
+      aiResponseBox.innerHTML = `
+        <div class="gemini-retry">
+          <div class="retry-message">
+            <span>🔄 Attempt ${attempt} of ${retries}</span>
+            <div class="retry-progress"></div>
+          </div>
+        </div>`;
+    }
 
     try {
       const res = await fetch(url, {
@@ -1051,22 +1055,55 @@ async function askGemini() {
           continue;
         }
 
-        aiResponseBox.innerHTML = `❌ ${errMsg}`;
+        aiResponseBox.innerHTML = `
+          <div class="gemini-error">
+            <div class="error-message">
+              <span>❌ Error</span>
+              <p>${errMsg}</p>
+            </div>
+          </div>`;
         return;
       }
 
       const result = data?.candidates?.[0]?.content?.parts?.[0]?.text || "⚠️ Empty response";
-      aiResponseBox.innerHTML = convertMarkdownToHTML(result);
+      const formattedResponse = convertMarkdownToHTML(result);
+      
+      // Highlight all code blocks after rendering
+      aiResponseBox.innerHTML = formattedResponse;
+      Prism.highlightAllUnder(aiResponseBox);
+      
+      // Add copy buttons to code blocks
+      aiResponseBox.querySelectorAll('pre code').forEach(block => {
+        const wrapper = block.parentElement.parentElement;
+        if (!wrapper.querySelector('.copy-code-btn')) {
+          const header = document.createElement('div');
+          header.className = 'code-block-header';
+          header.innerHTML = `
+            <span class="code-language">${block.className.replace('language-', '')}</span>
+            <button class="copy-code-btn" title="Copy code">
+              <svg width="16" height="16" viewBox="0 0 24 24">
+                <path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"/>
+              </svg>
+            </button>`;
+          wrapper.insertBefore(header, wrapper.firstChild);
+        }
+      });
+      
       return;
 
     } catch (err) {
       console.warn(`🌐 Network error (Attempt ${attempt}):`, err.message);
 
       if (attempt < retries) {
-        aiResponseBox.innerHTML = `🌐 Network error: ${err.message}<br>🔁 Retrying attempt ${attempt + 1}...`;
         await new Promise(r => setTimeout(r, delay * attempt));
       } else {
-        aiResponseBox.innerHTML = `❌ Final error after ${retries} attempts:<br>${err.message}`;
+        aiResponseBox.innerHTML = `
+          <div class="gemini-error">
+            <div class="error-message">
+              <span>❌ Error</span>
+              <p>Final error after ${retries} attempts:<br>${err.message}</p>
+            </div>
+          </div>`;
       }
     }
   }
@@ -1086,24 +1123,61 @@ function convertMarkdownToHTML(markdown) {
       .replace(/>/g, "&gt;");
   }
 
-  // Convert fenced code blocks
+  // Language mapping for proper highlighting
+  const languageMap = {
+    'cpp': 'cpp',
+    'c++': 'cpp',
+    'python': 'python',
+    'py': 'python',
+    'javascript': 'javascript',
+    'js': 'javascript',
+    'java': 'java',
+    'typescript': 'typescript',
+    'ts': 'typescript',
+    'sql': 'sql',
+    'c': 'c'
+  };
+
+  // Convert fenced code blocks with syntax highlighting
   html = html.replace(/```(\w+)?\n([\s\S]*?)```/g, (_, lang, code) => {
-    return `<pre><code class="language-${lang || ''}">${escapeHTML(code)}</code></pre>`;
+    const rawLang = (lang || 'plaintext').toLowerCase();
+    const language = languageMap[rawLang] || rawLang;
+    const highlightedCode = Prism.highlight(
+      code,
+      Prism.languages[language] || Prism.languages.plaintext,
+      language
+    );
+    return `<pre class="language-${language}"><code class="language-${language}" data-raw-code="${encodeURIComponent(code)}">${highlightedCode}</code></pre>`;
   });
 
-  // Convert inline code
-  html = html.replace(/`([^`]+)`/g, "<code>$1</code>");
+  // Convert inline code with subtle highlighting
+  html = html.replace(/`([^`]+)`/g, (_, code) => {
+    return `<code class="language-plaintext">${escapeHTML(code)}</code>`;
+  });
 
   // Bold text
   html = html.replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>");
 
-  // Headings
-  html = html.replace(/^### (.*)$/gim, "<h3>$1</h3>");
-  html = html.replace(/^## (.*)$/gim, "<h2>$1</h2>");
-  html = html.replace(/^# (.*)$/gim, "<h1>$1</h1>");
+  // Headings with proper spacing
+  html = html.replace(/^### (.*)$/gim, "<h3 class='gemini-h3'>$1</h3>");
+  html = html.replace(/^## (.*)$/gim, "<h2 class='gemini-h2'>$1</h2>");
+  html = html.replace(/^# (.*)$/gim, "<h1 class='gemini-h1'>$1</h1>");
 
-  // Line breaks
-  html = html.replace(/\n/g, "<br>");
+  // Lists
+ // Convert markdown bullet points ("- " or "* ") to <li>
+html = html.replace(/^[ \t]*[\-\*] (.+)$/gm, "<li>$1</li>");
+// Wrap consecutive <li> elements in <ul>
+html = html.replace(/(<li>[\s\S]*?<\/li>)/g, match =>
+  `<ul>${match.replace(/<\/li>\s*<li>/g, '</li><li>')}</ul>`
+);
+
+
+  // Line breaks with better spacing
+  //html = html.replace(/\n\n/g, "</p><p>");
+  //html = html.replace(/\n/g, "<br>");
+  
+  // Wrap in a container for consistent styling
+  html = `<div class="gemini-response">${html}</div>`;
 
   return html;
 }
@@ -1181,7 +1255,16 @@ document.addEventListener('click', function(e) {
   // Copy code
   if (e.target.classList.contains('copy-code-btn')) {
     const pre = e.target.parentElement.querySelector('pre code');
-    const code = pre ? pre.innerText : '';
+    let code = '';
+    if (pre) {
+      // Prefer the raw code if available
+      const raw = pre.getAttribute('data-raw-code');
+      if (raw) {
+        code = decodeURIComponent(raw);
+      } else {
+        code = pre.innerText;
+      }
+    }
     if (code) {
       navigator.clipboard.writeText(code).then(() => {
         e.target.innerText = 'Copied!';
@@ -1192,12 +1275,30 @@ document.addEventListener('click', function(e) {
   // Copy code to Editor
   if (e.target.classList.contains('send-to-editor-btn')) {
     const pre = e.target.parentElement.querySelector('pre code');
-    const code = pre ? pre.innerText : '';
-    if (code && window.editor) {
-      window.editor.setValue(code);
-      e.target.innerText = 'Sent!';
-      setTimeout(() => { e.target.innerText = 'To Editor'; }, 1200);
+    let code = '';
+    if (pre) {
+      const raw = pre.getAttribute('data-raw-code');
+      if (raw) {
+        code = decodeURIComponent(raw);
+      } else {
+        code = pre.innerText;
+      }
     }
+    if (code && window.editor) {
+  const model = window.editor.getModel();
+  // Get all text range
+  const fullRange = model.getFullModelRange();
+  // Replace the full content (undoable)
+  window.editor.executeEdits(
+    "copy-to-editor", // source
+    [{ range: fullRange, text: code }]
+  );
+  window.editor.setSelection({ startLineNumber: 1, startColumn: 1, endLineNumber: 1, endColumn: 1 });
+  window.editor.focus();
+  e.target.innerText = 'Sent!';
+  setTimeout(() => { e.target.innerText = 'To Editor'; }, 1200);
+}
+
   }
 });
 
@@ -1234,18 +1335,44 @@ document.addEventListener('keydown',function(e){
 
 function makeCopyCodeBlock(code, toEditor = false) {
   const safe = escapeHTML(code);
-  // Add a data-code attribute so JS can grab code easily
-  // Optionally: use "Copy code" or "Insert in Editor" depending on need
+  const languageMatch = code.match(/^(?:```(\w+)\n)?/);
+  const language = languageMatch ? languageMatch[1] || 'plaintext' : 'plaintext';
+  
+  // Use Prism.js for syntax highlighting
+  const highlightedCode = Prism.highlight(
+    safe,
+    Prism.languages[language] || Prism.languages.plaintext,
+    language
+  );
+
   if (!toEditor) {
     return `<div class="code-block-wrap">
-      <button class="copy-code-btn" title="Copy code">Copy</button>
-      <pre><code>${safe}</code></pre>
+      <div class="code-block-header">
+        <span class="code-language">${language}</span>
+        <button class="copy-code-btn" title="Copy code">
+          <svg width="16" height="16" viewBox="0 0 24 24">
+            <path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"/>
+          </svg>
+        </button>
+      </div>
+      <pre class="language-${language}"><code class="language-${language}">${highlightedCode}</code></pre>
     </div>`;
   } else {
     return `<div class="code-block-wrap">
-      <button class="copy-code-btn" title="Copy code">Copy</button>
-      <button class="send-to-editor-btn" title="Copy to Editor">To Editor</button>
-      <pre><code>${safe}</code></pre>
+      <div class="code-block-header">
+        <span class="code-language">${language}</span>
+        <button class="copy-code-btn" title="Copy code">
+          <svg width="16" height="16" viewBox="0 0 24 24">
+            <path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"/>
+          </svg>
+        </button>
+        <button class="send-to-editor-btn" title="Copy to Editor">
+          <svg width="16" height="16" viewBox="0 0 24 24">
+            <path fill="currentColor" d="M19,3H5C3.89,3 3,3.89 3,5V19A2,2 0 0,0 5,21H19A2,2 0 0,0 21,19V5C21,3.89 20.1,3 19,3M19,19H5V5H19V19M17,11H7V13H17V11Z"/>
+          </svg>
+        </button>
+      </div>
+      <pre class="language-${language}"><code class="language-${language}">${highlightedCode}</code></pre>
     </div>`;
   }
 }
@@ -1274,6 +1401,34 @@ function chatAskGemini(event){
   if (document.getElementById('includeOutputBox').checked) {
     context += `\n\nHere is the output:\n${document.getElementById('output').innerText || ""}`;
   }
+  if (document.getElementById('includeOutputBox').checked) {
+    context += `\n\nHere is the output:\n${document.getElementById('output').innerText || ""}`;
+  }
+
+  const probCheckbox = document.getElementById('includeProblemDataBox');
+  
+if (probCheckbox && probCheckbox.checked && problemDataValue) {
+  let probSection = `\n\nHere is the problem:\n`;
+  if (problemDataValue.title) probSection += `Title: ${problemDataValue.title}\n`;
+  if (problemDataValue.description) probSection += `Description:\n${problemDataValue.description}\n`;
+  if (problemDataValue.constraints && Array.isArray(problemDataValue.constraints)) {
+    probSection += `Constraints:\n`;
+    probSection += problemDataValue.constraints.map(x => `- ${x}`).join('\n') + '\n';
+  }
+  // Examples
+  if (problemDataValue.examples && Array.isArray(problemDataValue.examples)) {
+    probSection += `Examples:\n`;
+    for (const ex of problemDataValue.examples) {
+      if (typeof ex === 'string') {
+        probSection += ex + '\n';
+      } else if (ex && typeof ex === 'object') {
+        if (ex.title) probSection += `${ex.title}\n`;
+        if (Array.isArray(ex.lines)) probSection += ex.lines.map(l => `  ${l}`).join('\n') + '\n';
+      }
+    }
+  }
+  context += probSection;
+}
 
   // Gather previous turns for context (last N exchanges, you decide; here, all)
   let systemContext = chatHistoryTurns.map(turn =>
@@ -1300,21 +1455,70 @@ if (document.getElementById('includeOutputBox').checked) {
  userBubble.innerHTML += `<div class="data-label">Output:</div><pre><code>${escapeHTML(document.getElementById('output').innerText || "")}</code></pre>`;
 }
 
+if (probCheckbox && probCheckbox.checked && problemDataValue) {
+  let html = `<div class="data-label">Problem Data:</div><div class="problem-data-block">`;
+  if (problemDataValue.title) html += `<div><strong>Title:</strong> ${escapeHTML(problemDataValue.title)}</div>`;
+  if (problemDataValue.description) html += `<div style="margin: .2em 0;"><strong>Description:</strong><br>${escapeHTML(problemDataValue.description)}</div>`;
+  if (problemDataValue.constraints && Array.isArray(problemDataValue.constraints)) {
+    html += `<div><strong>Constraints:</strong><ul>`;
+    html += problemDataValue.constraints.map(x => `<li>${escapeHTML(x)}</li>`).join('');
+    html += `</ul></div>`;
+  }
+  // Examples: handle both LeetCode and GFG style!
+  if (problemDataValue.examples && Array.isArray(problemDataValue.examples)) {
+    html += `<div><strong>Examples:</strong>`;
+    for (const ex of problemDataValue.examples) {
+      html += `<div style="margin-bottom:.4em;">`;
+      if (typeof ex === 'string') {
+        html += `<pre style="margin:0">${escapeHTML(ex)}</pre>`;
+      } else if (ex && typeof ex === 'object') {
+        if (ex.title) html += `<em>${escapeHTML(ex.title)}</em><br>`;
+        if (Array.isArray(ex.lines)) html += ex.lines.map(ln => `<div>${escapeHTML(ln)}</div>`).join('');
+      }
+      html += `</div>`;
+    }
+    html += `</div>`;
+  }
+  html += `</div>`;
+  userBubble.innerHTML += html;
+}
+
+
+
   chatHistory.appendChild(userBubble);
 
   let geminiBubble = document.createElement('div');
   geminiBubble.className = 'chat-bubble gemini';
-  geminiBubble.innerText = "🤖 Gemini is thinking...";
+  geminiBubble.innerText = "AI Assistant is thinking...";
   chatHistory.appendChild(geminiBubble);
   chatHistory.scrollTop = chatHistory.scrollHeight;
 
   askGeminiAPI(fullPrompt).then(resp => {
     geminiBubble.innerHTML = resp;
     chatHistoryTurns.push({question: msg, answer: resp});
-    chatHistory.scrollTop = chatHistory.scrollHeight;
+
+    // Uncheck after first exchange
+  if (chatHistoryTurns.length === 1) {
+    document.getElementById('includeCodeBox').checked = false;
+    document.getElementById('includeInputBox').checked = false;
+    document.getElementById('includeOutputBox').checked = false;
+    const probCheckbox = document.getElementById('includeProblemDataBox');
+    if (probCheckbox) probCheckbox.checked = false;
+  }
+  
+     // ↓↓↓ SCROLL TO THE TOP OF THE GEMINI RESPONSE ↓↓↓
+  // Use setTimeout to ensure rendering is complete before measuring offsetTop!
+    
+  setTimeout(() => {
+    chatHistory.scrollTop = geminiBubble.offsetTop;
+  }, 0);
   }).catch(err=>{
     geminiBubble.innerHTML = "❌ "+err;
-    chatHistory.scrollTop = chatHistory.scrollHeight;
+     // ↓↓↓ SCROLL TO THE TOP OF THE GEMINI RESPONSE ↓↓↓
+  // Use setTimeout to ensure rendering is complete before measuring offsetTop!
+  setTimeout(() => {
+    chatHistory.scrollTop = geminiBubble.offsetTop;
+  }, 0);
   });
 }
 
@@ -1368,6 +1572,18 @@ chatPromptInput.addEventListener('input', function() {
   this.style.height = 'auto'; // shrink if needed
   this.style.height = (Math.min(this.scrollHeight, 110)) + 'px';
 });
+document.getElementById('clearGeminiChatBtn').onclick = function() {
+  // 1. Clear memory array
+  chatHistoryTurns.length = 0;
+
+  // 2. Remove all bubbles from the chat window
+  const chatHistory = document.getElementById('geminiChatHistory');
+  if (chatHistory) {
+    while (chatHistory.firstChild) {
+      chatHistory.removeChild(chatHistory.firstChild);
+    }
+  }
+};
 
 
 
@@ -1375,3 +1591,77 @@ chatPromptInput.addEventListener('input', function() {
 
 
 
+document.addEventListener('DOMContentLoaded', function() {
+  const problemDataCheckId = "includeProblemDataBox";
+  const chatOptionsDiv = document.getElementById("chatOptionsBar"); // <--- use your real ID!
+  
+
+  // Sample Firebase code - adjust path for your data model!
+  firebase.database()
+    .ref(`users/${uid}/${problemPath}/problemData`)
+    .on("value", (snapshot) => {
+      // Remove old Problem Data checkbox if present
+      const old = document.getElementById(problemDataCheckId)?.closest("label");
+      if (old) old.remove();
+
+      if (snapshot.exists()) {
+        problemDataValue = snapshot.val();
+        console.log("Problem Data loaded:", problemDataValue);
+        const label = document.createElement("label");
+        label.className = "modern-checkbox";
+        label.innerHTML = `
+          <input type="checkbox" id="${problemDataCheckId}" checked>
+          <span class="checkmark"></span>
+          <span class="label-text">Problem Data</span>`;
+        chatOptionsDiv.appendChild(label);
+      } else {
+        problemDataValue = null;
+      }
+    });
+});
+document.querySelectorAll('.prompt-btn').forEach(btn => {
+  btn.addEventListener('click', function() {
+    const textarea = document.getElementById('chatPromptInput');
+    let prompt = "";
+    let shouldSendCode = false, shouldSendInput = false, shouldSendOutput = false, shouldSendProblem = false;
+
+    // Check if each data field has real content
+    const codeVal = (window.editor?.getValue() || "").trim();
+    const inputVal = (document.getElementById('inputArea').value || "").trim();
+    const outputVal = (document.getElementById('output').innerText || "").trim();
+    const problemCheckbox = document.getElementById('includeProblemDataBox');
+    // Assume problemDataValue is globally available:
+    shouldSendProblem = !!(problemCheckbox && typeof problemDataValue === "object" && Object.keys(problemDataValue).length > 0);
+
+    shouldSendCode = codeVal.length > 0;
+    shouldSendInput = inputVal.length > 0;
+    shouldSendOutput = outputVal.length > 0;
+
+    // Set which checkboxes should be checked
+    document.getElementById('includeCodeBox').checked = shouldSendCode;
+    document.getElementById('includeInputBox').checked = shouldSendInput;
+    document.getElementById('includeOutputBox').checked = shouldSendOutput;
+    if (problemCheckbox) problemCheckbox.checked = shouldSendProblem;
+
+    // Set prompt text based on button
+    switch (btn.dataset.prompt) {
+      case "explain":
+        prompt = "Explain this code step by step.";
+        break;
+      case "comment":
+        prompt = "Add detailed inline comments to this code.";
+        break;
+      case "error":
+        prompt = "Find and fix any bugs or errors in this code.";
+        break;
+      case "optimize":
+        prompt = "Optimize this code for better performance.";
+        break;
+      
+    }
+    textarea.value = prompt;
+    textarea.focus();
+    // Optionally auto-submit:
+    // document.querySelector('.gemini-chat-input').requestSubmit();
+  });
+});
