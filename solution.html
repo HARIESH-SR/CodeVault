@@ -717,45 +717,53 @@
             }
 
             function copyToEditor(pre) {
-              try {
-                // Get the code element or use pre if no code element exists
-                const codeElement = pre.querySelector('code') || pre;
-                
-                // Preserve formatting by getting the formatted content
-                let code = codeElement.innerHTML
-                  .replace(/<[^>]+>/g, '') // Remove HTML tags but keep their content
-                  .replace(/&lt;/g, '<')   // Decode HTML entities
-                  .replace(/&gt;/g, '>')
-                  .replace(/&amp;/g, '&')
-                  .replace(/\n{3,}/g, '\n\n'); // Normalize multiple line breaks
-                
-                if (window.editor) {
-                  const model = window.editor.getModel();
-                  const position = window.editor.getPosition();
-                  
-                  // Insert the code with proper formatting
-                  window.editor.executeEdits('', [{
-                    range: {
-                      startLineNumber: position.lineNumber,
-                      startColumn: position.column,
-                      endLineNumber: position.lineNumber,
-                      endColumn: position.column
-                    },
-                    text: code
-                  }]);
-                  
-                  // Format the document after insertion
-                  setTimeout(() => {
-                    window.editor.trigger('keyboard', 'editor.action.formatDocument');
-                  }, 100);
-                  
-                  window.editor.focus();
-                }
-              } catch (err) {
-                console.error('Copy to editor failed:', err);
-                alert('Failed to copy code to editor');
-              }
-            }
+  try {
+    // Get the code element or use pre if no code element exists
+    const codeElement = pre.querySelector('code') || pre;
+    let code = codeElement.innerHTML
+      .replace(/<[^>]+>/g, '') // Remove HTML tags but keep their content
+      .replace(/&lt;/g, '<')   // Decode HTML entities
+      .replace(/&gt;/g, '>')
+      .replace(/&amp;/g, '&')
+      .replace(/\n{3,}/g, '\n\n'); // Normalize multiple line breaks
+
+    if (window.editor) {
+      const model = window.editor.getModel();
+      const fullRange = model.getFullModelRange();
+
+      // Create an undo stop before the edit
+      window.editor.pushUndoStop();
+
+      // Overwrite the whole editor
+      window.editor.executeEdits(
+        'copy-to-editor', // source
+        [{ range: fullRange, text: code }]
+      );
+
+      // Create an undo stop after the edit to ensure it's a single undo step
+      window.editor.pushUndoStop();
+
+      // Optional: move the cursor to the start
+      window.editor.setSelection({
+        startLineNumber: 1,
+        startColumn: 1,
+        endLineNumber: 1,
+        endColumn: 1
+      });
+
+      // Format after replace (optional)
+      setTimeout(() => {
+        window.editor.trigger('keyboard', 'editor.action.formatDocument');
+      }, 100);
+
+      window.editor.focus();
+    }
+  } catch (err) {
+    console.error('Copy to editor failed:', err);
+    alert('Failed to copy code to editor');
+  }
+}
+
 
             // Add mutation observer to handle dynamically added code blocks
             const observer = new MutationObserver((mutations) => {
