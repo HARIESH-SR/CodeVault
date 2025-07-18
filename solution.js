@@ -846,7 +846,7 @@ async function askGemini() {
   const aiResponseBox = document.getElementById("aiResponse");
   aiResponseBox.innerText = "🤖 Gemini is thinking...";
 
-  const apiKey = "AIzaSyBiwGzVZ1mMCGAOAeKpxCkALctJTBFrE7o"; // Replace with your actual API key
+  const apiKey = "Paste key"; // Replace with your actual API key
   const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
 
   const requestBody = {
@@ -911,7 +911,7 @@ async function askGemini() {
 
   console.log("🟡 Sending prompt to Gemini:", fullPrompt);
 
-  const apiKey = "AIzaSyBiwGzVZ1mMCGAOAeKpxCkALctJTBFrE7o"; // Replace with your real API key
+  const apiKey = "Paste key"; // Replace with your real API key
   const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
 
   const requestBody = {
@@ -968,7 +968,7 @@ async function askGemini() {
 
   console.log("🟡 Sending prompt to Gemini:", fullPrompt);
 
-  const apiKey = "AIzaSyBiwGzVZ1mMCGAOAeKpxCkALctJTBFrE7o"; // Replace with your actual key
+  const apiKey = "Paste key"; // Replace with your actual key
   const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
 
   const requestBody = {
@@ -1135,7 +1135,7 @@ async function askGemini() {
 
   console.log("🟡 Sending prompt to Gemini:", fullPrompt);
 
-  const apiKey = "AIzaSyBiwGzVZ1mMCGAOAeKpxCkALctJTBFrE7o"; // ✅ Replace with your actual API key
+  const apiKey = "Paste key"; // ✅ Replace with your actual API key
   const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
 
   const requestBody = {
@@ -1321,7 +1321,7 @@ if (document.getElementById('includeOutputBox').checked) {
 
 // Example Gemini fetch logic for chat (optional, you can use your askGemini or convertMarkdownToHTML)
 async function askGeminiAPI(fullPrompt){
-  const apiKey = "AIzaSyBiwGzVZ1mMCGAOAeKpxCkALctJTBFrE7o"; // Put your key here
+  const apiKey = sessionStorage.getItem("geminiApiKey"); // Your Gemini API Key// Put your key here
   const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
   const requestBody = {
     contents: [{ parts: [{ text: fullPrompt }] }]
