@@ -23,11 +23,17 @@ import {
   update,
   onValue
 } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-database.js";
+import { set } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-database.js";
+
+// Globals for auto-cleanup.
+let lastShareCodeTimeout = null;
+let lastPendingShareCode = null;
 
 // ✅ Now it's safe to initialize Firebase
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 const auth = getAuth(app);
+
 
 
 window.deleteHeading = async function(hKey) {
@@ -176,6 +182,7 @@ for (const hKey of sortedHKeys) {
       <button onclick="moveHeading('${hKey}', 'down')">⬇️ Move Down</button>
       <button onclick="deleteHeading('${hKey}')">🗑️ Delete</button>
       <button onclick="insertHeadingAbove('${hKey}')">➕ Insert Above</button>
+      <button onclick="shareHeadingByCode('${hKey}')">Share Heading</button>
 
     </div>
   </div>
@@ -217,6 +224,7 @@ for (const pKey of sortedKeys) {
             <button onclick="moveProblem('${hKey}', '${pKey}', 'down')">⬇️ Move Down</button>
             <button onclick="moveProblemToAnotherHeading('${hKey}', '${pKey}')">📂 Move to Another Heading</button>
             <button onclick="insertProblemAbove('${hKey}', '${pKey}')">➕ Insert Above</button>
+            <button onclick="shareProblemByCode('${hKey}', '${pKey}')">Share Problem</button>
 
 
             <button onclick="deleteProblem('${hKey}', '${pKey}')">🗑️ Delete</button>
@@ -751,3 +759,344 @@ document.getElementById('searchInput').addEventListener('input', runSearch);
 
 // Trigger on checkbox toggle
 document.getElementById('toggleShowChildren').addEventListener('change', runSearch);
+/**
+ * Share a problem via a one-time code.
+ * Runs timeout & cleans up on close/cancel.
+ */
+// Constants
+const SHARE_EXPIRY_MINUTES = 4;
+const SHARE_EXPIRY_MS = SHARE_EXPIRY_MINUTES * 60 * 1000; // 3 minutes
+
+let pendingShareCodes = []; // Array of { code, timeout }
+
+
+window.shareProblemByCode = async function(hKey, pKey) {
+  // 1. CLEANUP STEP: Remove all expired shares (for everyone)
+  try {
+    const sharedSnap = await get(ref(db, "shared"));
+    const now = Date.now();
+    if (sharedSnap.exists()) {
+      const sharedCodes = sharedSnap.val();
+      for (const [code, obj] of Object.entries(sharedCodes)) {
+        const age = now - (obj.timestamp || 0);
+        if (age > SHARE_EXPIRY_MS) {
+          try {
+            await remove(ref(db, `shared/${code}`));
+            console.log("Deleted expired share code:", code);
+          } catch(e) {
+            // This could happen for legacy codes, admin-created nodes, or race conditions
+            console.warn("Could not delete code (maybe legacy/locked/permission):", code, e);
+          }
+        }
+      }
+    }
+  } catch (e) {
+    console.error("Error cleaning up expired /shared codes:", e);
+  }
+
+  // 2. Get the problem object to share
+  const probSnap = await get(ref(db, `${dbPrefix}/headings/${hKey}/problems/${pKey}`));
+  if (!probSnap.exists()) {
+    alert("Problem not found!");
+    return null;
+  }
+  const probData = probSnap.val();
+
+  // 3. Generate a secure random share code
+  const code = Math.random().toString(36).slice(2, 6) + Math.random().toString(36).slice(2, 4);
+
+  // 4. Compose the shared payload
+  const shareObj = {
+    type: "problem",
+    title: probData.title || "",
+    fromUsername: username, // Optional for attribution
+    data: probData,
+    timestamp: Date.now()
+  };
+
+  // 5. Write to /shared/{code}
+  await set(ref(db, `shared/${code}`), shareObj);
+
+  // 6. Autodelete timeout for this code:
+  const timeout = setTimeout(async () => {
+    try {
+      await remove(ref(db, `shared/${code}`));
+    } catch(e) {} // Ignore errors for legacy nodes
+    pendingShareCodes = pendingShareCodes.filter(item => item.code !== code);
+  }, SHARE_EXPIRY_MS);
+
+  // 7. Track code+timeout for collective cleanup
+  pendingShareCodes.push({code, timeout});
+
+  // 8. On tab/app close, remove ALL pending
+  if (!window._shareCleanupRegistered) {
+    window.addEventListener("beforeunload", async () => {
+      for (const {code, timeout} of pendingShareCodes) {
+        try {
+          await remove(ref(db, `shared/${code}`));
+          clearTimeout(timeout);
+        } catch(e) {/* ignore */}
+      }
+      pendingShareCodes = [];
+    });
+    window._shareCleanupRegistered = true;
+  }
+
+  // 9. Show/copy the code to user
+  alert(
+    "Share code generated for this problem:\n\n" + code +
+    `\n\nGive this code to your friend. It will expire in ${SHARE_EXPIRY_MINUTES} minutes or if you close this page.`
+  );
+  return code;
+};
+window.shareHeadingByCode = async function(hKey) {
+  // 1. CLEANUP STEP: Remove all expired shares (for everyone)
+  try {
+    const sharedSnap = await get(ref(db, "shared"));
+    const now = Date.now();
+    if (sharedSnap.exists()) {
+      const sharedCodes = sharedSnap.val();
+      for (const [code, obj] of Object.entries(sharedCodes)) {
+        const age = now - (obj.timestamp || 0);
+        if (age > SHARE_EXPIRY_MS) {
+          try {
+            await remove(ref(db, `shared/${code}`));
+            console.log("Deleted expired share code:", code);
+          } catch(e) {
+            console.warn("Could not delete code (maybe legacy/locked/permission):", code, e);
+          }
+        }
+      }
+    }
+  } catch (e) {
+    console.error("Error cleaning up expired /shared codes:", e);
+  }
+
+  // 2. Get the heading object to share
+  const headingSnap = await get(ref(db, `${dbPrefix}/headings/${hKey}`));
+  if (!headingSnap.exists()) {
+    alert("Heading not found!");
+    return null;
+  }
+  const headingData = headingSnap.val();
+
+  // 3. Generate a secure random share code
+  const code = Math.random().toString(36).slice(2, 6) + Math.random().toString(36).slice(2, 4);
+
+  // 4. Compose the shared payload
+  const shareObj = {
+    type: "heading",
+    title: headingData.heading || "",
+    fromUsername: username, // Optional for attribution
+    data: headingData,
+    timestamp: Date.now()
+  };
+
+  // 5. Write to /shared/{code}
+  await set(ref(db, `shared/${code}`), shareObj);
+
+  // 6. Autodelete timeout for this code:
+  const timeout = setTimeout(async () => {
+    try {
+      await remove(ref(db, `shared/${code}`));
+    } catch(e) {} // Ignore errors for legacy nodes
+    pendingShareCodes = pendingShareCodes.filter(item => item.code !== code);
+    showToast(`Your share code expired (${SHARE_EXPIRY_MINUTES} minutes). Please generate a new code.`);
+  }, SHARE_EXPIRY_MS);
+
+  // 7. Track code+timeout for collective cleanup
+  pendingShareCodes.push({code, timeout});
+
+  // 8. On tab/app close, remove ALL pending
+  if (!window._shareCleanupRegistered) {
+    window.addEventListener("beforeunload", async () => {
+      for (const {code, timeout} of pendingShareCodes) {
+        try {
+          await remove(ref(db, `shared/${code}`));
+          clearTimeout(timeout);
+        } catch(e) {/* ignore */}
+      }
+      pendingShareCodes = [];
+    });
+    window._shareCleanupRegistered = true;
+  }
+
+  // 9. Show/copy the code to user
+  alert(
+    "Share code generated for this heading:\n\n" + code +
+    `\n\nGive this code to your friend. It will expire in ${SHARE_EXPIRY_MINUTES} minutes or if you close this page.`
+  );
+  return code;
+};
+
+function showToast(message, options = {}) {
+  // Remove any existing toasts so it never stacks endlessly
+  document.querySelectorAll('.custom-toast').forEach(e => e.remove());
+
+  let toast = document.createElement('div');
+  toast.className = 'custom-toast';
+  toast.innerHTML = `
+    <span class="custom-toast-message">${message}</span>
+    <button class="custom-toast-close" aria-label="Close">&times;</button>
+  `;
+  // Custom style (can also be moved to a <style> tag for production)
+  toast.style = `
+    position:fixed;
+    bottom:38px;
+    left:50%;
+    transform:translateX(-50%);
+    min-width:320px; max-width:82vw;
+    background:rgba(40,40,60,0.98);
+    color:#fff;
+    padding:18px 36px 18px 18px;
+    border-radius:12px;
+    font-size:16px;
+    z-index:99999;
+    display:flex; align-items:center; gap: 12px;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.18);
+    opacity:0;
+    transition: opacity 0.4s, bottom 0.4s;
+    pointer-events:auto;
+    backdrop-filter: blur(2.5px);
+  `;
+
+  // Close button style
+  toast.querySelector('.custom-toast-close').style = `
+    background:none;
+    border:none;
+    color:#fff;
+    font-size:26px;
+    cursor:pointer;
+    align-self:flex-start;
+    margin-left:auto;
+    line-height:1;
+    transition: color 0.12s;
+  `;
+  toast.querySelector('.custom-toast-close').onmouseenter = function() { this.style.color = "#FFD600"; }
+  toast.querySelector('.custom-toast-close').onmouseleave = function() { this.style.color = "#FFF"; }
+  toast.querySelector('.custom-toast-close').onclick = function() {
+    toast.style.opacity = 0;
+    toast.style.bottom = '16px';
+    setTimeout(() => toast.remove(), 400);
+  };
+
+  document.body.appendChild(toast);
+  // Trigger fade-in animation
+  setTimeout(() => { toast.style.opacity = 1; toast.style.bottom = '38px'; }, 10);
+
+  const duration = options.duration || 4700;
+  setTimeout(() => {
+    // Trigger fade-out
+    toast.style.opacity = 0;
+    toast.style.bottom = '16px';
+    setTimeout(() => toast.remove(), 400);
+  }, duration);
+}
+window.importSharedByCode = async function() {
+  const code = prompt("Enter the share code:");
+  if (!code) return;
+
+  const shareRef = ref(db, `shared/${code}`);
+  const shareSnap = await get(shareRef);
+  if (!shareSnap.exists()) {
+    showToast("Invalid or expired code.");
+    return;
+  }
+  const shareData = shareSnap.val();
+
+  if (shareData.type === "problem" && shareData.data) {
+     const problemObj = { ...shareData.data };
+  // Remove any previous " (Shared By ...)" or " (Shared)" from the end of the title
+  let baseTitle = problemObj.title || shareData.title || "Imported Problem";
+  baseTitle = baseTitle.replace(/\s+\(Shared(?: By [^)]+)?\)$/i, ""); // <- removes prior share tags
+
+  // Append new attribution
+  const fromUserText = shareData.fromUsername ? ` (Shared By ${shareData.fromUsername})` : " (Shared)";
+  problemObj.title = baseTitle + fromUserText;
+
+    const dbPrefix = window.dbPrefix;
+
+    // --- Find (or create) the "📥 Shared Problems" heading ---
+    const headingsRef = ref(db, `${dbPrefix}/headings`);
+    let headingsSnap = await get(headingsRef);
+    let headings = {};
+    let hcount = 0;
+    let sharedHKey = null;
+
+    if (headingsSnap.exists()) {
+      headings = headingsSnap.val();
+      // Look for the shared heading
+      for (const [hKey, hData] of Object.entries(headings)) {
+        if (hData.heading === "Shared Problems") {
+          sharedHKey = hKey;
+          break;
+        }
+      }
+      hcount = (await get(ref(db, `${dbPrefix}/hcount`))).val() || Object.keys(headings).length;
+    }
+
+    // If shared heading not found, create it
+    if (!sharedHKey) {
+      hcount++;
+      sharedHKey = `h${hcount}`;
+      const newHeading = {
+        heading: "Shared Problems",
+        pcount: 0,
+        problems: {}
+      };
+      // Create the new heading
+      await update(ref(db, dbPrefix), {
+        [`headings/${sharedHKey}`]: newHeading,
+        hcount: hcount
+      });
+    }
+
+    // Get latest pcount and choose new pKey
+    const sharedHeadingRef = ref(db, `${dbPrefix}/headings/${sharedHKey}`);
+    let sharedHeadingSnap = await get(sharedHeadingRef);
+    let pcount = (sharedHeadingSnap.exists() && sharedHeadingSnap.val().pcount) || 0;
+    pcount++;
+    const pKey = `p${pcount}`;
+
+    // Add the imported problem
+    await update(sharedHeadingRef, {
+      [`problems/${pKey}`]: problemObj,
+      pcount: pcount
+    });
+
+    // Delete the shared code after successful import
+    await remove(shareRef);
+
+    showToast(`Recived ${problemObj.title}`);
+  }
+  else if (shareData.type === "heading" && shareData.data) {
+     const fromUserText = shareData.fromUsername ? ` (Shared By ${shareData.fromUsername})` : " (Shared)";
+  let baseTitle = shareData.data.heading || shareData.title || "Imported Heading";
+  baseTitle = baseTitle.replace(/\s+\(Shared(?: By [^)]+)?\)$/i, "");
+  const newHeadingTitle = baseTitle + fromUserText;
+  const dbPrefix = window.dbPrefix;
+  let hcount = (await get(ref(db, `${dbPrefix}/hcount`))).val();
+  hcount = hcount ? parseInt(hcount) : 0;
+  hcount++;
+  const newHKey = `h${hcount}`;
+  const headingObj = JSON.parse(JSON.stringify(shareData.data));
+  headingObj.heading = newHeadingTitle;
+  headingObj.pcount = headingObj.pcount || (headingObj.problems ? Object.keys(headingObj.problems).length : 0);
+
+  await update(ref(db, dbPrefix), {
+    [`headings/${newHKey}`]: headingObj,
+    hcount: hcount
+  });
+
+  await remove(shareRef);
+  showToast(`Received heading: "${newHeadingTitle}" with ${headingObj.pcount} problem(s)!`);
+  }
+  else {
+    showToast("This code does not contain valid data.");
+  }
+};
+
+
+
+
+
