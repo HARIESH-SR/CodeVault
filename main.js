@@ -142,7 +142,8 @@ window.deleteProblem = async function(hKey, pKey) {
 
 
 const username = sessionStorage.getItem("username") || "Guest";
-document.getElementById("usernameDisplay").textContent = `👤 ${username}`;
+document.querySelector('#usernameDisplay .username').textContent = username;
+
 
 
 
