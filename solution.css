@@ -1264,3 +1264,165 @@ pre {
   box-shadow: 0 1px 5px #1d2232;
 }
 
+
+.user-avatar {
+  width: 2em;
+  height: 2em;
+  border-radius: 50%;
+  background: #181b22;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* Add default transition */
+  transition: box-shadow 0.3s;
+}
+
+/* Avatar glows green for online */
+.user-badge-simple.online .user-avatar {
+  box-shadow: 0 0 14px 3px #77e86baa;
+}
+
+/* Avatar glows red for offline */
+.user-badge-simple.offline .user-avatar {
+  box-shadow: 0 0 14px 3px #fa5555bb;
+}
+
+
+.user-badge-simple:hover, .user-badge-simple:focus-within {
+  box-shadow: 0 6px 28px 0 rgba(76,150,204,0.22);
+}
+
+.user-avatar {
+  width: 2.3em;
+  height: 2.3em;
+  min-width: 2.3em;
+  min-height: 2.3em;
+  border-radius: 50%;
+  background: radial-gradient(circle at 40% 40%, #31386a 70%, #202338 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  box-shadow: 0 0 0 2px #384cb799, 0 2px 8px #2d314d44;
+  transition: box-shadow 0.18s;
+}
+
+.user-badge-simple:hover .user-avatar {
+  box-shadow: 0 0 0 3px #47e39399, 0 4px 18px #2d314d55;
+}
+
+.user-avatar svg {
+  width: 1em;
+  height: 1.4em;
+  color: #a8bbdd;
+  stroke-width: 2.3;
+  opacity: 0.96;
+}
+
+
+/* Optional: Responsive tweak for mobile */
+@media (max-width: 500px) {
+  .user-badge-simple {
+    font-size: 0.97rem;
+    padding: 0.41em 0.85em 0.41em 0.6em;
+  }
+
+  .user-avatar {
+    width: 2em;
+    height: 2em;
+    min-width: 2em;
+    min-height: 2em;
+  }
+}
+
+
+.user-avatar {
+  width: 2.3em;
+  height: 2.3em;
+  border-radius: 50%;
+  background: radial-gradient(circle at 40% 40%, #31386a 68%, #202338 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  /* Start with green pulse */
+  box-shadow: 0 0 0 2px #49fa9f70;
+  animation: pulseOnline 2.1s infinite cubic-bezier(.4,0,.6,1);
+  transition: box-shadow 0.19s;
+}
+
+@keyframes pulseOnline {
+  0%, 100% {
+    box-shadow: 0 0 0 2px #84ffc077, 0 0 14px 4px #49fa9f44;
+  }
+  50% {
+    box-shadow: 0 0 0 5px #6affd699, 0 0 26px 12px #9affc495;
+  }
+}
+
+/* Add this class via JS when offline */
+.user-badge-simple.offline .user-avatar {
+  animation: pulseOffline 2.1s infinite cubic-bezier(.4,0,.6,1);
+  box-shadow: 0 0 0 2px #fa555570;
+}
+
+@keyframes pulseOffline {
+  0%, 100% {
+    box-shadow: 0 0 0 2px #fa555580, 0 0 12px 2px #fa555540;
+  }
+  50% {
+    box-shadow: 0 0 0 5px #ff797980, 0 0 22px 9px #ffafaf75;
+  }
+}
+
+.user-avatar svg {
+  width: 1.4em;
+  height: 1.4em;
+  color: #a8bbdd;
+  stroke-width: 2.3;
+  opacity: 0.95;
+}
+
+.username {
+  font-weight: 600;
+  letter-spacing: 0.012em;
+  color: #fbfcff;
+  padding-left: 0.12em;
+  text-shadow: 0 1px 3px #0003;
+}
+@keyframes pulseOnline {
+  0%, 100% {
+    box-shadow: 0 0 0 1px #84ffc022, 0 0 6px 2px #49fa9f22;
+  }
+  50% {
+    box-shadow: 0 0 0 3px #6affd633, 0 0 12px 5px #9affc422;
+  }
+}
+
+@keyframes pulseOffline {
+  0%, 100% {
+    box-shadow: 0 0 0 1px #fa555522, 0 0 6px 1px #fa555520;
+  }
+  50% {
+    box-shadow: 0 0 0 3px #ff797933, 0 0 11px 4px #ffafaf31;
+  }
+}
+
+.user-avatar {
+  width: 0.5em;
+  height: 0.5em;
+  border-radius: 50%;
+  background: #181b22;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  transition: box-shadow 0.17s;
+}
+
+.user-avatar svg {
+  width: 0.8em;
+  height: 0.8em;
+  color: #a8bbdd;
+  stroke-width: 2;
+}
