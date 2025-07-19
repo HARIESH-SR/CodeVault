@@ -14,15 +14,18 @@ function showServerStatus() {
   let checkInterval = null;
   let isServerAwake = false;
 
-  function setStatus(isOnline, label) {
-    if (!statusDiv) return;
-    const now = new Date().toLocaleTimeString();
-    statusDiv.textContent = isOnline ? "🟢" : "🔴"; // only icon shown
-    statusDiv.title = `${isOnline ? "🟢 Server Online" : "🔴 Server Sleeping"} (${now})`; // full status on hover
+  const userBadge = document.getElementById("usernameDisplay");
+function setStatus(isOnline) {
+  if (!userBadge) return;
+  userBadge.classList.toggle('online', isOnline);
+  userBadge.classList.toggle('offline', !isOnline);
+  // Optionally, set a title tooltip for extra feedback:
+  userBadge.title = isOnline
+      ? `🟢 Server Online (${new Date().toLocaleTimeString()})`
+      : `🔴 Server Sleeping (${new Date().toLocaleTimeString()})`;
+}
 
-    statusDiv.style.backgroundColor = isOnline ? "#2e7d32" : "#b71c1c";
-    statusDiv.style.color = "#fff";
-  }
+
 
   function checkStatus() {
     fetch(PING_URL)
