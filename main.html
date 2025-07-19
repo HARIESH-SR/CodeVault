@@ -5,7 +5,10 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
         <title>CodeVault</title>
         <link rel="stylesheet" href="main.css">
+        <link href="https://fonts.googleapis.com/css?family=Inter:wght@500;700&display=swap" rel="stylesheet">
         <!-- Firebase & Monaco -->
+        <script src="https://cdn.tailwindcss.com"></script>
+
         <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
         <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.34.1/min/vs/loader.min.js"></script>
@@ -71,47 +74,51 @@
 
       </head>
     <body>
-        <div style="display: flex; justify-content: space-between; align-items: center; padding: 12px 20px; background: #1f1f1f;">
-  <div style="flex: 1; text-align: center;">
-    <h2 style="margin: 0; color: #fff; font-family: 'Segoe UI', sans-serif;">CodeVault</h2>
+      <div class="header-bar">
+        <div id="usernameDisplay" class="user-badge-simple">
+  <div class="user-avatar">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+      <circle cx="12" cy="7" r="4"/>
+    </svg>
   </div>
-  <button onclick="importSharedByCode()">Receive Code</button>
+  <span class="username">Guest</span>
+</div>
 
-  <div id="usernameDisplay" style="
-      font-family: 'Segoe UI', sans-serif;
-      font-size: 14px;
-      background: #1f1f1f;
-      color: #90caf9;
-      padding: 8px 16px;
-      border: 1px solid #333;
-      border-radius: 20px;
-      box-shadow: 0 0 5px rgba(0,0,0,0.3);
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    ">
-    👤 Guest
+
+  <div class="header-title">
+    <svg class="logo-icon" viewBox="0 0 24 24" fill="currentColor">
+      <path d="M12 2L13.09 8.26L22 9L13.09 9.74L12 16L10.91 9.74L2 9L10.91 8.26L12 2Z"/>
+    </svg>
+    <h2>CodeVault</h2>
   </div>
-    <div id="serverStatus" style="
-  margin-left: 8px;
-  padding: 4px;
-  background-color: #999;
-  color: white;
-  font-size: 16px;
-  border-radius: 50%;
-  width: 15px;
-  height: 15px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-family: 'Segoe UI', sans-serif;
-  cursor: default;
-" title="Checking server...">
-  ⏳
-</div>
-<button id="logoutBtn" onclick="manualLogout()" >Logout</button>
 
+  <div class="header-actions">
+    <button class="header-btn" onclick="importSharedByCode()" title="Receive Code">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+        <polyline points="7,10 12,15 17,10"/>
+        <line x1="12" y1="15" x2="12" y2="3"/>
+      </svg>
+      <span>Receive</span>
+    </button>
+
+    <!-- Simplified User Badge -->
+    
+
+
+    <button id="logoutBtn" class="header-btn logout-btn" onclick="manualLogout()" title="Logout">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+        <polyline points="16,17 21,12 16,7"/>
+        <line x1="21" y1="12" x2="9" y2="12"/>
+      </svg>
+      <span>Logout</span>
+    </button>
+  </div>
 </div>
+
+
         <div id="appContent">
             
             <div id="controls" style="
