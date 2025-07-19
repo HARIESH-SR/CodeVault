@@ -465,24 +465,8 @@
                     <option value="typescript">TypeScript</option>
                 </select>
                 <button onclick="runCode()" id="run-btn" title="Run (Ctrl + Enter)">▶</button>
-                <div id="serverStatus" style="
-                    margin-left: 0px;
-                    padding: 4px;
-                    background-color: #999;
-                    color: white;
-                    font-size: 16px;
-                    border-radius: 50%;
-                    width: 15px;
-                    height: 15px;
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                    font-family: 'Segoe UI', sans-serif;
-                    cursor: default;
-                    " title="Checking server...">
-                    ⏳
-                </div>
-                <button id="openGeminiBtn" type="button" style="background:#2d3c68;color:#ffe082;border-radius:4px;margin-left:10px;font-weight:bold;" onclick="openGeminiChat()">Ask AI Assistant</button>
+                
+                <button id="openGeminiBtn" type="button" style="background:#2d3c68;color:#ffe082;border-radius:4px;font-weight:bold;" onclick="openGeminiChat()">Ask AI Assistant</button>
 
                 <button onclick="saveSolution()" title="Save (Ctrl + S)">💾</button>
                 <button class="font-btn" onclick="changeFontSize('editor', -1)" title="Decrease editor font size">A−</button>
@@ -503,6 +487,14 @@
                     <option value="gfg">GeeksForGeeks</option>
                 </select>
                 <button id="problemDataBtn" style="display: none;">📘 Problem Data</button>
+                <div id="usernameDisplay" class="user-badge-simple">
+  <div class="user-avatar">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+      <circle cx="12" cy="7" r="4"/>
+    </svg>
+  </div>
+</div>
                 <button onclick="handleClose()" title="Close">❌</button>
             </div>
         </div>
