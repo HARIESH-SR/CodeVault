@@ -565,12 +565,12 @@ body.chat-open #io-section {
 .chat-bubble code, .chat-bubble pre {
   font-family: 'JetBrains Mono', 'Fira Mono', 'Consolas', 'Menlo', monospace;
   font-size: 15px;
-  background: #181f29 !important;
+  background: #011627!important;
   color: #ffeb95 !important;
 }
 
 .chat-bubble pre {
-  background: #191f29 !important;
+  background: #011627 !important;
   color: #ffe491;
   padding: 13px 15px;
   border-radius: 9px;
@@ -750,7 +750,7 @@ pre {
   font-weight: bold;
 }
 .chat-bubble pre {
-  background: #191f29;
+  background: #011627;
   color: #ffe491;
   padding: 13px 15px;
   border-radius: 9px;
@@ -839,7 +839,8 @@ pre {
   background: #101830;
   color: #b2c2f7;
   border-radius: 7px;
-  margin: 1.8em 0 1.5em 0;
+  margin-top: 0px;
+  margin-bottom: 0px;
   padding: 1.3em 1.2em;
   overflow-x: auto;
   font-size: 1em;
@@ -1257,7 +1258,7 @@ pre {
   background: linear-gradient(90deg, #ffe082, #82aaff);
   color: #222d3d;
   transform: translateY(-2px) scale(1.045);
-  box-shadow: 0 4px 22px #c792ea33, 0 1.5px 10px #01111d14;
+  box-shadow: 0 4px 22px #c792ea33, 0 1.5px 10px #0111d141;
 }
 
 .prompt-btn:active {
@@ -1431,5 +1432,33 @@ pre {
 }
 .gemini-response ul{
   margin-bottom: 0px;
-  margin-top: 0px;
+  margin-top: 1em;
+}
+.gemini-response ul li{
+  line-height: 2em;
+  
+}
+.save-gemini-response-btn {
+  float: right;
+}
+.save-gemini-response-btn {
+  padding: 0.7em 1.4em;
+  background: transparent;
+  border: 2px solid #4f9cff;
+  border: 2px solid #4f9cff;
+  border-radius: 0.7em;
+  font-size: 1rem;
+  font-weight: 600;
+  transition: 
+    background 0.2s,
+    color 0.22s,
+    transform 0.14s;
+  cursor: pointer;
+}
+
+.save-gemini-response-btn:hover, 
+.save-gemini-response-btn:focus {
+  background: #4f9cff;
+  color: #fff;
+  transform: scale(1.03);
 }
