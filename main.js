@@ -54,7 +54,7 @@ window.deleteHeading = async function(hKey) {
 
     const userInput = prompt(`To delete, please type the heading name exactly:\n"${headingName}"`);
     if (userInput !== headingName) {
-      alert("Heading name did not match. Deletion cancelled.");
+      showToast("Heading name did not match. Deletion cancelled!", { success: false });
       return;
     }
 
@@ -81,10 +81,10 @@ window.deleteHeading = async function(hKey) {
     updates[`hcount`] = hcount - 1;
 
     await update(baseRef, updates);
-    alert("Heading deleted successfully.");
+    showToast("Heading deleted successfully.");
   } catch (error) {
     console.error("Error deleting heading:", error);
-    alert("Something went wrong while deleting the heading.");
+    showToast("Something went wrong while deleting the heading.", { success: false });
   }
 };
 
@@ -106,7 +106,7 @@ window.deleteProblem = async function(hKey, pKey) {
 
     const userInput = prompt(`To delete, please type the problem title exactly:\n"${problemTitle}"`);
     if (userInput !== problemTitle) {
-      alert("Problem title did not match. Deletion cancelled.");
+      showToast("Problem title did not match. Deletion cancelled.", { success: false });
       return;
     }
 
@@ -132,10 +132,10 @@ window.deleteProblem = async function(hKey, pKey) {
     updates[`pcount`] = pcount - 1;
 
     await update(probRef, updates);
-    alert("Problem deleted successfully.");
+    showToast("Problem deleted successfully.");
   } catch (err) {
     console.error("Error during problem deletion:", err);
-    alert("Failed to delete problem.");
+    showToast("Failed to delete problem.", { success: false });
   }
 };
 
@@ -258,26 +258,27 @@ html += `
 }
 window.renameHeading = function(hKey) {
   const newTitle = prompt("Enter new heading title:");
-  if (!newTitle) return;
+  if (!newTitle) return showToast("Title cannot be empty. Rename Cancelled!", { success: false });
 
   update(ref(db, `${dbPrefix}/headings/${hKey}`), { heading: newTitle });
+  showToast("Heading renamed successfully!");
 };
 // ✅ Replace the previous moveProblemToAnotherHeading with this corrected version
 window.moveProblemToAnotherHeading = async function (fromHKey, pKey) {
   try {
     const allSnap = await get(ref(db, `${dbPrefix}/headings`));
-    if (!allSnap.exists()) return alert("No headings found.");
+    if (!allSnap.exists()) return showToast("No headings found.", { success: false });
 
     const allHeadings = allSnap.val();
     const fromHeading = allHeadings[fromHKey];
     if (!fromHeading || !fromHeading.problems || !fromHeading.problems[pKey]) {
-      return alert("Problem not found.");
+      return showToast("Problem not found.", { success: false });
     }
 
     const targetKeys = Object.keys(allHeadings)
     .filter(key => key !== fromHKey).
     sort((a, b) => parseInt(a.slice(1)) - parseInt(b.slice(1)));;
-    if (targetKeys.length === 0) return alert("No other headings to move to.");
+    if (targetKeys.length === 0) return showToast("No other headings to move to.", { success: false });
 
 
 
@@ -287,7 +288,7 @@ const promptText = targetKeys
 
 
     const toHKey = prompt(`Move to which heading?\n${promptText}\n(Enter key like h2, h3...)`);
-    if (!toHKey || !allHeadings[toHKey]) return alert("Invalid heading selected.");
+    if (!toHKey || !allHeadings[toHKey]) return showToast("Invalid heading selected.", { success: false });
 
     const problemToMove = fromHeading.problems[pKey];
 
@@ -316,18 +317,19 @@ const promptText = targetKeys
     };
 
     await update(ref(db), updates);
-    alert("Problem moved successfully!");
+    showToast("Problem moved successfully!");
   } catch (err) {
     console.error("Error moving problem:", err);
-    alert("Failed to move problem.");
+    showToast("Failed to move problem.", { success: false });
   }
 };
 
 window.renameProblem = function(hKey,pKey) {
   const newProblemTitle = prompt("Enter new heading title:");
-  if (!newProblemTitle) return;
+  if (!newProblemTitle) return showToast("Title cannot be empty. Rename Cancelled!", { success: false });
 
   update(ref(db, `${dbPrefix}/headings/${hKey}/problems/${pKey}`), { title: newProblemTitle });
+  showToast("Problem renamed successfully!");
 };
 window.moveHeading = function(hKey, direction) {
   get(ref(db, `${dbPrefix}/headings`)).then(snapshot => {
@@ -454,7 +456,7 @@ document.addEventListener('click', () => {
 window.addProblem = function (hKey) {
     const input = document.getElementById(`${hKey}-newProbTitle`);
     const title = input.value.trim();
-    if (!title) return alert("Title cannot be empty.");
+    if (!title) return showToast("Title cannot be empty.", { success: false });
 
     const probPath = `${dbPrefix}/headings/${hKey}`;
 
@@ -513,7 +515,7 @@ document.getElementById('collapseAll').addEventListener('click', () => {
 
 document.getElementById("addHeadingBtn").addEventListener("click", () => {
     const headingTitle = document.getElementById("newHeadingInput").value.trim();
-    if (!headingTitle) return alert("Heading title cannot be empty.");
+    if (!headingTitle) return showToast("Heading title cannot be empty.", { success: false });
 
     get(ref(db, `${dbPrefix}/hcount`)).then(snapshot => {
         let hcount = snapshot.exists() ? snapshot.val() : 0;
@@ -532,7 +534,7 @@ document.getElementById("addHeadingBtn").addEventListener("click", () => {
         };
 
         update(ref(db), updates).then(() => {
-            alert("Heading added!");
+            showToast("Heading added Successfully!");
             document.getElementById("newHeadingInput").value = "";
         });
     });
@@ -565,7 +567,7 @@ window.handleEnter = function(event, hKey) {
 };
 window.insertHeadingAbove = async function (hKey) {
   const newTitle = prompt("Enter title for new heading:");
-  if (!newTitle) return;
+  if (!newTitle) return showToast("Title cannot be empty.", { success: false });
 
   const hNum = parseInt(hKey.slice(1)); // Get numeric part
   const baseRef = ref(db, dbPrefix);
@@ -600,15 +602,15 @@ window.insertHeadingAbove = async function (hKey) {
     updates[`hcount`] = hcount + 1;
 
     await update(baseRef, updates);
-    alert("Heading inserted above successfully!");
+    showToast("Heading inserted above successfully!");
   } catch (err) {
     console.error("Error inserting heading above:", err);
-    alert("Failed to insert heading.");
+    showToast("Failed to insert heading.", { success: false });
   }
 };
 window.insertProblemAbove = async function(hKey, pKey) {
   const title = prompt("Enter title for new problem:");
-  if (!title) return;
+  if (!title) return showToast("Title cannot be empty.", { success: false });
 
   const pNum = parseInt(pKey.slice(1));
   const probPath = `${dbPrefix}/headings/${hKey}`;
@@ -651,7 +653,7 @@ window.insertProblemAbove = async function(hKey, pKey) {
     window.open("solution.html", "_blank");
   } catch (err) {
     console.error("Error inserting problem above:", err);
-    alert("Failed to insert problem.");
+    showToast("Failed to insert problem.", { success: false });
   }
 };
 document.getElementById("newHeadingInput").addEventListener("keydown", function (event) {
@@ -902,7 +904,6 @@ window.shareHeadingByCode = async function(hKey) {
       await remove(ref(db, `shared/${code}`));
     } catch(e) {} // Ignore errors for legacy nodes
     pendingShareCodes = pendingShareCodes.filter(item => item.code !== code);
-    showToast(`Your share code expired (${SHARE_EXPIRY_MINUTES} minutes). Please generate a new code.`);
   }, SHARE_EXPIRY_MS);
 
   // 7. Track code+timeout for collective cleanup
@@ -931,66 +932,147 @@ window.shareHeadingByCode = async function(hKey) {
 };
 
 function showToast(message, options = {}) {
-  // Remove any existing toasts so it never stacks endlessly
+  // Remove any existing toasts
   document.querySelectorAll('.custom-toast').forEach(e => e.remove());
 
-  let toast = document.createElement('div');
+  // Settings
+  const isSuccess = options.success !== false;
+  const accent = isSuccess ? "#22ee98" : "#ff4567";
+  const iconSVG = isSuccess
+     ? `<svg width="24" height="24" fill="none" viewBox="0 0 24 24">
+        <circle cx="12" cy="12" r="10" stroke="#22ee98" stroke-width="2.2" fill="none"/>
+        <path d="M8.5 13.5l2 2l4.5-5" stroke="#22ee98" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+      </svg>`
+    : `<svg width="24" height="24" fill="none" viewBox="0 0 24 24">
+        <circle cx="12" cy="12" r="10" stroke="#ff4567" stroke-width="2.2" fill="none"/>
+        <path d="M9 9l6 6M15 9l-6 6" stroke="#ff4567" stroke-width="2.2" stroke-linecap="round" fill="none"/>
+      </svg>`;
+  // Container
+  const toast = document.createElement('div');
   toast.className = 'custom-toast';
+  toast.tabIndex = 0;
+  toast.setAttribute('role', 'status');
+  toast.setAttribute('aria-live', 'polite');
   toast.innerHTML = `
+    <span class="custom-toast-ring" style="background:radial-gradient(circle,${accent}1a 40%,transparent 75%)">${iconSVG}</span>
     <span class="custom-toast-message">${message}</span>
-    <button class="custom-toast-close" aria-label="Close">&times;</button>
-  `;
-  // Custom style (can also be moved to a <style> tag for production)
-  toast.style = `
-    position:fixed;
-    bottom:38px;
-    left:50%;
-    transform:translateX(-50%);
-    min-width:320px; max-width:82vw;
-    background:rgba(40,40,60,0.98);
-    color:#fff;
-    padding:18px 36px 18px 18px;
-    border-radius:12px;
-    font-size:16px;
-    z-index:99999;
-    display:flex; align-items:center; gap: 12px;
-    box-shadow: 0 4px 24px rgba(0,0,0,0.18);
-    opacity:0;
-    transition: opacity 0.4s, bottom 0.4s;
-    pointer-events:auto;
-    backdrop-filter: blur(2.5px);
+    <button class="custom-toast-close" aria-label="Close" title="Dismiss">&times;</button>
+    <div class="custom-toast-progress"></div>
   `;
 
-  // Close button style
-  toast.querySelector('.custom-toast-close').style = `
-    background:none;
-    border:none;
-    color:#fff;
-    font-size:26px;
-    cursor:pointer;
-    align-self:flex-start;
-    margin-left:auto;
-    line-height:1;
-    transition: color 0.12s;
-  `;
-  toast.querySelector('.custom-toast-close').onmouseenter = function() { this.style.color = "#FFD600"; }
-  toast.querySelector('.custom-toast-close').onmouseleave = function() { this.style.color = "#FFF"; }
-  toast.querySelector('.custom-toast-close').onclick = function() {
+  // Apply overlay, blur, glass, and micro-shadow
+  Object.assign(toast.style, {
+    position: "fixed",
+    top: "32px",
+    left: "50%",
+    transform: "translateX(-50%) scale(0.96)",
+    minWidth: "260px",
+    maxWidth: "92vw",
+    background: "rgba(30,33,43,0.82)",
+    borderRadius: "19px",
+    boxShadow: `0 8px 32px ${accent}22, 0 2px 8px rgba(25,30,60,0.12)`,
+    border: `1.3px solid ${accent}2b`,
+    display: "flex",
+    alignItems: "center",
+    gap: "14px",
+    fontSize: "1.06rem",
+    fontWeight: "520",
+    color: "#fff",
+    zIndex: 99999,
+    padding: "14px 22px 14px 14px",
+    opacity: 0,
+    pointerEvents: "auto",
+    backdropFilter: "blur(11px)",
+    transition: "all 0.43s cubic-bezier(.27,.62,.36,.96)",
+  });
+
+  // Inner element styles
+  Object.assign(toast.querySelector('.custom-toast-ring').style, {
+    width: "38px", height: "38px",
+    borderRadius: "50%",
+    minWidth: "38px", display: "inline-flex",
+    justifyContent: "center", alignItems: "center",
+    marginRight: "6px", flexShrink: 0,
+    boxShadow: `0 0 8px ${accent}30`
+  });
+
+  Object.assign(toast.querySelector('.custom-toast-message').style, {
+    flex: "1", lineHeight: "1.42",
+    letterSpacing: ".01em"
+  });
+
+  // Close button
+  const closeBtn = toast.querySelector('.custom-toast-close');
+  Object.assign(closeBtn.style, {
+    background: "none", border: "none",
+    color: accent, fontSize: "1.23rem", fontWeight: "700",
+    cursor: "pointer", padding: "0 0.32em", marginLeft: "1em",
+    alignSelf: "flex-start", lineHeight: "0.97", borderRadius: "50%",
+    transition: "background 0.14s, color 0.14s"
+  });
+  closeBtn.onmouseenter = function() { this.style.background = `${accent}26`; this.style.color = "#fff"; }
+  closeBtn.onmouseleave = function() { this.style.background = ""; this.style.color = accent; }
+  closeBtn.onclick = () => {
     toast.style.opacity = 0;
-    toast.style.bottom = '16px';
-    setTimeout(() => toast.remove(), 400);
+    toast.style.top = "16px";
+    toast.style.transform = "translateX(-50%) scale(0.95)";
+    setTimeout(() => toast.remove(), 340);
   };
+  toast.onkeydown = function(e) { if (["Escape","Enter"," "].includes(e.key)) closeBtn.click(); };
 
+  // Progress bar
+  const prog = toast.querySelector('.custom-toast-progress');
+  Object.assign(prog.style, {
+    position: "absolute",
+    left: 0, right: 0, bottom: 0, height: "3.2px",
+    background: "linear-gradient(90deg,"+accent+",#fff0 95%)",
+    borderRadius: "0 0 12px 12px",
+    pointerEvents: "none",
+    transform: "scaleX(0)",
+    transformOrigin: "left",
+    transition: "transform 0.24s"
+
+  });
+
+  // Extra overall styles for positioning
+  toast.style.position = "fixed";
+  toast.style.top = "32px";
+  toast.style.left = "50%";
+  toast.style.transform = "translateX(-50%) scale(0.96)";
+  toast.style.opacity = "0";
+
+  // Responsive tweaks
+  if (window.innerWidth < 400) {
+    toast.style.fontSize = "1rem";
+    toast.style.padding = "10px 8px 10px 7px";
+    toast.querySelector('.custom-toast-ring').style.width = toast.querySelector('.custom-toast-ring').style.height = "31px";
+    toast.querySelector('.custom-toast-ring').style.minWidth = "31px";
+    closeBtn.style.marginLeft = "0.5em";
+  }
+
+  // Mount and animate in
+  toast.style.transition = "all 0.43s cubic-bezier(.27,.62,.36,.96)";
   document.body.appendChild(toast);
-  // Trigger fade-in animation
-  setTimeout(() => { toast.style.opacity = 1; toast.style.bottom = '38px'; }, 10);
-
-  const duration = options.duration || 4700;
   setTimeout(() => {
-    // Trigger fade-out
+    toast.style.opacity = 1;
+    toast.style.top = "52px";
+    toast.style.transform = "translateX(-50%) scale(1)";
+    prog.style.transform = "scaleX(1)";
+    prog.style.transition = `transform ${options.duration || 4000}ms linear`;
+    prog.style.transformOrigin = "left";
+    prog.style.background = `linear-gradient(90deg,${accent},#fff0 90%)`;
+    setTimeout(() => {
+      prog.style.transform = "scaleX(0)";
+    }, 30);
+  }, 16);
+
+  // Animate out
+  const duration = options.duration || 4000;
+  setTimeout(() => {
     toast.style.opacity = 0;
-    toast.style.bottom = '16px';
-    setTimeout(() => toast.remove(), 400);
+    toast.style.top = "16px";
+    toast.style.transform = "translateX(-50%) scale(0.94)";
+    setTimeout(() => toast.remove(), 350);
   }, duration);
 }
 window.importSharedByCode = async function() {
@@ -1000,7 +1082,7 @@ window.importSharedByCode = async function() {
   const shareRef = ref(db, `shared/${code}`);
   const shareSnap = await get(shareRef);
   if (!shareSnap.exists()) {
-    showToast("Invalid or expired code.");
+    showToast("Invalid or expired code.", { success: false });
     return;
   }
   const shareData = shareSnap.val();
@@ -1093,7 +1175,7 @@ window.importSharedByCode = async function() {
   showToast(`Received heading: "${newHeadingTitle}" with ${headingObj.pcount} problem(s)!`);
   }
   else {
-    showToast("This code does not contain valid data.");
+    showToast("This code does not contain valid data.", { success: false });
   }
 };
 
