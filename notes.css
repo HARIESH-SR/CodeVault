@@ -214,8 +214,8 @@ body.dark-mode #status-floater {
 /* Active/hovered tool button highlighted more */
 .ql-toolbar button:hover svg .ql-stroke,
 .ql-toolbar button.ql-active svg .ql-stroke {
-  stroke: #ffffff;
-  fill: #000000;
+  stroke: #0ca5fd;
+  fill: #ffffff;
 }
 
 body.dark-mode .ql-toolbar button svg select.ql-stroke,
@@ -231,7 +231,7 @@ body.dark-mode .ql-toolbar button:not(:hover):not(.ql-active) svg .ql-stroke {
 
 body.dark-mode .ql-toolbar button:hover svg .ql-stroke,
 body.dark-mode .ql-toolbar button.ql-active svg .ql-stroke {
-  stroke: #ffffff;
+  stroke: #0cbaff;
   fill: #000000;
 }
 /* For all Quill picker arrows (dropdown icons) */
