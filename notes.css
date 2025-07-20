@@ -200,14 +200,14 @@ body.dark-mode #status-floater {
 /* Light mode: Bar and icons use primary accent color */
 .ql-toolbar button svg .ql-stroke,
 .ql-toolbar button svg .ql-fill {
-  stroke: #258dff;
+  stroke: #000000;
   fill: #ffffff;
   transition: stroke 0.15s, fill 0.15s;
 }
 
 /* Optional: inactive icons a bit softer */
 .ql-toolbar button:not(:hover):not(.ql-active) svg .ql-stroke {
-  stroke: #ffffff;
+  stroke: #000000;
   fill: rgb(255, 255, 255);
 }
 
@@ -215,24 +215,24 @@ body.dark-mode #status-floater {
 .ql-toolbar button:hover svg .ql-stroke,
 .ql-toolbar button.ql-active svg .ql-stroke {
   stroke: #ffffff;
-  fill: #ffffff;
+  fill: #000000;
 }
 
 body.dark-mode .ql-toolbar button svg select.ql-stroke,
 body.dark-mode .ql-toolbar button svg seelct .ql-fill {
   stroke: #ffffff;
-  fill: #ffffff;
+  fill: #000000;
 }
 
 body.dark-mode .ql-toolbar button:not(:hover):not(.ql-active) svg .ql-stroke {
   stroke: #ffffff;
-  fill: #ffffff;
+  fill: #000000;
 }
 
 body.dark-mode .ql-toolbar button:hover svg .ql-stroke,
 body.dark-mode .ql-toolbar button.ql-active svg .ql-stroke {
   stroke: #ffffff;
-  fill: #ffffff;
+  fill: #000000;
 }
 /* For all Quill picker arrows (dropdown icons) */
 body.dark-mode .ql-picker-label svg .ql-stroke,
