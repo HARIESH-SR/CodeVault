@@ -250,7 +250,7 @@ async function runRemoteReplit(langName, code, input) {
     document.getElementById("output").innerText = output;
     isOutputSaved = false;
   } catch (err) {
-    document.getElementById("output").innerText = "❌ Error: " + err.message;
+    document.getElementById("output").innerText = err.message;
     lastRawOutput = "";
     isOutputSaved = true;
   }
@@ -266,13 +266,13 @@ async function runRemoteRender(langName, code, input) {
     });
 
     const result = await response.json();
-    const output = result.output || result.error || "⚠️ No output";
+    const output = result.output || result.error || "No output";
 
     lastRawOutput = output;
     document.getElementById("output").innerText = output;
     isOutputSaved = false;
   } catch (err) {
-    document.getElementById("output").innerText = "❌ Error: " + err.message;
+    document.getElementById("output").innerText = err.message;
     lastRawOutput = "";
     isOutputSaved = true;
   }
@@ -328,7 +328,7 @@ mystdout.getvalue()
         isOutputSaved = false;
 
     } catch (e) {
-        document.getElementById('output').innerText = '❌ Pyodide Error:\n' + e;
+        document.getElementById('output').innerText = e;
         lastRawOutput = '';
         isOutputSaved = true;
     }
@@ -400,7 +400,7 @@ mystdout.getvalue()
     isOutputSaved = false;
 
   } catch (e) {
-    document.getElementById('output').innerText = '❌ SQLite Pyodide Error:\n' + e;
+    document.getElementById('output').innerText = e;
     lastRawOutput = '';
     isOutputSaved = true;
   }
@@ -408,12 +408,12 @@ mystdout.getvalue()
   return;
 }
 if (["cpp", "java", "c","php"].includes(langName)) {
-  document.getElementById("output").innerText = `⚡ Running in Render backend server - ${langName.toUpperCase()}...`;
+  document.getElementById("output").innerText = `Running in Render backend server - ${langName.toUpperCase()}...`;
   await runRemoteRender(langName, code, input);
   return;
 }
 if (["cpp", "java", "c", "php"].includes(langName)) {
-  document.getElementById("output").innerText = `⚡ Running in backend server - ${langName.toUpperCase()}...`;
+  document.getElementById("output").innerText = `Running in backend server - ${langName.toUpperCase()}...`;
   await runRemoteReplit(langName, code, input);
   return;
 }
@@ -421,7 +421,7 @@ if (["cpp", "java", "c", "php"].includes(langName)) {
 
 
 
-    document.getElementById('output').innerText = `⚡ Running in Judge0 API - ${langName} ...`;
+    document.getElementById('output').innerText = `Running in Judge0 API - ${langName} ...`;
     
     fetch('https://judge0-ce.p.rapidapi.com/submissions?base64_encoded=false&wait=true', {
             method: 'POST',
@@ -445,12 +445,12 @@ if (["cpp", "java", "c", "php"].includes(langName)) {
             const stderr = (res.stderr || '').trim();
             const compileOutput = (res.compile_output || '').trim();
 
-            if (stdout) output += 'Output:\n\n' + stdout + '\n';
-            if (stderr) output += '⚠️ Stderr:\n' + stderr + '\n';
-            if (compileOutput) output += '🛑 Compilation Error:\n' + compileOutput + '\n';
+            if (stdout) output += stdout;
+            if (stderr) output += 'Stderr:\n' + stderr + '\n';
+            if (compileOutput) output += 'Compilation Error:\n' + compileOutput + '\n';
             if (res.message == "You have exceeded the DAILY quota for Submissions on your current plan, BASIC. Upgrade your plan at https://rapidapi.com/judge0-official/api/judge0-ce") {
                 output += '❗ Error: You have exceeded the DAILY quota for Submissions on your current plan.\n';
-            } else if (!output.trim()) output = '⚠️ No output or error.';
+            } else if (!output.trim()) output = 'No output or error.';
 
             document.getElementById('output').innerText = output;
             if (stdout) {
@@ -461,7 +461,7 @@ if (["cpp", "java", "c", "php"].includes(langName)) {
                 isOutputSaved = true; // Nothing new to save
             }
         })
-        .catch(err => document.getElementById('output').innerText = '❌ Error: ' + err);
+        .catch(err => document.getElementById('output').innerText = err);
 }
 const dbPrefix = sessionStorage.getItem("dbPrefix") || "savedcodes";
 const problemPath = `${dbPrefix}/headings/${hKey}/problems/${pKey}`;
@@ -521,10 +521,10 @@ const probRef = db.ref(`users/${uid}/${dbPrefix}/headings/${hKey}/problems/${pKe
         isSaved = true;
         isInputSaved = true;
         isOutputSaved = true;
-        alert("✅ Solution saved!");
+        showToast("Solution saved!");
     }).catch(err => {
         console.error(err);
-        alert("❌ Error saving.");
+        showToast("Error saving.", { success: false });
     });
 }
 
@@ -568,9 +568,14 @@ function copyTextFromEditor() {
 
     try {
         const success = document.execCommand("copy");
-        alert(success ? "Code copied to clipboard!" : "Copy failed.");
+        if( success) {
+          showToast("Code copied!");
+        }
+        else {
+          showToast("Copy failed.", { success: false });
+        }
     } catch (err) {
-        alert("Unable to copy code.");
+        showToast("Unable to copy code.", { success: false });
         console.error("Copy error:", err);
     }
 
@@ -616,7 +621,7 @@ function copyText(id) {
     let textToCopy = "";
 
     if (!el) {
-        alert("Element not found.");
+        showToast("Element not found.", { success: false });
         return;
     }
 
@@ -626,19 +631,22 @@ function copyText(id) {
     } else if (id === "output") {
         const raw = el.innerText;
 
-        // Handle stored output
+        // Try matching normal output
         const storedMatch = raw.match(/Stored Output\s*\(.*?\):\s*\n\n([\s\S]*)/);
-        const runtimeMatch = raw.match(/Output:\s*\n\n([\s\S]*?)(?=\n⚠️|\n🛑|$)/);
-
         if (storedMatch) {
             textToCopy = storedMatch[1].trim();
-        } else if (runtimeMatch) {
-            textToCopy = runtimeMatch[1].trim();
-        } else {
-            textToCopy = ""; // No meaningful output
         }
+        else{
+          textToCopy = raw.trim();
+        } 
+
     } else {
-        alert("Unsupported element.");
+        showToast("Unsupported element.", { success: false });
+        return;
+    }
+
+    if (!textToCopy) {
+        showToast("No output to copy.", { success: false });
         return;
     }
 
@@ -653,14 +661,19 @@ function copyText(id) {
 
     try {
         const success = document.execCommand("copy");
-        alert(success ? "Copied!" : "Copy failed.");
+        if (success) {
+            showToast("Copied!", { success: true });
+        } else {
+            showToast("Copy failed.", { success: false });
+        }
     } catch (err) {
-        alert("Unable to copy.");
+        showToast("Unable to copy to clipboard.", { success: false });
         console.error("Copy error:", err);
     }
 
     document.body.removeChild(tempTextArea);
 }
+
 let isWordWrapEnabled = true;
 
 function toggleWordWrap() {
@@ -832,282 +845,7 @@ logoutChannel.addEventListener("message", (event) => {
 window.addEventListener("beforeunload", () => {
     logoutChannel.close();
 });
-/*
-async function askGemini() {
-  const promptInput = document.getElementById("aiPrompt");
-  const prompt = promptInput?.value.trim();
-  const code = window.editor?.getValue() || "";
 
-  if (!prompt) {
-    alert("Please enter a prompt.");
-    return;
-  }
-
-  const fullPrompt = `${prompt}\n\nHere is the code:\n${code}`;
-  const aiResponseBox = document.getElementById("aiResponse");
-  aiResponseBox.innerText = "AI is thinking...";
-
-  const apiKey = "Paste key"; // Replace with your actual API key
-  const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
-
-  const requestBody = {
-    contents: [{ parts: [{ text: fullPrompt }] }]
-  };
-
-  try {
-    const res = await fetch(url, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "X-goog-api-key": apiKey
-      },
-      body: JSON.stringify(requestBody)
-    });
-
-    const data = await res.json();
-
-    if (!res.ok || data.error) {
-      const errMsg = data?.error?.message || "Unknown error";
-      aiResponseBox.innerText = `❌ ${errMsg}`;
-      return;
-    }
-
-    const result = data?.candidates?.[0]?.content?.parts?.[0]?.text || "⚠️ No response from Gemini.";
-
-    // ✅ Set formatted HTML
-    aiResponseBox.innerHTML = formatGeminiMarkdown(result);
-  } catch (err) {
-    aiResponseBox.innerText = "❌ Network error: " + err.message;
-  }
-}
-*/
-// ✅ Formats markdown to HTML (bold + code blocks)
-
-
-/*
-async function askGemini() {
-  const promptInput = document.getElementById("aiPrompt");
-  const prompt = promptInput?.value.trim();
-  const code = window.editor?.getValue() || "";
-
-  if (!prompt) {
-    alert("Please enter a prompt.");
-    return;
-  }
-
-  const fullPrompt = `${prompt}\n\nHere is the code:\n${code}`;
-  const aiResponseBox = document.getElementById("aiResponse");
-  aiResponseBox.innerText = "🤖 Gemini is thinking...";
-
-  console.log("🟡 Sending prompt to Gemini:", fullPrompt);
-
-  const apiKey = "Paste key"; // Replace with your real API key
-  const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
-
-  const requestBody = {
-    contents: [
-      {
-        parts: [{ text: fullPrompt }]
-      }
-    ]
-  };
-
-  try {
-    const res = await fetch(url, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "X-goog-api-key": apiKey
-      },
-      body: JSON.stringify(requestBody)
-    });
-
-    const data = await res.json();
-
-    if (!res.ok || data.error) {
-      const errMsg = data?.error?.message || "Unknown error";
-      console.error("❌ Gemini API Error:", data.error);
-      aiResponseBox.innerHTML = `❌ ${errMsg}`;
-      return;
-    }
-
-    const result = data?.candidates?.[0]?.content?.parts?.[0]?.text;
-    console.log("✅ Gemini response:", result);
-
-    aiResponseBox.innerText = cconvertMarkdownToHTML(result) || "⚠️ No response from Gemini.";
-  } catch (err) {
-    console.error("❌ Network error:", err);
-    aiResponseBox.innerText = "❌ Network error: " + err.message;
-  }
-}
-*/
-/*
-async function askGemini() {
-  const promptInput = document.getElementById("aiPrompt");
-  const prompt = promptInput?.value.trim();
-  const code = window.editor?.getValue() || "";
-
-  if (!prompt) {
-    alert("Please enter a prompt.");
-    return;
-  }
-
-  const fullPrompt = `${prompt}\n\nHere is the code:\n${code}`;
-  const aiResponseBox = document.getElementById("aiResponse");
-  aiResponseBox.innerHTML = "🤖 Gemini is thinking...";
-
-  console.log("🟡 Sending prompt to Gemini:", fullPrompt);
-
-  const apiKey = "Paste key"; // Replace with your actual key
-  const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
-
-  const requestBody = {
-    contents: [{ parts: [{ text: fullPrompt }] }]
-  };
-
-  try {
-    const res = await fetch(url, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "X-goog-api-key": apiKey
-      },
-      body: JSON.stringify(requestBody)
-    });
-
-    const data = await res.json();
-
-    if (!res.ok || data.error) {
-      const errMsg = data?.error?.message || "Unknown error";
-      console.error("❌ Gemini API Error:", data.error);
-      aiResponseBox.innerHTML = `❌ ${errMsg}`;
-      return;
-    }
-
-    const result = data?.candidates?.[0]?.content?.parts?.[0]?.text;
-    console.log("✅ Gemini response:", result);
-
-    aiResponseBox.innerHTML = convertMarkdownToHTML(result || "⚠️ No response from Gemini.");
-  } catch (err) {
-    console.error("❌ Network error:", err);
-    aiResponseBox.innerHTML = "❌ Network error: " + err.message;
-  }
-}
-*/
-async function askGemini() {
-  const promptInput = document.getElementById("aiPrompt");
-  const prompt = promptInput?.value.trim();
-  const code = window.editor?.getValue() || "";
-
-  if (!prompt) {
-    alert("Please enter a prompt.");
-    return;
-  }
-
-  const fullPrompt = `${prompt}\n\nHere is the code:\n${code}`;
-  const aiResponseBox = document.getElementById("aiResponse");
-  aiResponseBox.innerHTML = `
-    <div class="gemini-thinking">
-      <div class="thinking-animation">
-        <span>Thinking</span>
-        <span class="dots">...</span>
-      </div>
-    </div>`;
-
-  const apiKey = sessionStorage.getItem("geminiApiKey");
-  const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
-  const requestBody = {
-    contents: [{ parts: [{ text: fullPrompt }] }]
-  };
-
-  let retries = 4;
-  let delay = 1500;
-
-  for (let attempt = 1; attempt <= retries; attempt++) {
-    if (attempt > 1) {
-      aiResponseBox.innerHTML = `
-        <div class="gemini-retry">
-          <div class="retry-message">
-            <span>🔄 Attempt ${attempt} of ${retries}</span>
-            <div class="retry-progress"></div>
-          </div>
-        </div>`;
-    }
-
-    try {
-      const res = await fetch(url, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "X-goog-api-key": apiKey
-        },
-        body: JSON.stringify(requestBody)
-      });
-
-      const data = await res.json();
-
-      if (!res.ok || data.error) {
-        const errMsg = data?.error?.message || "Unknown error";
-        console.warn(`⚠️ Error from Gemini (Attempt ${attempt}):`, errMsg);
-
-        if (errMsg.toLowerCase().includes("overloaded") && attempt < retries) {
-          await new Promise(r => setTimeout(r, delay * attempt));
-          continue;
-        }
-
-        aiResponseBox.innerHTML = `
-          <div class="gemini-error">
-            <div class="error-message">
-              <span>❌ Error</span>
-              <p>${errMsg}</p>
-            </div>
-          </div>`;
-        return;
-      }
-
-      const result = data?.candidates?.[0]?.content?.parts?.[0]?.text || "⚠️ Empty response";
-      const formattedResponse = convertMarkdownToHTML(result);
-      
-      // Highlight all code blocks after rendering
-      aiResponseBox.innerHTML = formattedResponse;
-      Prism.highlightAllUnder(aiResponseBox);
-      
-      // Add copy buttons to code blocks
-      aiResponseBox.querySelectorAll('pre code').forEach(block => {
-        const wrapper = block.parentElement.parentElement;
-        if (!wrapper.querySelector('.copy-code-btn')) {
-          const header = document.createElement('div');
-          header.className = 'code-block-header';
-          header.innerHTML = `
-            <span class="code-language">${block.className.replace('language-', '')}</span>
-            <button class="copy-code-btn" title="Copy code">
-              <svg width="16" height="16" viewBox="0 0 24 24">
-                <path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"/>
-              </svg>
-            </button>`;
-          wrapper.insertBefore(header, wrapper.firstChild);
-        }
-      });
-      
-      return;
-
-    } catch (err) {
-      console.warn(`🌐 Network error (Attempt ${attempt}):`, err.message);
-
-      if (attempt < retries) {
-        await new Promise(r => setTimeout(r, delay * attempt));
-      } else {
-        aiResponseBox.innerHTML = `
-          <div class="gemini-error">
-            <div class="error-message">
-              <span>❌ Error</span>
-              <p>Final error after ${retries} attempts:<br>${err.message}</p>
-            </div>
-          </div>`;
-      }
-    }
-  }
-}
 
 // Utility to convert Markdown-ish text to rich HTML
 function convertMarkdownToHTML(markdown) {
@@ -1191,66 +929,7 @@ function escapeHTML(str) {
             .replace(/>/g, "&gt;");
 }
 
-/*
-// ✅ Main Gemini ask function
-async function askGemini() {
-  const promptInput = document.getElementById("aiPrompt");
-  const prompt = promptInput?.value.trim();
-  const code = window.editor?.getValue() || "";
 
-  if (!prompt) {
-    alert("Please enter a prompt.");
-    return;
-  }
-
-  const fullPrompt = `${prompt}\n\nHere is the code:\n${code}`;
-  const aiResponseBox = document.getElementById("aiResponse");
-  aiResponseBox.innerText = "🤖 Gemini is thinking...";
-
-  console.log("🟡 Sending prompt to Gemini:", fullPrompt);
-
-  const apiKey = "Paste key"; // ✅ Replace with your actual API key
-  const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
-
-  const requestBody = {
-    contents: [
-      {
-        parts: [{ text: fullPrompt }]
-      }
-    ]
-  };
-
-  try {
-    const res = await fetch(url, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "X-goog-api-key": apiKey
-      },
-      body: JSON.stringify(requestBody)
-    });
-
-    const data = await res.json();
-
-    if (!res.ok || data.error) {
-      const errMsg = data?.error?.message || "Unknown error";
-      console.error("❌ Gemini API Error:", data.error);
-      aiResponseBox.innerText = `❌ ${errMsg}`;
-      return;
-    }
-
-    const result = data?.candidates?.[0]?.content?.parts?.[0]?.text || "⚠️ No response from Gemini.";
-    console.log("✅ Gemini response:", result);
-
-    const formatted = convertMarkdownToHTML(result);
-    aiResponseBox.innerHTML = `<pre style="white-space: pre-wrap;">${formatted}</pre>`;
-
-  } catch (err) {
-    console.error("❌ Network error:", err);
-    aiResponseBox.innerText = "❌ Network error: " + err.message;
-  }
-}
-*/
 document.addEventListener('click', function(e) {
   // Copy code
   if (e.target.classList.contains('copy-code-btn')) {
@@ -1494,7 +1173,10 @@ if (probCheckbox && probCheckbox.checked && problemDataValue) {
   chatHistory.scrollTop = chatHistory.scrollHeight;
 
   askGeminiAPI(fullPrompt).then(resp => {
-    geminiBubble.innerHTML = resp;
+    geminiBubble.innerHTML = `
+  <div class="gemini-response-content">${resp}</div>
+  <button class="save-gemini-response-btn" title="Save this response">Save To AI Notes</button>
+`;
     chatHistoryTurns.push({question: msg, answer: resp});
 
     // Uncheck after first exchange
@@ -1665,3 +1347,263 @@ document.querySelectorAll('.prompt-btn').forEach(btn => {
     // document.querySelector('.gemini-chat-input').requestSubmit();
   });
 });
+document.addEventListener("click", function(e) {
+  if (e.target.classList.contains('save-gemini-response-btn')) {
+    const respDiv = e.target.parentElement.querySelector('.gemini-response-content');
+    if (respDiv) {
+      saveGeminiResponseToDb(respDiv.innerHTML);
+      e.target.disabled = true;
+      e.target.innerText = "Saved!";
+      setTimeout(() => {
+        e.target.disabled = false;
+        e.target.innerText = "Save To AI Notes";
+      }, 1500);
+    }
+  }
+});
+function saveGeminiResponseToDb(responseHtml) {
+  const uid = sessionStorage.getItem("uid");
+  const pKey = sessionStorage.getItem("pKey"); // optional, for grouping
+  if (!firebase || !uid || !pKey) return alert("Not logged in.");
+
+  const ref = firebase.database().ref(`users/${uid}/${problemPath}/aiNotes`).push();
+  ref.set({
+    response: responseHtml,
+    savedAt: new Date().toISOString()
+  }).then(() => {
+    showToast("Response saved to AI Notes!");
+  }).catch(err => {
+    alert("Error saving response: " + err.message);
+  });
+}
+// Setup BroadcastChannel to receive code from ainotes/sinotes
+const channel = new BroadcastChannel('copy-to-editor');
+
+channel.onmessage = (event) => {
+  if (event.data && typeof event.data.code === "string") {
+    if (window.editor) {
+      const model = window.editor.getModel();
+      const range = model.getFullModelRange();
+      window.editor.pushUndoStop();
+      window.editor.executeEdits("copy-to-editor", [{ range, text: event.data.code }]);
+      window.editor.pushUndoStop();
+      window.editor.setSelection({ startLineNumber: 1, startColumn: 1, endLineNumber: 1, endColumn: 1 });
+      setTimeout(() => {
+        window.editor.trigger('keyboard', 'editor.action.formatDocument');
+      }, 100);
+      window.editor.focus();
+    }
+  }
+};
+function setupAINotesBtnWatcher() {
+  // Use your existing session retrieval logic!
+  const firebaseConfig = JSON.parse(sessionStorage.getItem("firebaseConfig"));
+  if (!firebaseConfig) return;
+  
+  const uid = sessionStorage.getItem("uid");
+  const dbPrefix = sessionStorage.getItem("dbPrefix") || "savedcodes";
+  const hKey = sessionStorage.getItem("hKey");
+  const pKey = sessionStorage.getItem("pKey");
+  const problemPath = `${dbPrefix}/headings/${hKey}/problems/${pKey}`;
+
+  if (!window.firebase.apps.length) firebase.initializeApp(firebaseConfig);
+  const db = firebase.database();
+  
+  // Real-time listener
+  db.ref(`users/${uid}/${problemPath}/aiNotes`)
+    .on('value', snapshot => {
+      const btn = document.getElementById('aiNotesBtn');
+      if (!btn) return;
+      if (snapshot.exists()) {
+        btn.style.display = '';
+      } else {
+        btn.style.display = 'none';
+      }
+    });
+}
+
+// Call it after your page and Firebase are initialized
+document.addEventListener('DOMContentLoaded', setupAINotesBtnWatcher);
+function showToast(message, options = {}) {
+  // Remove any existing toasts
+  document.querySelectorAll('.custom-toast').forEach(e => e.remove());
+
+  // Settings
+  const isSuccess = options.success !== false;
+  const accent = isSuccess ? "#22ee98" : "#ff4567";
+  const iconSVG = isSuccess
+     ? `<svg width="24" height="24" fill="none" viewBox="0 0 24 24">
+        <circle cx="12" cy="12" r="10" stroke="#22ee98" stroke-width="2.2" fill="none"/>
+        <path d="M8.5 13.5l2 2l4.5-5" stroke="#22ee98" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+      </svg>`
+    : `<svg width="24" height="24" fill="none" viewBox="0 0 24 24">
+        <circle cx="12" cy="12" r="10" stroke="#ff4567" stroke-width="2.2" fill="none"/>
+        <path d="M9 9l6 6M15 9l-6 6" stroke="#ff4567" stroke-width="2.2" stroke-linecap="round" fill="none"/>
+      </svg>`;
+  // Container
+  const toast = document.createElement('div');
+  toast.className = 'custom-toast';
+  toast.tabIndex = 0;
+  toast.setAttribute('role', 'status');
+  toast.setAttribute('aria-live', 'polite');
+  toast.innerHTML = `
+    <span class="custom-toast-ring" style="background:radial-gradient(circle,${accent}1a 40%,transparent 75%)">${iconSVG}</span>
+    <span class="custom-toast-message">${message}</span>
+    <button class="custom-toast-close" aria-label="Close" title="Dismiss">&times;</button>
+    <div class="custom-toast-progress"></div>
+  `;
+
+  // Apply overlay, blur, glass, and micro-shadow
+  Object.assign(toast.style, {
+    position: "fixed",
+    top: "32px",
+    left: "50%",
+    transform: "translateX(-50%) scale(0.96)",
+    minWidth: "260px",
+    maxWidth: "92vw",
+    background: "rgba(30,33,43,0.82)",
+    borderRadius: "19px",
+    boxShadow: `0 8px 32px ${accent}22, 0 2px 8px rgba(25,30,60,0.12)`,
+    border: `1.3px solid ${accent}2b`,
+    display: "flex",
+    alignItems: "center",
+    gap: "14px",
+    fontSize: "1.06rem",
+    fontWeight: "520",
+    color: "#fff",
+    zIndex: 99999,
+    padding: "14px 22px 14px 14px",
+    opacity: 0,
+    pointerEvents: "auto",
+    backdropFilter: "blur(11px)",
+    transition: "all 0.43s cubic-bezier(.27,.62,.36,.96)",
+  });
+
+  // Inner element styles
+  Object.assign(toast.querySelector('.custom-toast-ring').style, {
+    width: "38px", height: "38px",
+    borderRadius: "50%",
+    minWidth: "38px", display: "inline-flex",
+    justifyContent: "center", alignItems: "center",
+    marginRight: "6px", flexShrink: 0,
+    boxShadow: `0 0 8px ${accent}30`
+  });
+
+  Object.assign(toast.querySelector('.custom-toast-message').style, {
+    flex: "1", lineHeight: "1.42",
+    letterSpacing: ".01em"
+  });
+
+  // Close button
+  const closeBtn = toast.querySelector('.custom-toast-close');
+  Object.assign(closeBtn.style, {
+    background: "none", border: "none",
+    color: accent, fontSize: "1.23rem", fontWeight: "700",
+    cursor: "pointer", padding: "0 0.32em", marginLeft: "1em",
+    alignSelf: "flex-start", lineHeight: "0.97", borderRadius: "50%",
+    transition: "background 0.14s, color 0.14s"
+  });
+  closeBtn.onmouseenter = function() { this.style.background = `${accent}26`; this.style.color = "#fff"; }
+  closeBtn.onmouseleave = function() { this.style.background = ""; this.style.color = accent; }
+  closeBtn.onclick = () => {
+    toast.style.opacity = 0;
+    toast.style.top = "16px";
+    toast.style.transform = "translateX(-50%) scale(0.95)";
+    setTimeout(() => toast.remove(), 340);
+  };
+  toast.onkeydown = function(e) { if (["Escape","Enter"," "].includes(e.key)) closeBtn.click(); };
+
+  // Progress bar
+  const prog = toast.querySelector('.custom-toast-progress');
+  Object.assign(prog.style, {
+    position: "absolute",
+    left: 0, right: 0, bottom: 0, height: "3.2px",
+    background: "linear-gradient(90deg,"+accent+",#fff0 95%)",
+    borderRadius: "0 0 12px 12px",
+    pointerEvents: "none",
+    transform: "scaleX(0)",
+    transformOrigin: "left",
+    transition: "transform 0.24s"
+
+  });
+
+  // Extra overall styles for positioning
+  toast.style.position = "fixed";
+  toast.style.top = "32px";
+  toast.style.left = "50%";
+  toast.style.transform = "translateX(-50%) scale(0.96)";
+  toast.style.opacity = "0";
+
+  // Responsive tweaks
+  if (window.innerWidth < 400) {
+    toast.style.fontSize = "1rem";
+    toast.style.padding = "10px 8px 10px 7px";
+    toast.querySelector('.custom-toast-ring').style.width = toast.querySelector('.custom-toast-ring').style.height = "31px";
+    toast.querySelector('.custom-toast-ring').style.minWidth = "31px";
+    closeBtn.style.marginLeft = "0.5em";
+  }
+
+  // Mount and animate in
+  toast.style.transition = "all 0.43s cubic-bezier(.27,.62,.36,.96)";
+  document.body.appendChild(toast);
+  setTimeout(() => {
+    toast.style.opacity = 1;
+    toast.style.top = "52px";
+    toast.style.transform = "translateX(-50%) scale(1)";
+    prog.style.transform = "scaleX(1)";
+    prog.style.transition = `transform ${options.duration || 4000}ms linear`;
+    prog.style.transformOrigin = "left";
+    prog.style.background = `linear-gradient(90deg,${accent},#fff0 90%)`;
+    setTimeout(() => {
+      prog.style.transform = "scaleX(0)";
+    }, 30);
+  }, 16);
+
+  // Animate out
+  const duration = options.duration || 4000;
+  setTimeout(() => {
+    toast.style.opacity = 0;
+    toast.style.top = "16px";
+    toast.style.transform = "translateX(-50%) scale(0.94)";
+    setTimeout(() => toast.remove(), 350);
+  }, duration);
+}
+
+
+
+function getProblemNoteRef() {
+  return firebase.database().ref(
+    `users/${uid}/savedcodes/headings/${hKey}/problems/${pKey}/notes`
+  );
+}
+
+function updateAddNoteBtnLabel(hasNote) {
+  const btn = document.getElementById("addNoteBtn");
+  if (!btn) return;
+  btn.textContent = hasNote ? "📝 View Note" : "📝 Add Note";
+  btn.title = hasNote ? "View/Edit Note" : "Add a Note";
+  btn.style.display = '';
+}
+
+function checkIfNoteExists() {
+  getProblemNoteRef().once("value").then(snap => {
+    updateAddNoteBtnLabel(snap.exists() && snap.val().content);
+  });
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+  if (uid && hKey && pKey) checkIfNoteExists();
+});
+window.addEventListener("message", (event) => {
+  if (event.data && event.data.type === "PROBLEM_NOTE_SAVED") {
+    updateAddNoteBtnLabel(true);
+  }
+});
+function openNoteEditor() {
+  sessionStorage.setItem("addNoteUid", uid);
+  sessionStorage.setItem("addNoteHKey", hKey);
+  sessionStorage.setItem("addNotePKey", pKey);
+  window.open("notes.html", "_blank");
+}
+
+
