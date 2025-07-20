@@ -15,6 +15,8 @@
         <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
         <script src="render-ping.js"></script>    
         <script src="autologout.js" type="module"></script>
+         <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
         <script>
           window.addEventListener('DOMContentLoaded', () => {
             const allowedDomain = "https://mycodess.netlify.app";
@@ -90,7 +92,7 @@
     <svg class="logo-icon" viewBox="0 0 24 24" fill="currentColor">
       <path d="M12 2L13.09 8.26L22 9L13.09 9.74L12 16L10.91 9.74L2 9L10.91 8.26L12 2Z"/>
     </svg>
-    <h2>CodeVault</h2>
+    <h2><span class="brand-text">CodeVault</span></h2>
   </div>
 
   <div class="header-actions">
@@ -102,11 +104,6 @@
       </svg>
       <span>Receive</span>
     </button>
-
-    <!-- Simplified User Badge -->
-    
-
-
     <button id="logoutBtn" class="header-btn logout-btn" onclick="manualLogout()" title="Logout">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
         <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
@@ -117,73 +114,28 @@
     </button>
   </div>
 </div>
-
-
         <div id="appContent">
-            
-            <div id="controls" style="
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-    align-items: center;
-    margin-bottom: 20px;
-    padding: 12px;
-    border-radius: 8px;
-    
-    font-family: 'Segoe UI', sans-serif;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-">
-
-  <button id="expandAll" style="
-    padding: 6px 12px;
-    background-color: #616661;
-    color: white;
-    border: none;
-    border-radius: 6px;
-    cursor: pointer;
-  ">Expand All</button>
-
-  <button id="collapseAll" style="
-    padding: 6px 12px;
-    background-color: #3f2220;
-    color: white;
-    border: none;
-    border-radius: 6px;
-    cursor: pointer;
-  ">Collapse All</button>
-
-  <input type="text" id="searchInput" placeholder="Search..." style="
-    padding: 6px 12px;
-    font-size: 14px;
-    border: 1px solid #ccc;
-    border-radius: 6px;
-    width: 240px;
-    flex-grow: 1;
-  ">
-  <input type="checkbox" id="toggleShowChildren" class="checkbox-tooltip" />
-
-
-
-
-  <input type="text" id="newHeadingInput" placeholder="Add Topic...." style="
-    padding: 6px 12px;
-    font-size: 14px;
-    border: 1px solid #ccc;
-    border-radius: 6px;
-    width: 200px;
-  ">
-
-  <button id="addHeadingBtn" style="
-    padding: 6px 10px;
-    
-    color: white;
-    border: 1px solid #ccc;
-    border-radius: 6px;
-    cursor: pointer;
-    font-size: 18px;
-  ">➕</button>
+            <div id="controls">
+                  <button id="expandAll">Expand All</button>
+                  <button id="collapseAll">Collapse All</button>
+                  <input type="text" id="searchInput" placeholder="Search...">
+                  <input type="checkbox" id="toggleShowChildren" class="checkbox-tooltip" />
+               <!-- Add Heading Modal -->
+<div id="addHeadingModal" class="modal" style="display:none;">
+  <div class="modal-backdrop"></div>
+  <div class="modal-content" role="dialog" aria-modal="true">
+    <h2>Add New Heading</h2>
+    <input id="headingTitleInput" maxlength="60" placeholder="Heading title..." autofocus />
+    <div class="modal-actions">
+      <button id="cancelModal" class="modal-cancel">Cancel</button>
+      <button id="addHeadingConfirm" class="modal-add">Add</button>
+    </div>
+    <div class="modal-hint">Press <kbd>Enter</kbd> or tap <b>Add</b> to confirm.</div>
+  </div>
 </div>
-            
+<button id="openAddHeadingModal" class="add-heading-btn">+ Add Heading</button>
+
+            </div>
             <div id="container"></div>
         </div>
         <script type="module" src="main.js"></script>
