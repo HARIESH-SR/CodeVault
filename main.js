@@ -512,33 +512,6 @@ document.getElementById('collapseAll').addEventListener('click', () => {
 
 
 
-
-document.getElementById("addHeadingBtn").addEventListener("click", () => {
-    const headingTitle = document.getElementById("newHeadingInput").value.trim();
-    if (!headingTitle) return showToast("Heading title cannot be empty.", { success: false });
-
-    get(ref(db, `${dbPrefix}/hcount`)).then(snapshot => {
-        let hcount = snapshot.exists() ? snapshot.val() : 0;
-        hcount++;
-        const newHeadingKey = `h${hcount}`;
-
-        const newHeading = {
-            heading: headingTitle,
-            pcount: 0,
-            problems: {}
-        };
-
-        const updates = {
-            [`${dbPrefix}/headings/${newHeadingKey}`]: newHeading,
-            [`${dbPrefix}/hcount`]: hcount
-        };
-
-        update(ref(db), updates).then(() => {
-            showToast("Heading added Successfully!");
-            document.getElementById("newHeadingInput").value = "";
-        });
-    });
-});
 onAuthStateChanged(auth, user => {
   if (user) {
     const uid = user.uid;
@@ -656,12 +629,7 @@ window.insertProblemAbove = async function(hKey, pKey) {
     showToast("Failed to insert problem.", { success: false });
   }
 };
-document.getElementById("newHeadingInput").addEventListener("keydown", function (event) {
-  if (event.key === "Enter") {
-    event.preventDefault();
-    document.getElementById("addHeadingBtn").click();
-  }
-});
+
 
 
 
@@ -1182,4 +1150,71 @@ window.importSharedByCode = async function() {
 
 
 
+const addModal = document.getElementById('addHeadingModal');
+const openBtn = document.getElementById('openAddHeadingModal');
+const cancelBtn = document.getElementById('cancelModal');
+const confirmBtn = document.getElementById('addHeadingConfirm');
+const input = document.getElementById('headingTitleInput');
 
+// Open modal and focus input
+openBtn.onclick = () => {
+  addModal.style.display = 'flex';
+  input.value = '';
+  setTimeout(() => input.focus(), 60);
+};
+// Close modal fn
+function closeModal() {
+  addModal.style.display = 'none';
+  input.value = '';
+}
+cancelBtn.onclick = closeModal;
+// Click/blur outside modal closes
+addModal.onclick = (e) => { if (e.target === addModal) closeModal(); };
+
+// Add Heading logic (with real-time UI/UX flow)
+async function addHeading() {
+  const headingTitle = input.value.trim();
+  if (!headingTitle) {
+    showToast("Heading title cannot be empty.", { success: false });
+    input.focus();
+    return;
+  }
+  try {
+    // Get latest count
+    let hcount = (await get(ref(db, `${dbPrefix}/hcount`))).exists()
+      ? (await get(ref(db, `${dbPrefix}/hcount`))).val()
+      : 0;
+    hcount++;
+    const newHeadingKey = `h${hcount}`;
+    const newHeading = {
+      heading: headingTitle,
+      pcount: 0,
+      problems: {}
+    };
+    // Prepare updates
+    const updates = {
+      [`${dbPrefix}/headings/${newHeadingKey}`]: newHeading,
+      [`${dbPrefix}/hcount`]: hcount
+    };
+    await update(ref(db), updates);
+    showToast("Heading added Successfully!");
+    closeModal();
+    // Optionally, scroll or highlight new heading here
+  } catch(err) {
+    showToast("Failed to add heading.", { success: false });
+    console.error('Add Heading Error:', err);
+    input.focus();
+  }
+}
+confirmBtn.onclick = addHeading;
+// Allow Enter key to submit
+input.onkeydown = (e) => {
+  if (e.key === 'Enter') {
+    e.preventDefault();
+    addHeading();
+  }
+  if (e.key === 'Escape') {
+    e.preventDefault();
+    closeModal();
+  }
+};
