@@ -74,7 +74,7 @@
                 justify-content: flex-end;
                 gap: 8px;
                 padding: 8px 12px;
-                background: #01111d;
+                
                 border-bottom: 1px solid #1d3b53;
             }
 
@@ -233,7 +233,7 @@
                 justify-content: space-between;
                 align-items: center;
                 padding: 10px 16px;
-                background: #01111d;
+                background: #0b1221;
                 border-bottom: 1px solid #1d3b53;
             }
 
@@ -467,6 +467,17 @@
                 <button onclick="runCode()" id="run-btn" title="Run (Ctrl + Enter)">▶</button>
                 
                 <button id="openGeminiBtn" type="button" style="background:#2d3c68;color:#ffe082;border-radius:4px;font-weight:bold;" onclick="openGeminiChat()">Ask AI Assistant</button>
+                <button id="aiNotesBtn" 
+                        onclick="window.open('ainotes.html', '_blank')" 
+                        title="Show My AI Notes" 
+                        style="display: none;">
+                  🗒️ AI Notes
+                </button>
+                <!-- Add Notes/View Notes Button -->
+              <button id="addNoteBtn" onclick="openNoteEditor()" title="Add a Note" style="display:none;">
+                📝 Add Note
+              </button>
+
 
                 <button onclick="saveSolution()" title="Save (Ctrl + S)">💾</button>
                 <button class="font-btn" onclick="changeFontSize('editor', -1)" title="Decrease editor font size">A−</button>
