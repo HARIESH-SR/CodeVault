@@ -1,0 +1,255 @@
+:root {
+  --bg-main: linear-gradient(135deg, #f5fafd, #deeafd 75%);
+  --bg-dark: linear-gradient(135deg, #161923, #273564 86%);
+  --surface: rgba(252,255,255,.95);
+  --surface-dark: rgba(23,26,37,.98);
+  --border: #e5eefa;
+  --border-dark: #253157;
+  --accent: #32e7cf;
+  --accent2: #3089fd;
+  --text: #243d5a;
+  --text-dark: #eefdff;
+  --shadow: 0 6px 40px #84a1ff13, 0 1.5px 9px #52eeb735;
+  --shadow-dark: 0 8px 44px #192045dd;
+  --radius: 23px;
+  --radius-btn: 18px;
+}
+
+html, body, #main-container {
+  height: 100vh; width: 100vw; margin: 0; padding: 0; min-width: 100vw; min-height: 100vh;
+  box-sizing: border-box;
+  font-family: 'Inter', system-ui, sans-serif;
+  background: var(--bg-main);
+}
+body.dark-mode {
+  background: var(--bg-dark);
+  color: var(--text-dark);
+}
+#main-container {
+  background: var(--surface);
+  border-radius: 0 0 var(--radius) var(--radius);
+  box-shadow: var(--shadow);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  min-width: 100vw; min-height: 100vh;
+  transition: background 0.24s;
+}
+body.dark-mode #main-container {
+  background: var(--surface-dark);
+  box-shadow: var(--shadow-dark);
+}
+
+/* Appbar styling */
+#appbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 28px 3vw 11px 3vw;
+  background: rgba(255,255,255,0.69);
+  backdrop-filter: blur(9px);
+  border-bottom: 1.5px solid var(--border);
+  box-shadow: 0 6px 32px #96cffe23;
+  z-index: 100;
+}
+body.dark-mode #appbar {
+  background: rgba(16,18,32,0.98);
+  box-shadow: 0 3px 20px #1316339c;
+  border-bottom: 1.5px solid var(--border-dark);
+}
+
+/* Title */
+.editor-title {
+  font-size: 1.34rem;
+  font-weight: 850;
+  letter-spacing: 0.012em;
+  color: var(--text);
+  text-shadow: 0 4px 24px #fafdff19;
+}
+body.dark-mode .editor-title { color: #eafdff; }
+
+/* Buttons group */
+.toolbar-end {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+#saveNoteBtn {
+  background: linear-gradient(93deg,#3089fd 12%,#32e7cf 95%);
+  color: #fff;
+  border: none;
+  border-radius: var(--radius-btn);
+  font-size: 1.17rem;
+  font-weight: 900;
+  padding: 11px 32px 10px 28px;
+  letter-spacing: 0.017em;
+  cursor: pointer;
+  box-shadow: 0 3px 15px #259bff21;
+  transition: box-shadow .13s, background .14s, transform .12s;
+  outline: none;
+}
+#saveNoteBtn:hover, #saveNoteBtn:focus {
+  background: linear-gradient(91deg,#32e7cf 2%,#3089fd 89%);
+  transform: translateY(-2.5px) scale(1.035);
+  box-shadow: 0 7px 28px #34eed958;
+}
+body.dark-mode #saveNoteBtn {
+  background: linear-gradient(93deg, #03567e 8%, #21e7bb 94%);
+  color: #eefdff;
+}
+
+/* Theme button */
+#themeToggleBtn {
+  font-size: 1.55em;
+  background: none;
+  border: none;
+  border-radius: 50%;
+  color: var(--accent2);
+  padding: 9px 16px;
+  cursor: pointer;
+  transition: background 0.12s, color 0.14s;
+}
+#themeToggleBtn:hover, #themeToggleBtn:focus {
+  background: #3089fd33;
+  color: #16e8b0;
+}
+body.dark-mode #themeToggleBtn {
+  color: #3bfab8;
+  background: none;
+}
+body.dark-mode #themeToggleBtn:hover, body.dark-mode #themeToggleBtn:focus {
+  background: #1c2245;
+  color: #fff;
+}
+
+/* Editor pane */
+#editor-pane {
+  flex: 1 1 auto;
+  min-height: 0;
+  background: transparent;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+}
+#editor-container {
+  flex: 1 1 auto;
+  width: 100%;
+  background: transparent;
+  border: none;
+  min-width: 0;
+  margin: 0;
+  overflow: auto;
+}
+.ql-toolbar {
+  border-radius: var(--radius-btn) var(--radius-btn) 0 0 !important;
+  border: none !important;
+  background: linear-gradient(90deg,#e8f6ff 0%, #f7fafd 97%);
+}
+body.dark-mode .ql-toolbar {
+  background: linear-gradient(93deg,#232b43 0% , #314157 100%);
+  color: #eefdff;
+}
+.ql-editor {
+  font-size: 1.18rem;
+  padding: 38px min(7vw,90px) 38px min(7vw,90px);
+  min-height: 57vh;
+  background: transparent;
+  color: #212a44;
+  line-height: 1.72;
+  letter-spacing: 0.012em;
+  border-radius: 0 0 var(--radius-btn) var(--radius-btn);
+  transition: color .14s, background .18s;
+}
+body.dark-mode .ql-editor { color: #f1f8fb; }
+
+/* Status floater, bottom-right glass */
+#status-floater {
+  position: fixed;
+  right: 34px;
+  bottom: 34px;
+  z-index: 200;
+  background: rgba(250,255,254,0.96);
+  padding: 10px 27px;
+  font-size: 1.09rem;
+  border-radius: 21px;
+  box-shadow: 0 2px 18px #3eeaef1a;
+  color: #13a37d;
+  font-weight: 700;
+  user-select: text;
+  pointer-events: none;
+  opacity: 0.98;
+  transition: background 0.16s, color 0.13s, opacity 0.18s;
+}
+body.dark-mode #status-floater {
+  background: #223254f4;
+  color: #5ff8c3;
+  box-shadow: 0 2.5px 19px #03ffe417;
+}
+@media (max-width: 900px) {
+  .ql-editor { padding-left: 2vw; padding-right: 2vw; }
+  #appbar { padding: 18px 10px 7px 12px; }
+  #status-floater { right: 10px; bottom: 10px; padding: 7px 16px; }
+}
+@media (max-width: 600px) {
+  #appbar { padding: 7px 4vw 5px 4vw; min-height: 45px; }
+  .editor-title { font-size: 1.05rem; }
+  #saveNoteBtn, #themeToggleBtn { font-size: 1.07rem; padding: 6.5px 8px; }
+  .ql-editor { font-size: 0.99rem; padding: 17px 2vw; }
+  #status-floater { padding: 4.5px 8px; font-size: 0.95rem; }
+}
+/* Light mode: Bar and icons use primary accent color */
+.ql-toolbar button svg .ql-stroke,
+.ql-toolbar button svg .ql-fill {
+  stroke: #258dff;
+  fill: #ffffff;
+  transition: stroke 0.15s, fill 0.15s;
+}
+
+/* Optional: inactive icons a bit softer */
+.ql-toolbar button:not(:hover):not(.ql-active) svg .ql-stroke {
+  stroke: #ffffff;
+  fill: rgb(255, 255, 255);
+}
+
+/* Active/hovered tool button highlighted more */
+.ql-toolbar button:hover svg .ql-stroke,
+.ql-toolbar button.ql-active svg .ql-stroke {
+  stroke: #ffffff;
+  fill: #ffffff;
+}
+
+body.dark-mode .ql-toolbar button svg select.ql-stroke,
+body.dark-mode .ql-toolbar button svg seelct .ql-fill {
+  stroke: #ffffff;
+  fill: #ffffff;
+}
+
+body.dark-mode .ql-toolbar button:not(:hover):not(.ql-active) svg .ql-stroke {
+  stroke: #ffffff;
+  fill: #ffffff;
+}
+
+body.dark-mode .ql-toolbar button:hover svg .ql-stroke,
+body.dark-mode .ql-toolbar button.ql-active svg .ql-stroke {
+  stroke: #ffffff;
+  fill: #ffffff;
+}
+/* For all Quill picker arrows (dropdown icons) */
+body.dark-mode .ql-picker-label svg .ql-stroke,
+body.dark-mode .ql-toolbar .ql-picker-label svg .ql-stroke {
+  stroke: #ffffff !important; /* or pick a suitable accent for your palette */
+  transition: stroke 0.22s;
+}
+body.dark-mode .ql-picker-label svg .ql-stroke {
+  stroke: #fff !important;
+}
+/* Set picker label text color for dark mode */
+body.dark-mode .ql-toolbar .ql-picker-label {
+  color: #e5f5ff !important;  /* Or your preferred light/brand accent */
+  transition: color 0.2s;
+}
+
+/* Example: In light mode, keep default (optional) */
+.ql-toolbar .ql-picker-label {
+  color: #25385c; /* or 'inherit' or your accent for light mode */
+}
