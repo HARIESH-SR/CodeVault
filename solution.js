@@ -324,7 +324,7 @@ mystdout.getvalue()
         const output = await window.pyodide.runPythonAsync(wrappedCode);
 
         lastRawOutput = output.toString();
-        document.getElementById('output').innerText = `Output:\n\n${lastRawOutput}`;
+        document.getElementById('output').innerText = lastRawOutput;
         isOutputSaved = false;
 
     } catch (e) {
@@ -396,7 +396,7 @@ mystdout.getvalue()
     const output = await window.pyodide.runPythonAsync(wrappedCode);
 
     lastRawOutput = output.toString().trim();
-    document.getElementById('output').innerText = `Output:\n\n${lastRawOutput}`;
+    document.getElementById('output').innerText = lastRawOutput;
     isOutputSaved = false;
 
   } catch (e) {
