@@ -482,6 +482,26 @@ document.addEventListener('click', function (e) {
 window.toggleHeadingOptionsMenu = function(hKey) {
   const menu = document.getElementById(`heading-options-${hKey}`);
 
+  // Find the toggle button
+  const toggleBtn = menu.previousElementSibling;
+  // Remove any previous up/down class
+  menu.classList.remove('dropdown-menu-up');
+
+  // Temporarily show menu to measure height
+  const prevDisplay = menu.style.display;
+  menu.style.visibility = 'hidden';
+  menu.style.display = 'block';
+  const rect = toggleBtn.getBoundingClientRect();
+  const menuHeight = menu.offsetHeight;
+  const spaceBelow = window.innerHeight - rect.bottom;
+  const spaceAbove = rect.top;
+  menu.style.display = prevDisplay;
+  menu.style.visibility = '';
+  // If not enough space below, show above
+  if (spaceBelow < menuHeight && spaceAbove > menuHeight) {
+    menu.classList.add('dropdown-menu-up');
+  }
+
   // Toggle visibility
   const isOpen = menu.style.display === 'block';
   document.querySelectorAll(".dropdown-menu").forEach(m => m.style.display = "none");
@@ -501,6 +521,26 @@ window.toggleHeadingOptionsMenu = function(hKey) {
 window.toggleProblemOptionsMenu = function(hKey, pKey) {
 
 const menu = document.getElementById(`problem-options-${hKey}-${pKey}`);
+
+// Find the toggle button
+const toggleBtn = menu.previousElementSibling;
+// Remove any previous up/down class
+menu.classList.remove('dropdown-menu-up');
+
+// Temporarily show menu to measure height
+const prevDisplay = menu.style.display;
+menu.style.visibility = 'hidden';
+menu.style.display = 'block';
+const rect = toggleBtn.getBoundingClientRect();
+const menuHeight = menu.offsetHeight;
+const spaceBelow = window.innerHeight - rect.bottom;
+const spaceAbove = rect.top;
+menu.style.display = prevDisplay;
+menu.style.visibility = '';
+// If not enough space below, show above
+if (spaceBelow < menuHeight && spaceAbove > menuHeight) {
+  menu.classList.add('dropdown-menu-up');
+}
 
 // Toggle visibility
 const isOpen = menu.style.display === 'block';
@@ -1210,7 +1250,7 @@ window.importSharedByCode = async function() {
   });
 
   await remove(shareRef);
-  showToast(`Received heading: "${newHeadingTitle}" with ${headingObj.pcount} problem(s)!`);
+  showToast(`Received heading: "${newHeadingTitle}" with ${headingObj.pcount} problems!`);
   }
   else {
     showToast("This code does not contain valid data.", { success: false });
