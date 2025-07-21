@@ -37,107 +37,37 @@ const auth = getAuth(app);
 
 
 window.deleteHeading = async function(hKey) {
-  const baseRef = ref(db, dbPrefix);
-
   try {
-    const snap = await get(baseRef);
-    if (!snap.exists()) return;
-
-    const data = snap.val();
-    const headings = data.headings || {};
-    let hcount = data.hcount || 0;
-
-    const heading = headings[hKey];
-    if (!heading) return;
-
-    const headingName = heading.heading || "this heading";
-
-    const userInput = prompt(`To delete, please type the heading name exactly:\n"${headingName}"`);
-    if (userInput !== headingName) {
-      showToast("Heading name did not match. Deletion cancelled!", { success: false });
+    const headingSnap = await get(ref(db, `${dbPrefix}/headings/${hKey}`));
+    if (!headingSnap.exists()) {
+      showToast("Heading not found.", { success: false });
       return;
     }
-
-    if (!confirm(`Are you sure you want to delete the heading: "${headingName}" and all its problems?`)) {
-      return;
-    }
-
-    const hNum = parseInt(hKey.slice(1));
-    const updates = {};
-    updates[`headings/${hKey}`] = null;
-
-    // Shift subsequent headings up
-    for (let i = hNum + 1; i <= hcount; i++) {
-      const fromKey = `h${i}`;
-      const toKey = `h${i - 1}`;
-
-      if (headings[fromKey] !== undefined) {
-        updates[`headings/${toKey}`] = headings[fromKey];
-      }
-      updates[`headings/${fromKey}`] = null;
-    }
-
-    // Update hcount
-    updates[`hcount`] = hcount - 1;
-
-    await update(baseRef, updates);
-    showToast("Heading deleted successfully.");
-  } catch (error) {
-    console.error("Error deleting heading:", error);
-    showToast("Something went wrong while deleting the heading.", { success: false });
+    
+    const headingName = headingSnap.val().heading || '';
+    openDeleteModal('heading', headingName, hKey);
+  } catch (err) {
+    console.error('Error getting heading data:', err);
+    showToast("Error loading heading data.", { success: false });
   }
 };
 
 window.deleteProblem = async function(hKey, pKey) {
-  const probRef = ref(db, `${dbPrefix}/headings/${hKey}`);
-
   try {
-    const snap = await get(probRef);
-    if (!snap.exists()) return;
-
-    const data = snap.val();
-    const problems = data.problems || {};
-    let pcount = data.pcount || 0;
-
-    const problem = problems[pKey];
-    if (!problem) return;
-
-    const problemTitle = problem.title || "this problem";
-
-    const userInput = prompt(`To delete, please type the problem title exactly:\n"${problemTitle}"`);
-    if (userInput !== problemTitle) {
-      showToast("Problem title did not match. Deletion cancelled.", { success: false });
+    const problemSnap = await get(ref(db, `${dbPrefix}/headings/${hKey}/problems/${pKey}`));
+    if (!problemSnap.exists()) {
+      showToast("Problem not found.", { success: false });
       return;
     }
-
-    if (!confirm(`Are you sure you want to delete the problem: "${problemTitle}"?`)) {
-      return;
-    }
-
-    const pNum = parseInt(pKey.slice(1)); // extract number from "p3"
-    const updates = {};
-    updates[`problems/${pKey}`] = null;
-
-    // Shift subsequent problems up
-    for (let i = pNum + 1; i <= pcount; i++) {
-      const fromKey = `p${i}`;
-      const toKey = `p${i - 1}`;
-
-      if (problems[fromKey] !== undefined) {
-        updates[`problems/${toKey}`] = problems[fromKey];
-      }
-      updates[`problems/${fromKey}`] = null;
-    }
-
-    updates[`pcount`] = pcount - 1;
-
-    await update(probRef, updates);
-    showToast("Problem deleted successfully.");
+    
+    const problemTitle = problemSnap.val().title || '';
+    openDeleteModal('problem', problemTitle, hKey, pKey);
   } catch (err) {
-    console.error("Error during problem deletion:", err);
-    showToast("Failed to delete problem.", { success: false });
+    console.error('Error getting problem data:', err);
+    showToast("Error loading problem data.", { success: false });
   }
 };
+
 
 
 
@@ -326,81 +256,58 @@ if (expandHKey) {
 
     });
 }
-window.renameHeading = function(hKey) {
-  const newTitle = prompt("Enter new heading title:");
-  if (!newTitle) return showToast("Title cannot be empty. Rename Cancelled!", { success: false });
-
-  update(ref(db, `${dbPrefix}/headings/${hKey}`), { heading: newTitle });
-  showToast("Heading renamed successfully!");
-};
-// ✅ Replace the previous moveProblemToAnotherHeading with this corrected version
-window.moveProblemToAnotherHeading = async function (fromHKey, pKey) {
+window.renameHeading = async function(hKey) {
   try {
-    const allSnap = await get(ref(db, `${dbPrefix}/headings`));
-    if (!allSnap.exists()) return showToast("No headings found.", { success: false });
-
-    const allHeadings = allSnap.val();
-    const fromHeading = allHeadings[fromHKey];
-    if (!fromHeading || !fromHeading.problems || !fromHeading.problems[pKey]) {
-      return showToast("Problem not found.", { success: false });
+    const headingSnap = await get(ref(db, `${dbPrefix}/headings/${hKey}`));
+    if (!headingSnap.exists()) {
+      showToast("Heading not found.", { success: false });
+      return;
     }
-
-    const targetKeys = Object.keys(allHeadings)
-    .filter(key => key !== fromHKey).
-    sort((a, b) => parseInt(a.slice(1)) - parseInt(b.slice(1)));;
-    if (targetKeys.length === 0) return showToast("No other headings to move to.", { success: false });
-
-
-
-const promptText = targetKeys
-  .map(k => `${k}: ${allHeadings[k].heading}`)
-  .join("\n");
-
-
-    const toHKey = prompt(`Move to which heading?\n${promptText}\n(Enter key like h2, h3...)`);
-    if (!toHKey || !allHeadings[toHKey]) return showToast("Invalid heading selected.", { success: false });
-
-    const problemToMove = fromHeading.problems[pKey];
-
-    const fromProblems = { ...fromHeading.problems };
-    const toProblems = { ...allHeadings[toHKey].problems };
-
-    delete fromProblems[pKey];
-    const newFromProblems = {};
-    let fromIndex = 1;
-    for (const key of Object.keys(fromProblems).sort((a, b) => parseInt(a.slice(1)) - parseInt(b.slice(1)))) {
-      newFromProblems[`p${fromIndex++}`] = fromProblems[key];
-    }
-
-    const newToProblems = {};
-    let toIndex = 1;
-    for (const key of Object.keys(toProblems).sort((a, b) => parseInt(a.slice(1)) - parseInt(b.slice(1)))) {
-      newToProblems[`p${toIndex++}`] = toProblems[key];
-    }
-    newToProblems[`p${toIndex}`] = problemToMove;
-
-    const updates = {
-      [`${dbPrefix}/headings/${fromHKey}/problems`]: newFromProblems,
-      [`${dbPrefix}/headings/${fromHKey}/pcount`]: fromIndex - 1,
-      [`${dbPrefix}/headings/${toHKey}/problems`]: newToProblems,
-      [`${dbPrefix}/headings/${toHKey}/pcount`]: toIndex
-    };
-
-    await update(ref(db), updates);
-    showToast("Problem moved successfully!");
+    
+    const currentName = headingSnap.val().heading || '';
+    openRenameModal('heading', currentName, hKey);
   } catch (err) {
-    console.error("Error moving problem:", err);
-    showToast("Failed to move problem.", { success: false });
+    console.error('Error getting heading data:', err);
+    showToast("Error loading heading data.", { success: false });
   }
 };
 
-window.renameProblem = function(hKey,pKey) {
-  const newProblemTitle = prompt("Enter new heading title:");
-  if (!newProblemTitle) return showToast("Title cannot be empty. Rename Cancelled!", { success: false });
-
-  update(ref(db, `${dbPrefix}/headings/${hKey}/problems/${pKey}`), { title: newProblemTitle });
-  showToast("Problem renamed successfully!");
+window.renameProblem = async function(hKey, pKey) {
+  try {
+    const problemSnap = await get(ref(db, `${dbPrefix}/headings/${hKey}/problems/${pKey}`));
+    if (!problemSnap.exists()) {
+      showToast("Problem not found.", { success: false });
+      return;
+    }
+    
+    const currentName = problemSnap.val().title || '';
+    openRenameModal('problem', currentName, hKey, pKey);
+  } catch (err) {
+    console.error('Error getting problem data:', err);
+    showToast("Error loading problem data.", { success: false });
+  }
 };
+
+// ✅ Replace the previous moveProblemToAnotherHeading with this corrected version
+window.moveProblemToAnotherHeading = async function (fromHKey, pKey) {
+  try {
+    const problemSnap = await get(ref(db, `${dbPrefix}/headings/${fromHKey}/problems/${pKey}`));
+    if (!problemSnap.exists()) {
+      showToast("Problem not found.", { success: false });
+      return;
+    }
+    
+    const problemTitle = problemSnap.val().title || 'Untitled Problem';
+    openMoveModal(fromHKey, pKey, problemTitle);
+    
+  } catch (err) {
+    console.error('Error getting problem data:', err);
+    showToast("Error loading problem data.", { success: false });
+  }
+};
+
+
+
 window.moveHeading = function(hKey, direction) {
   get(ref(db, `${dbPrefix}/headings`)).then(snapshot => {
     if (!snapshot.exists()) return;
@@ -649,96 +556,39 @@ window.handleEnter = function(event, hKey) {
   }
 };
 window.insertHeadingAbove = async function (hKey) {
-  const newTitle = prompt("Enter title for new heading:");
-  if (!newTitle) return showToast("Title cannot be empty.", { success: false });
-
-  const hNum = parseInt(hKey.slice(1)); // Get numeric part
-  const baseRef = ref(db, dbPrefix);
-
   try {
-    const snap = await get(baseRef);
-    if (!snap.exists()) return;
-
-    const data = snap.val();
-    const headings = data.headings || {};
-    let hcount = data.hcount || 0;
-
-    const updates = {};
-
-    // Shift all headings starting from hNum to hcount down by 1
-    for (let i = hcount; i >= hNum; i--) {
-      const fromKey = `h${i}`;
-      const toKey = `h${i + 1}`;
-      if (headings[fromKey]) {
-        updates[`headings/${toKey}`] = headings[fromKey];
-      }
+    const headingSnap = await get(ref(db, `${dbPrefix}/headings/${hKey}`));
+    if (!headingSnap.exists()) {
+      showToast("Heading not found.", { success: false });
+      return;
     }
-
-    // Add new heading at hNum
-    const newKey = `h${hNum}`;
-    updates[`headings/${newKey}`] = {
-      heading: newTitle,
-      pcount: 0,
-      problems: {}
-    };
-
-    updates[`hcount`] = hcount + 1;
-
-    await update(baseRef, updates);
-    showToast("Heading inserted above successfully!");
+    
+    const currentName = headingSnap.val().heading || 'Untitled Heading';
+    openInsertModal('heading', currentName, hKey);
+    
   } catch (err) {
-    console.error("Error inserting heading above:", err);
-    showToast("Failed to insert heading.", { success: false });
+    console.error('Error getting heading data:', err);
+    showToast("Error loading heading data.", { success: false });
   }
 };
+
 window.insertProblemAbove = async function(hKey, pKey) {
-  const title = prompt("Enter title for new problem:");
-  if (!title) return showToast("Title cannot be empty.", { success: false });
-
-  const pNum = parseInt(pKey.slice(1));
-  const probPath = `${dbPrefix}/headings/${hKey}`;
-
   try {
-    const snap = await get(ref(db, probPath));
-    if (!snap.exists()) return;
-
-    const data = snap.val();
-    const problems = data.problems || {};
-    let pcount = data.pcount || 0;
-
-    const updates = {};
-
-    // Shift all problems at or after pNum down by one
-    for (let i = pcount; i >= pNum; i--) {
-      const fromKey = `p${i}`;
-      const toKey = `p${i + 1}`;
-      if (problems[fromKey]) {
-        updates[`problems/${toKey}`] = problems[fromKey];
-      }
+    const problemSnap = await get(ref(db, `${dbPrefix}/headings/${hKey}/problems/${pKey}`));
+    if (!problemSnap.exists()) {
+      showToast("Problem not found.", { success: false });
+      return;
     }
-
-    // Insert new problem at pNum
-    const newKey = `p${pNum}`;
-    updates[`problems/${newKey}`] = {
-      title: title,
-      solutions: {}
-    };
-    updates[`pcount`] = pcount + 1;
-
-    await update(ref(db, probPath), updates);
-
-    // Immediately open solution editor for the new problem
-    sessionStorage.setItem("solutionDraft", JSON.stringify({}));
-    sessionStorage.setItem("solutionTitle", title);
-    sessionStorage.setItem("hKey", hKey);
-    sessionStorage.setItem("pKey", newKey);
-
-    window.open("solution.html", "_blank");
+    
+    const currentName = problemSnap.val().title || 'Untitled Problem';
+    openInsertModal('problem', currentName, hKey, pKey);
+    
   } catch (err) {
-    console.error("Error inserting problem above:", err);
-    showToast("Failed to insert problem.", { success: false });
+    console.error('Error getting problem data:', err);
+    showToast("Error loading problem data.", { success: false });
   }
 };
+
 
 
 
@@ -932,10 +782,8 @@ window.shareProblemByCode = async function(hKey, pKey) {
   }
 
   // 9. Show/copy the code to user
-  alert(
-    "Share code generated for this problem:\n\n" + code +
-    `\n\nGive this code to your friend. It will expire in ${SHARE_EXPIRY_MINUTES} minutes or if you close this page.`
-  );
+  openShareModal('problem', code, probData.title || 'Untitled Problem');
+
   return code;
 };
 window.shareHeadingByCode = async function(hKey) {
@@ -1010,10 +858,8 @@ window.shareHeadingByCode = async function(hKey) {
   }
 
   // 9. Show/copy the code to user
-  alert(
-    "Share code generated for this heading:\n\n" + code +
-    `\n\nGive this code to your friend. It will expire in ${SHARE_EXPIRY_MINUTES} minutes or if you close this page.`
-  );
+  openShareModal('heading', code, headingData.heading || 'Untitled Heading');
+
   return code;
 };
 
@@ -1350,5 +1196,962 @@ input.onkeydown = (e) => {
   if (e.key === 'Escape') {
     e.preventDefault();
     closeModal();
+  }
+};
+// Rename Modal Elements
+const renameModal = document.getElementById('renameModal');
+const renameInput = document.getElementById('renameInput');
+const confirmRenameBtn = document.getElementById('confirmRename');
+const cancelRenameBtn = document.getElementById('cancelRename');
+const renameModalTitle = document.getElementById('renameModalTitle');
+
+let currentRenameData = null;
+
+// Open rename modal
+function openRenameModal(type, currentName, hKey, pKey = null) {
+  currentRenameData = { type, hKey, pKey };
+  
+  renameModalTitle.textContent = type === 'heading' ? 'Rename Heading' : 'Rename Problem';
+  renameInput.value = currentName;
+  renameInput.placeholder = type === 'heading' ? 'Enter heading name...' : 'Enter problem title...';
+  
+  renameModal.style.display = 'flex';
+  confirmRenameBtn.textContent = 'Update';
+  confirmRenameBtn.disabled = false;
+  
+  setTimeout(() => {
+    renameInput.focus();
+    renameInput.select(); // Select all text for easy replacement
+  }, 100);
+}
+
+// Close rename modal
+function closeRenameModal() {
+  renameModal.style.display = 'none';
+  renameInput.value = '';
+  currentRenameData = null;
+}
+
+// Modal event listeners
+cancelRenameBtn.onclick = closeRenameModal;
+renameModal.onclick = (e) => { if (e.target === renameModal) closeRenameModal(); };
+
+// Rename function with improved UX
+async function performRename() {
+  const newName = renameInput.value.trim();
+  if (!newName) {
+    showToast("Name cannot be empty.", { success: false });
+    renameInput.focus();
+    return;
+  }
+
+  confirmRenameBtn.disabled = true;
+  confirmRenameBtn.textContent = "Updating...";
+
+  try {
+    const { type, hKey, pKey } = currentRenameData;
+    
+    if (type === 'heading') {
+      await update(ref(db, `${dbPrefix}/headings/${hKey}`), { heading: newName });
+      showToast("Heading renamed successfully!");
+    } else {
+      await update(ref(db, `${dbPrefix}/headings/${hKey}/problems/${pKey}`), { title: newName });
+      showToast("Problem renamed successfully!");
+    }
+    
+    closeRenameModal();
+  } catch (err) {
+    showToast("Failed to rename. Please try again.", { success: false });
+    console.error('Rename Error:', err);
+    renameInput.focus();
+  } finally {
+    confirmRenameBtn.disabled = false;
+    confirmRenameBtn.textContent = "Update";
+  }
+}
+
+confirmRenameBtn.onclick = performRename;
+
+// Allow Enter key to submit
+renameInput.onkeydown = (e) => {
+  if (e.key === 'Enter') {
+    e.preventDefault();
+    performRename();
+  }
+  if (e.key === 'Escape') {
+    e.preventDefault();
+    closeRenameModal();
+  }
+};
+// Delete Modal Elements
+const deleteModal = document.getElementById('deleteModal');
+const deleteInput = document.getElementById('deleteConfirmInput');
+const confirmDeleteBtn = document.getElementById('confirmDelete');
+const cancelDeleteBtn = document.getElementById('cancelDelete');
+const deleteModalTitle = document.getElementById('deleteModalTitle');
+const deleteModalMessage = document.getElementById('deleteModalMessage');
+const deleteTargetName = document.getElementById('deleteTargetName');
+
+let currentDeleteData = null;
+
+// Open delete modal
+function openDeleteModal(type, name, hKey, pKey = null) {
+  currentDeleteData = { type, name, hKey, pKey };
+  
+  if (type === 'heading') {
+
+    deleteModalMessage.innerHTML = `
+      You are about to delete the heading <strong>"${name}"</strong> and <strong>all its problems</strong>.<br><br>
+      This action cannot be undone and will permanently remove all data within this heading.
+    `;
+  } else {
+
+    deleteModalMessage.innerHTML = `
+      You are about to delete the problem <strong>"${name}"</strong> and all its solutions.<br><br>
+      This action cannot be undone.
+    `;
+  }
+  
+  deleteTargetName.textContent = name;
+  deleteInput.value = '';
+  deleteInput.placeholder = `Type "${name}" to confirm...`;
+  
+  deleteModal.style.display = 'flex';
+  confirmDeleteBtn.textContent = 'Delete';
+  confirmDeleteBtn.disabled = true;
+  
+  setTimeout(() => deleteInput.focus(), 100);
+}
+
+// Close delete modal
+function closeDeleteModal() {
+  deleteModal.style.display = 'none';
+  deleteInput.value = '';
+  currentDeleteData = null;
+}
+
+// Enable/disable delete button based on input
+deleteInput.oninput = () => {
+  const isMatch = deleteInput.value.trim() === currentDeleteData?.name;
+  confirmDeleteBtn.disabled = !isMatch;
+  confirmDeleteBtn.style.opacity = isMatch ? '1' : '0.6';
+};
+
+// Perform deletion with improved UX
+async function performDeletion() {
+  const { type, name, hKey, pKey } = currentDeleteData;
+  
+  confirmDeleteBtn.disabled = true;
+  confirmDeleteBtn.textContent = "Deleting...";
+
+  try {
+    if (type === 'heading') {
+      await deleteHeadingLogic(hKey);
+      showToast(`Heading "${name}" deleted successfully.`);
+    } else {
+      await deleteProblemLogic(hKey, pKey);
+      showToast(`Problem "${name}" deleted successfully.`);
+    }
+    
+    closeDeleteModal();
+  } catch (err) {
+    showToast("Failed to delete. Please try again.", { success: false });
+    console.error('Delete Error:', err);
+    deleteInput.focus();
+  } finally {
+    confirmDeleteBtn.disabled = false;
+    confirmDeleteBtn.textContent = "Delete";
+  }
+}
+
+// Modal event listeners
+cancelDeleteBtn.onclick = closeDeleteModal;
+confirmDeleteBtn.onclick = performDeletion;
+deleteModal.onclick = (e) => { if (e.target === deleteModal) closeDeleteModal(); };
+
+// Allow Enter key to submit (only if input matches)
+deleteInput.onkeydown = (e) => {
+  if (e.key === 'Enter' && !confirmDeleteBtn.disabled) {
+    e.preventDefault();
+    performDeletion();
+  }
+  if (e.key === 'Escape') {
+    e.preventDefault();
+    closeDeleteModal();
+  }
+};
+// Extract heading deletion logic
+async function deleteHeadingLogic(hKey) {
+  const baseRef = ref(db, dbPrefix);
+  const snap = await get(baseRef);
+  if (!snap.exists()) return;
+
+  const data = snap.val();
+  const headings = data.headings || {};
+  let hcount = data.hcount || 0;
+
+  const hNum = parseInt(hKey.slice(1));
+  const updates = {};
+  updates[`headings/${hKey}`] = null;
+
+  // Shift subsequent headings up
+  for (let i = hNum + 1; i <= hcount; i++) {
+    const fromKey = `h${i}`;
+    const toKey = `h${i - 1}`;
+    if (headings[fromKey] !== undefined) {
+      updates[`headings/${toKey}`] = headings[fromKey];
+    }
+    updates[`headings/${fromKey}`] = null;
+  }
+
+  updates[`hcount`] = hcount - 1;
+  await update(baseRef, updates);
+}
+
+// Extract problem deletion logic  
+async function deleteProblemLogic(hKey, pKey) {
+  const probRef = ref(db, `${dbPrefix}/headings/${hKey}`);
+  const snap = await get(probRef);
+  if (!snap.exists()) return;
+
+  const data = snap.val();
+  const problems = data.problems || {};
+  let pcount = data.pcount || 0;
+
+  const pNum = parseInt(pKey.slice(1));
+  const updates = {};
+  updates[`problems/${pKey}`] = null;
+
+  // Shift subsequent problems up
+  for (let i = pNum + 1; i <= pcount; i++) {
+    const fromKey = `p${i}`;
+    const toKey = `p${i - 1}`;
+    if (problems[fromKey] !== undefined) {
+      updates[`problems/${toKey}`] = problems[fromKey];
+    }
+    updates[`problems/${fromKey}`] = null;
+  }
+
+  updates[`pcount`] = pcount - 1;
+  await update(probRef, updates);
+}
+// Share Modal Elements
+const shareModal = document.getElementById('shareModal');
+const shareCodeDisplay = document.getElementById('shareCodeDisplay');
+const copyShareCodeBtn = document.getElementById('copyShareCode');
+const closeShareBtn = document.getElementById('closeShare');
+const shareModalTitle = document.getElementById('shareModalTitle');
+const shareModalMessage = document.getElementById('shareModalMessage');
+const shareTimer = document.getElementById('shareTimer');
+
+let shareCountdown = null;
+
+// Open share modal
+function openShareModal(type, code, itemName) {
+  shareModalTitle.textContent = type === 'heading' ? 'Share Heading' : 'Share Problem ';
+  shareCodeDisplay.textContent = code;
+  
+  const itemType = type === 'heading' ? 'heading' : 'problem';
+  shareModalMessage.innerHTML = `
+    Share code for <strong>"${itemName}"</strong> generated successfully!<br>
+    Give this code to your friend to share your ${itemType}.
+  `;
+  
+  shareModal.style.display = 'flex';
+  
+  // Start countdown timer
+  startShareCountdown();
+  
+  setTimeout(() => shareCodeDisplay.focus(), 100);
+}
+
+// Close share modal
+function closeShareModal() {
+  shareModal.style.display = 'none';
+  if (shareCountdown) {
+    clearInterval(shareCountdown);
+    shareCountdown = null;
+  }
+}
+
+// Copy share code to clipboard
+// Copy share code to clipboard - Fixed Version
+async function copyShareCode() {
+  try {
+    // Use modern Clipboard API
+    await navigator.clipboard.writeText(shareCodeDisplay.textContent);
+    copyShareCodeBtn.textContent = 'Copied!';
+    copyShareCodeBtn.style.background = '#188558ff';
+    showToast('Share code copied to clipboard!');
+    
+    setTimeout(() => {
+      copyShareCodeBtn.innerHTML = `
+        <svg class="copy-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <rect x="9" y="9" width="13" height="13" rx="2" ry="2"/>
+          <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
+        </svg>
+        <span class="copy-text">Copy Code</span>
+      `;
+      copyShareCodeBtn.style.background = '#4CAF50';
+    }, 2000);
+  } catch (err) {
+    // Fallback for browsers that don't support Clipboard API
+    try {
+      // Create a temporary textarea element
+      const tempTextarea = document.createElement('textarea');
+      tempTextarea.value = shareCodeDisplay.textContent;
+      tempTextarea.style.position = 'fixed';
+      tempTextarea.style.left = '-999999px';
+      tempTextarea.style.top = '-999999px';
+      document.body.appendChild(tempTextarea);
+      
+      // Select and copy
+      tempTextarea.focus();
+      tempTextarea.select();
+      document.execCommand('copy');
+      
+      // Clean up
+      document.body.removeChild(tempTextarea);
+      
+      // Show success feedback
+      copyShareCodeBtn.textContent = 'Copied!';
+      copyShareCodeBtn.style.background = '#188558ff';
+      showToast('Share code copied to clipboard!');
+      
+      setTimeout(() => {
+        copyShareCodeBtn.innerHTML = `
+          <svg class="copy-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="9" y="9" width="13" height="13" rx="2" ry="2"/>
+            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
+          </svg>
+          <span class="copy-text">Copy Code</span>
+        `;
+        copyShareCodeBtn.style.background = '#4CAF50';
+      }, 2000);
+      
+    } catch (fallbackErr) {
+      console.error('Copy failed:', fallbackErr);
+      showToast('Failed to copy. Please select and copy manually.', { success: false });
+    }
+  }
+}
+
+
+// Start countdown timer
+function startShareCountdown() {
+  let timeLeft = SHARE_EXPIRY_MINUTES * 60; // 4 minutes in seconds
+  
+  shareCountdown = setInterval(() => {
+    const minutes = Math.floor(timeLeft / 60);
+    const seconds = timeLeft % 60;
+    shareTimer.textContent = `Expires in ${minutes}:${seconds.toString().padStart(2, '0')} minutes`;
+    
+    if (timeLeft <= 0) {
+      shareTimer.textContent = 'Code expired';
+      shareTimer.style.color = '#ff4567';
+      clearInterval(shareCountdown);
+      shareCountdown = null;
+    }
+    
+    timeLeft--;
+  }, 1000);
+}
+
+// Modal event listeners
+closeShareBtn.onclick = closeShareModal;
+copyShareCodeBtn.onclick = copyShareCode;
+shareModal.onclick = (e) => { if (e.target === shareModal) closeShareModal(); };
+
+// Keyboard shortcuts
+shareModal.onkeydown = (e) => {
+  if (e.key === 'Escape') {
+    e.preventDefault();
+    closeShareModal();
+  }
+  if (e.key === 'Enter' || e.key === ' ') {
+    e.preventDefault();
+    copyShareCode();
+  }
+};
+// Receive Modal Elements
+const receiveModal = document.getElementById('receiveModal');
+const receiveCodeInput = document.getElementById('receiveCodeInput');
+const receiveContentBtn = document.getElementById('receiveContentBtn');
+const cancelReceiveBtn = document.getElementById('cancelReceive');
+const receiveInputStatus = document.getElementById('receiveInputStatus');
+const receiveInputFeedback = document.getElementById('receiveInputFeedback');
+
+// Open receive modal
+function openReceiveModal() {
+  receiveCodeInput.value = '';
+  receiveContentBtn.disabled = true;
+  receiveContentBtn.textContent = 'Receive Content';
+  receiveInputFeedback.textContent = 'Code format: letters and numbers only';
+  receiveInputFeedback.className = 'input-feedback';
+  receiveInputStatus.classList.remove('show');
+  
+  receiveModal.style.display = 'flex';
+  
+  setTimeout(() => receiveCodeInput.focus(), 100);
+}
+
+// Close receive modal
+function closeReceiveModal() {
+  receiveModal.style.display = 'none';
+  receiveCodeInput.value = '';
+}
+
+// Validate input and enable/disable button
+receiveCodeInput.oninput = () => {
+  const code = receiveCodeInput.value.trim();
+  const isValid = /^[a-zA-Z0-9]{4,8}$/.test(code);
+  
+  receiveCodeInput.classList.remove('valid', 'invalid');
+  receiveInputStatus.classList.remove('show');
+  
+  if (code.length === 0) {
+    receiveContentBtn.disabled = true;
+    receiveInputFeedback.textContent = 'Code format: letters and numbers only';
+    receiveInputFeedback.className = 'input-feedback';
+  } else if (isValid) {
+    receiveCodeInput.classList.add('valid');
+    receiveInputStatus.classList.add('show');
+    receiveContentBtn.disabled = false;
+    receiveInputFeedback.textContent = 'Code format looks good!';
+    receiveInputFeedback.className = 'input-feedback valid';
+  } else {
+    receiveCodeInput.classList.add('invalid');
+    receiveContentBtn.disabled = true;
+    receiveInputFeedback.textContent = 'Invalid format: 4-8 characters, letters and numbers only';
+    receiveInputFeedback.className = 'input-feedback invalid';
+  }
+};
+
+// Perform content import
+async function performReceive() {
+  const code = receiveCodeInput.value.trim();
+  if (!code) return;
+  
+  receiveContentBtn.disabled = true;
+  receiveContentBtn.classList.add('receiving');
+  receiveContentBtn.innerHTML = `
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <circle cx="12" cy="12" r="3"/>
+      <path d="M12 1v6M12 17v6M4.22 4.22l4.24 4.24M15.54 15.54l4.24 4.24M1 12h6M17 12h6M4.22 19.78l4.24-4.24M15.54 8.46l4.24-4.24"/>
+    </svg>
+    <span>Receiving...</span>
+  `;
+
+  try {
+    const shareRef = ref(db, `shared/${code}`);
+    const shareSnap = await get(shareRef);
+    
+    if (!shareSnap.exists()) {
+      throw new Error('Invalid or expired code');
+    }
+    
+    const shareData = shareSnap.val();
+    
+    if (shareData.type === "problem" && shareData.data) {
+      const problemObj = { ...shareData.data };
+      let baseTitle = problemObj.title || shareData.title || "Imported Problem";
+      baseTitle = baseTitle.replace(/\s+\(Shared(?: By [^)]+)?\)$/i, "");
+      
+      const fromUserText = shareData.fromUsername ? ` (Shared By ${shareData.fromUsername})` : " (Shared)";
+      problemObj.title = baseTitle + fromUserText;
+
+      const dbPrefix = window.dbPrefix;
+      const headingsRef = ref(db, `${dbPrefix}/headings`);
+      let headingsSnap = await get(headingsRef);
+      let headings = {};
+      let hcount = 0;
+      let sharedHKey = null;
+
+      if (headingsSnap.exists()) {
+        headings = headingsSnap.val();
+        for (const [hKey, hData] of Object.entries(headings)) {
+          if (hData.heading === "Shared Problems") {
+            sharedHKey = hKey;
+            break;
+          }
+        }
+        hcount = (await get(ref(db, `${dbPrefix}/hcount`))).val() || Object.keys(headings).length;
+      }
+
+      if (!sharedHKey) {
+        hcount++;
+        sharedHKey = `h${hcount}`;
+        const newHeading = {
+          heading: "Shared Problems",
+          pcount: 0,
+          problems: {}
+        };
+        await update(ref(db, dbPrefix), {
+          [`headings/${sharedHKey}`]: newHeading,
+          hcount: hcount
+        });
+      }
+
+      const sharedHeadingRef = ref(db, `${dbPrefix}/headings/${sharedHKey}`);
+      let sharedHeadingSnap = await get(sharedHeadingRef);
+      let pcount = (sharedHeadingSnap.exists() && sharedHeadingSnap.val().pcount) || 0;
+      pcount++;
+      const pKey = `p${pcount}`;
+
+      await update(sharedHeadingRef, {
+        [`problems/${pKey}`]: problemObj,
+        pcount: pcount
+      });
+
+      await remove(shareRef);
+      showToast(`Received ${problemObj.title}`);
+      closeReceiveModal();
+      
+    } else if (shareData.type === "heading" && shareData.data) {
+      const fromUserText = shareData.fromUsername ? ` (Shared By ${shareData.fromUsername})` : " (Shared)";
+      let baseTitle = shareData.data.heading || shareData.title || "Imported Heading";
+      baseTitle = baseTitle.replace(/\s+\(Shared(?: By [^)]+)?\)$/i, "");
+      const newHeadingTitle = baseTitle + fromUserText;
+      
+      const dbPrefix = window.dbPrefix;
+      let hcount = (await get(ref(db, `${dbPrefix}/hcount`))).val();
+      hcount = hcount ? parseInt(hcount) : 0;
+      hcount++;
+      const newHKey = `h${hcount}`;
+      const headingObj = JSON.parse(JSON.stringify(shareData.data));
+      headingObj.heading = newHeadingTitle;
+      headingObj.pcount = headingObj.pcount || (headingObj.problems ? Object.keys(headingObj.problems).length : 0);
+
+      await update(ref(db, dbPrefix), {
+        [`headings/${newHKey}`]: headingObj,
+        hcount: hcount
+      });
+
+      await remove(shareRef);
+      showToast(`Received heading: "${newHeadingTitle}" with ${headingObj.pcount} problems!`);
+      closeReceiveModal();
+      
+    } else {
+      throw new Error('Invalid data format');
+    }
+    
+  } catch (err) {
+    console.error('Import Error:', err);
+    showToast(err.message || "Failed to receive content. Please check the code and try again.", { success: false });
+    receiveCodeInput.focus();
+  } finally {
+    receiveContentBtn.disabled = false;
+    receiveContentBtn.classList.remove('receiving');
+    receiveContentBtn.innerHTML = `
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+        <polyline points="7,10 12,15 17,10"/>
+        <line x1="12" y1="15" x2="12" y2="3"/>
+      </svg>
+      <span class="receive-btn-text">Receive Content</span>
+    `;
+  }
+}
+
+// Modal event listeners
+cancelReceiveBtn.onclick = closeReceiveModal;
+receiveContentBtn.onclick = performReceive;
+receiveModal.onclick = (e) => { if (e.target === receiveModal) closeReceiveModal(); };
+
+// Keyboard shortcuts
+receiveCodeInput.onkeydown = (e) => {
+  if (e.key === 'Enter' && !receiveContentBtn.disabled) {
+    e.preventDefault();
+    performReceive();
+  }
+  if (e.key === 'Escape') {
+    e.preventDefault();
+    closeReceiveModal();
+  }
+};
+
+// Update importSharedByCode function
+window.importSharedByCode = function() {
+  openReceiveModal();
+};
+// Move Modal Elements
+const moveModal = document.getElementById('moveModal');
+const moveProblemName = document.getElementById('moveProblemName');
+const headingsList = document.getElementById('headingsList');
+const confirmMoveBtn = document.getElementById('confirmMove');
+const cancelMoveBtn = document.getElementById('cancelMove');
+
+let currentMoveData = null;
+let selectedTargetHeading = null;
+
+// Open move modal
+async function openMoveModal(fromHKey, pKey, problemTitle) {
+  try {
+    // Get all headings except the current one
+    const allSnap = await get(ref(db, `${dbPrefix}/headings`));
+    if (!allSnap.exists()) {
+      showToast("No headings found.", { success: false });
+      return;
+    }
+
+    const allHeadings = allSnap.val();
+    const targetHeadings = Object.keys(allHeadings)
+      .filter(key => key !== fromHKey)
+      .sort((a, b) => parseInt(a.slice(1)) - parseInt(b.slice(1)));
+
+    if (targetHeadings.length === 0) {
+      showToast("No other headings to move to.", { success: false });
+      return;
+    }
+
+    currentMoveData = { fromHKey, pKey, problemTitle, allHeadings };
+    selectedTargetHeading = null;
+
+    // Update modal content
+    moveProblemName.textContent = problemTitle;
+    
+    // Generate heading options
+    headingsList.innerHTML = '';
+    targetHeadings.forEach(hKey => {
+      const heading = allHeadings[hKey];
+      const problemCount = heading.pcount || 0;
+      
+      const option = document.createElement('div');
+      option.className = 'heading-option';
+      option.dataset.hkey = hKey;
+      option.innerHTML = `
+        <div class="heading-option-radio"></div>
+        <div class="heading-option-info">
+          <div class="heading-option-name">${heading.heading}</div>
+          <div class="heading-option-details">${problemCount} problem${problemCount !== 1 ? 's' : ''}</div>
+        </div>
+      `;
+      
+      option.onclick = () => selectHeading(hKey, option);
+      headingsList.appendChild(option);
+    });
+
+    confirmMoveBtn.disabled = true;
+    moveModal.style.display = 'flex';
+    
+  } catch (err) {
+    console.error('Error opening move modal:', err);
+    showToast("Error loading headings.", { success: false });
+  }
+}
+
+// Select a heading option
+function selectHeading(hKey, optionElement) {
+  // Remove previous selection
+  document.querySelectorAll('.heading-option').forEach(el => {
+    el.classList.remove('selected');
+  });
+  
+  // Select new option
+  optionElement.classList.add('selected');
+  selectedTargetHeading = hKey;
+  confirmMoveBtn.disabled = false;
+}
+
+// Close move modal
+function closeMoveModal() {
+  moveModal.style.display = 'none';
+  currentMoveData = null;
+  selectedTargetHeading = null;
+}
+
+// Perform the move operation
+async function performMove() {
+  if (!selectedTargetHeading || !currentMoveData) return;
+  
+  const { fromHKey, pKey, allHeadings } = currentMoveData;
+  
+  confirmMoveBtn.disabled = true;
+  confirmMoveBtn.classList.add('moving');
+  confirmMoveBtn.innerHTML = `
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <circle cx="12" cy="12" r="3"/>
+      <path d="M12 1v6M12 17v6M4.22 4.22l4.24 4.24M15.54 15.54l4.24 4.24M1 12h6M17 12h6M4.22 19.78l4.24-4.24M15.54 8.46l4.24-4.24"/>
+    </svg>
+    <span>Moving...</span>
+  `;
+
+  try {
+    const fromHeading = allHeadings[fromHKey];
+    const problemToMove = fromHeading.problems[pKey];
+
+    const fromProblems = { ...fromHeading.problems };
+    const toProblems = { ...allHeadings[selectedTargetHeading].problems };
+
+    delete fromProblems[pKey];
+    const newFromProblems = {};
+    let fromIndex = 1;
+    for (const key of Object.keys(fromProblems).sort((a, b) => parseInt(a.slice(1)) - parseInt(b.slice(1)))) {
+      newFromProblems[`p${fromIndex++}`] = fromProblems[key];
+    }
+
+    const newToProblems = {};
+    let toIndex = 1;
+    for (const key of Object.keys(toProblems).sort((a, b) => parseInt(a.slice(1)) - parseInt(b.slice(1)))) {
+      newToProblems[`p${toIndex++}`] = toProblems[key];
+    }
+    newToProblems[`p${toIndex}`] = problemToMove;
+
+    const updates = {
+      [`${dbPrefix}/headings/${fromHKey}/problems`]: newFromProblems,
+      [`${dbPrefix}/headings/${fromHKey}/pcount`]: fromIndex - 1,
+      [`${dbPrefix}/headings/${selectedTargetHeading}/problems`]: newToProblems,
+      [`${dbPrefix}/headings/${selectedTargetHeading}/pcount`]: toIndex
+    };
+
+    await update(ref(db), updates);
+    showToast("Problem moved successfully!");
+    closeMoveModal();
+    
+  } catch (err) {
+    console.error("Error moving problem:", err);
+    showToast("Failed to move problem.", { success: false });
+  } finally {
+    confirmMoveBtn.disabled = false;
+    confirmMoveBtn.classList.remove('moving');
+    confirmMoveBtn.innerHTML = `
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/>
+      </svg>
+      <span class="move-btn-text">Move Problem</span>
+    `;
+  }
+}
+
+// Modal event listeners
+cancelMoveBtn.onclick = closeMoveModal;
+confirmMoveBtn.onclick = performMove;
+moveModal.onclick = (e) => { if (e.target === moveModal) closeMoveModal(); };
+
+// Keyboard shortcuts
+moveModal.onkeydown = (e) => {
+  if (e.key === 'Escape') {
+    e.preventDefault();
+    closeMoveModal();
+  }
+  if (e.key === 'Enter' && !confirmMoveBtn.disabled) {
+    e.preventDefault();
+    performMove();
+  }
+};
+// Insert Modal Elements
+const insertModal = document.getElementById('insertModal');
+const insertTitleInput = document.getElementById('insertTitleInput');
+const confirmInsertBtn = document.getElementById('confirmInsert');
+const cancelInsertBtn = document.getElementById('cancelInsert');
+const insertModalTitle = document.getElementById('insertModalTitle');
+const insertModalDescription = document.getElementById('insertModalDescription');
+const insertCurrentName = document.getElementById('insertCurrentName');
+const insertPreviewLabel = document.getElementById('insertPreviewLabel');
+const insertInputLabel = document.getElementById('insertInputLabel');
+const insertBtnText = document.getElementById('insertBtnText');
+const insertInputStatus = document.getElementById('insertInputStatus');
+const insertInputFeedback = document.getElementById('insertInputFeedback');
+
+let currentInsertData = null;
+
+// Open insert modal
+function openInsertModal(type, currentName, hKey, pKey = null) {
+  currentInsertData = { type, currentName, hKey, pKey };
+  
+  if (type === 'heading') {
+    insertModalTitle.textContent = 'Insert Heading Above';
+    insertModalDescription.textContent = 'Create a new heading above the selected heading';
+    insertPreviewLabel.textContent = 'Inserting above heading:';
+    insertInputLabel.textContent = 'Enter heading title:';
+    insertBtnText.textContent = 'Insert Heading';
+    insertTitleInput.placeholder = 'Enter heading title...';
+  } else {
+    insertModalTitle.textContent = 'Insert Problem Above';
+    insertModalDescription.textContent = 'Create a new problem above the selected problem';
+    insertPreviewLabel.textContent = 'Inserting above problem:';
+    insertInputLabel.textContent = 'Enter problem title:';
+    insertBtnText.textContent = 'Insert Problem';
+    insertTitleInput.placeholder = 'Enter problem title...';
+  }
+  
+  insertCurrentName.textContent = currentName;
+  insertTitleInput.value = '';
+  insertInputFeedback.textContent = 'Title cannot be empty';
+  insertInputFeedback.className = 'input-feedback';
+  insertInputStatus.classList.remove('show');
+  
+  confirmInsertBtn.disabled = true;
+  insertModal.style.display = 'flex';
+  
+  setTimeout(() => {
+    insertTitleInput.focus();
+  }, 100);
+}
+
+// Close insert modal
+function closeInsertModal() {
+  insertModal.style.display = 'none';
+  insertTitleInput.value = '';
+  currentInsertData = null;
+}
+
+// Validate input and enable/disable button
+insertTitleInput.oninput = () => {
+  const title = insertTitleInput.value.trim();
+  
+  insertTitleInput.classList.remove('valid');
+  insertInputStatus.classList.remove('show');
+  
+  if (title.length === 0) {
+    confirmInsertBtn.disabled = true;
+    insertInputFeedback.textContent = 'Title cannot be empty';
+    insertInputFeedback.className = 'input-feedback';
+  } else {
+    insertTitleInput.classList.add('valid');
+    insertInputStatus.classList.add('show');
+    confirmInsertBtn.disabled = false;
+    insertInputFeedback.textContent = 'Title looks good!';
+    insertInputFeedback.className = 'input-feedback valid';
+  }
+};
+
+// Perform the insert operation
+async function performInsert() {
+  const title = insertTitleInput.value.trim();
+  if (!title || !currentInsertData) return;
+  
+  const { type, hKey, pKey } = currentInsertData;
+  
+  confirmInsertBtn.disabled = true;
+  confirmInsertBtn.classList.add('inserting');
+  confirmInsertBtn.innerHTML = `
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <circle cx="12" cy="12" r="3"/>
+      <path d="M12 1v6M12 17v6M4.22 4.22l4.24 4.24M15.54 15.54l4.24 4.24M1 12h6M17 12h6M4.22 19.78l4.24-4.24M15.54 8.46l4.24-4.24"/>
+    </svg>
+    <span>Inserting...</span>
+  `;
+
+  try {
+    if (type === 'heading') {
+      await insertHeadingAboveLogic(hKey, title);
+      showToast(`Heading "${title}" inserted successfully!`);
+    } else {
+      const result = await insertProblemAboveLogic(hKey, pKey, title);
+      showToast(`Problem "${title}" inserted successfully!`);
+      
+      // Auto-open solution editor for new problem
+      if (result.newPKey) {
+        setTimeout(() => {
+          sessionStorage.setItem("solutionDraft", JSON.stringify({}));
+          sessionStorage.setItem("solutionTitle", title);
+          sessionStorage.setItem("hKey", hKey);
+          sessionStorage.setItem("pKey", result.newPKey);
+          window.open("solution.html", "_blank");
+        }, 500);
+      }
+    }
+    
+    closeInsertModal();
+    
+  } catch (err) {
+    console.error("Insert Error:", err);
+    showToast("Failed to insert. Please try again.", { success: false });
+    insertTitleInput.focus();
+  } finally {
+    confirmInsertBtn.disabled = false;
+    confirmInsertBtn.classList.remove('inserting');
+    confirmInsertBtn.innerHTML = `
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <line x1="12" y1="5" x2="12" y2="19"/>
+        <line x1="5" y1="12" x2="19" y2="12"/>
+      </svg>
+      <span class="insert-btn-text">${currentInsertData?.type === 'heading' ? 'Insert Heading' : 'Insert Problem'}</span>
+    `;
+  }
+}
+
+// Extract insert logic functions
+async function insertHeadingAboveLogic(hKey, newTitle) {
+  const hNum = parseInt(hKey.slice(1));
+  const baseRef = ref(db, dbPrefix);
+  const snap = await get(baseRef);
+  if (!snap.exists()) return;
+
+  const data = snap.val();
+  const headings = data.headings || {};
+  let hcount = data.hcount || 0;
+
+  const updates = {};
+
+  // Shift all headings starting from hNum down by 1
+  for (let i = hcount; i >= hNum; i--) {
+    const fromKey = `h${i}`;
+    const toKey = `h${i + 1}`;
+    if (headings[fromKey]) {
+      updates[`headings/${toKey}`] = headings[fromKey];
+    }
+  }
+
+  // Add new heading at hNum
+  const newKey = `h${hNum}`;
+  updates[`headings/${newKey}`] = {
+    heading: newTitle,
+    pcount: 0,
+    problems: {}
+  };
+
+  updates[`hcount`] = hcount + 1;
+  await update(baseRef, updates);
+}
+
+async function insertProblemAboveLogic(hKey, pKey, title) {
+  const pNum = parseInt(pKey.slice(1));
+  const probPath = `${dbPrefix}/headings/${hKey}`;
+  const snap = await get(ref(db, probPath));
+  if (!snap.exists()) return {};
+
+  const data = snap.val();
+  const problems = data.problems || {};
+  let pcount = data.pcount || 0;
+
+  const updates = {};
+
+  // Shift all problems at or after pNum down by one
+  for (let i = pcount; i >= pNum; i--) {
+    const fromKey = `p${i}`;
+    const toKey = `p${i + 1}`;
+    if (problems[fromKey]) {
+      updates[`problems/${toKey}`] = problems[fromKey];
+    }
+  }
+
+  // Insert new problem at pNum
+  const newKey = `p${pNum}`;
+  updates[`problems/${newKey}`] = {
+    title: title,
+    solutions: {}
+  };
+  updates[`pcount`] = pcount + 1;
+
+  await update(ref(db, probPath), updates);
+  return { newPKey: newKey };
+}
+
+// Modal event listeners
+cancelInsertBtn.onclick = closeInsertModal;
+confirmInsertBtn.onclick = performInsert;
+insertModal.onclick = (e) => { if (e.target === insertModal) closeInsertModal(); };
+
+// Keyboard shortcuts
+insertTitleInput.onkeydown = (e) => {
+  if (e.key === 'Enter' && !confirmInsertBtn.disabled) {
+    e.preventDefault();
+    performInsert();
+  }
+  if (e.key === 'Escape') {
+    e.preventDefault();
+    closeInsertModal();
   }
 };
