@@ -154,10 +154,27 @@ function renderSavedCodes() {
 
     get(ref(db, dbPrefix)).then(snapshot => {
       console.log(snapshot.val())
-        if (!snapshot.exists()) return;
-        
-        const data = snapshot.val();
+        let data = {};
+        if (snapshot.exists()) data = snapshot.val();
         const headings = data.headings || {};
+        const hcount = data.hcount || 0;
+        if (!snapshot.exists() || !headings || Object.keys(headings).length === 0 || hcount === 0) {
+    document.getElementById("container").innerHTML = `
+      <div class="empty-placeholder" style="text-align:center; padding:36px 0;">
+        <p style="font-size:1.25em; color:#888; margin-bottom:16px;">
+          <b>You have no headings yet.</b><br>
+          Click <b>Add Heading</b> above to create your first group and start organizing your problems.
+        </p>
+      </div>
+    `;
+    // (Optional: activate modal from button -- not present in markup above!)
+    setTimeout(() => {
+      const btn = document.getElementById('addFirstHeadingBtn');
+      if (btn) btn.onclick = () => openBtn.click();
+    }, 30);
+    return;
+  }
+
 const sortedHKeys = Object.keys(headings).sort((a, b) => {
   return parseInt(a.slice(1)) - parseInt(b.slice(1));
 });
@@ -183,7 +200,23 @@ for (const hKey of sortedHKeys) {
       <button onclick="moveHeading('${hKey}', 'down')">⬇️ Move Down</button>
       <button onclick="deleteHeading('${hKey}')">🗑️ Delete</button>
       <button onclick="insertHeadingAbove('${hKey}')">➕ Insert Above</button>
-      <button onclick="shareHeadingByCode('${hKey}')">Share Heading</button>
+      <button style="display:inline-flex;align-items:center;"
+        onclick="shareHeadingByCode('${hKey}')">
+  <svg id="sahre-icon" width="18" height="18" 
+        viewBox="0 0 24 24" fill="none"
+        stroke="currentColor" stroke-width="2" 
+        stroke-linecap="round"
+        stroke-linejoin="round" 
+        style="vertical-align:middle;margin-right:4px">
+    <circle cx="18" cy="5" r="3"/>
+    <circle cx="6" cy="12" r="3"/>
+    <circle cx="18" cy="19" r="3"/>
+    <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/>
+    <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/>
+  </svg>Share
+</button>
+
+
 
     </div>
   </div>
@@ -193,13 +226,26 @@ for (const hKey of sortedHKeys) {
 
   <div id="addForm-${hKey}" class="addform" style="display:none; margin: 10px 0;">
 <input type="text"
-       placeholder="New Problem Title"
+       placeholder="New Problem Title..."
        id="${hKey}-newProbTitle"
        style="width:90%; margin-right:10px;"
        onkeydown="handleEnter(event, '${hKey}')">
-    <button onclick="addProblem('${hKey}')">💾 Save</button>
-  </div>
+    <button id="save-problem-btn" onclick="addProblem('${hKey}')">Add</button>
+  </div>`;
+const hasNoProblems =
+  (heading.pcount || 0) === 0 ||
+  !heading.problems ||
+  Object.keys(heading.problems).length === 0;
 
+if (hasNoProblems) {
+  html += `
+    <div class="empty-placeholder" style="margin:18px 0 12px 0;text-align:center;font-size:1.07em;color:#bbb;">
+      <b>Your heading is ready!</b> Click <b>Add Problem</b> above to add your first problem.
+      <br>
+    </div>
+  `;
+}
+html += `
   <table>
     <tbody>
 `;
@@ -225,10 +271,22 @@ for (const pKey of sortedKeys) {
             <button onclick="moveProblem('${hKey}', '${pKey}', 'down')">⬇️ Move Down</button>
             <button onclick="moveProblemToAnotherHeading('${hKey}', '${pKey}')">📂 Move to Another Heading</button>
             <button onclick="insertProblemAbove('${hKey}', '${pKey}')">➕ Insert Above</button>
-            <button onclick="shareProblemByCode('${hKey}', '${pKey}')">Share Problem</button>
-
-
             <button onclick="deleteProblem('${hKey}', '${pKey}')">🗑️ Delete</button>
+            <button style="display:inline-flex;align-items:center;"
+        onclick="shareProblemByCode('${hKey}', '${pKey}')">
+  <svg id="sahre-icon" width="18" height="18" 
+        viewBox="0 0 24 24" fill="none"
+        stroke="currentColor" stroke-width="2" 
+        stroke-linecap="round"
+        stroke-linejoin="round" 
+        style="vertical-align:middle;margin-right:4px">
+    <circle cx="18" cy="5" r="3"/>
+    <circle cx="6" cy="12" r="3"/>
+    <circle cx="18" cy="19" r="3"/>
+    <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/>
+    <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/>
+  </svg>Share
+</button>
           </div>
         </div>
       </div>
@@ -254,6 +312,18 @@ html += `
       const el = document.querySelector(`details[data-hkey="${hKey}"]`);
       if (el) el.open = true;
     })
+    const expandHKey = sessionStorage.getItem("expandHKeyOnRender");
+    console.log(expandHKey)
+if (expandHKey) {
+  const el = document.querySelector(`details[data-hkey="${expandHKey}"]`);
+  if (el) {
+    el.open = true;
+    el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    sessionStorage.removeItem("expandHKeyOnRender");
+  }
+  // else: Leave it in sessionStorage so when the new heading appears, it'll expand then
+}
+
     });
 }
 window.renameHeading = function(hKey) {
@@ -1160,8 +1230,11 @@ const input = document.getElementById('headingTitleInput');
 openBtn.onclick = () => {
   addModal.style.display = 'flex';
   input.value = '';
+  confirmBtn.textContent = 'Add';
+  confirmBtn.disabled = false;
   setTimeout(() => input.focus(), 60);
 };
+
 // Close modal fn
 function closeModal() {
   addModal.style.display = 'none';
@@ -1179,6 +1252,9 @@ async function addHeading() {
     input.focus();
     return;
   }
+  confirmBtn.disabled = true;
+  confirmBtn.textContent = "Adding...";
+  //await new Promise(r => setTimeout(r, 10));
   try {
     // Get latest count
     let hcount = (await get(ref(db, `${dbPrefix}/hcount`))).exists()
@@ -1196,7 +1272,13 @@ async function addHeading() {
       [`${dbPrefix}/headings/${newHeadingKey}`]: newHeading,
       [`${dbPrefix}/hcount`]: hcount
     };
+    sessionStorage.setItem("expandHKeyOnRender", newHeadingKey);
     await update(ref(db), updates);
+
+      console.log("While adding:",newHeadingKey);
+  
+
+
     showToast("Heading added Successfully!");
     closeModal();
     // Optionally, scroll or highlight new heading here
@@ -1204,6 +1286,10 @@ async function addHeading() {
     showToast("Failed to add heading.", { success: false });
     console.error('Add Heading Error:', err);
     input.focus();
+  }finally {
+    // Always restore the button for next use!
+    confirmBtn.disabled = false;
+    confirmBtn.textContent = "Add";
   }
 }
 confirmBtn.onclick = addHeading;
