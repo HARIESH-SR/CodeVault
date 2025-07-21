@@ -276,6 +276,7 @@ table tr:hover button {
   width: 100%;
   text-align: left;
   font-size: 14px;
+  font-weight: normal;
   cursor: pointer;
 }
 
@@ -338,6 +339,14 @@ details {
   z-index: 999;
   box-shadow: 0 4px 6px rgba(0,0,0,0.2);
   min-width: 160px;
+}
+
+/* Dropdown menu above toggle */
+.dropdown-menu-up {
+  top: auto !important;
+  bottom: 100%;
+  margin-bottom: 6px;
+  margin-top: 0 !important;
 }
 
 /* Show on hover */
