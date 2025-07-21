@@ -84,8 +84,7 @@
                   <input type="checkbox" id="toggleShowChildren" class="checkbox-tooltip" checked/>
                
 
-<button id="openAddHeadingModal" class="add-heading-btn">+ Add Heading</button>
-
+                    <button id="openAddHeadingModal" class="add-heading-btn">+ Add Heading</button>
             </div>
             <div id="container"></div>
         </div>
@@ -94,7 +93,7 @@
   <div class="modal-backdrop"></div>
   <div class="modal-content" role="dialog" aria-modal="true">
     <h2>Add New Heading</h2>
-    <input id="headingTitleInput" maxlength="60" placeholder="Heading title..." autofocus />
+    <input id="headingTitleInput"  placeholder="Heading title..." autofocus />
     <div class="modal-actions">
       <button id="cancelModal" class="modal-cancel">Cancel</button>
       <button id="addHeadingConfirm" class="modal-add">Add</button>
@@ -107,7 +106,7 @@
   <div class="modal-backdrop"></div>
   <div class="modal-content" role="dialog" aria-modal="true">
     <h2 id="renameModalTitle">Rename</h2>
-    <input id="renameInput" maxlength="60" placeholder="Enter new name..." autofocus />
+    <input id="renameInput"  placeholder="Enter new name..." autofocus />
     <div class="modal-actions">
       <button id="cancelRename" class="modal-cancel">Cancel</button>
       <button id="confirmRename" class="modal-add">Update</button>
@@ -151,7 +150,7 @@
           Type <strong id="deleteTargetName" class="target-name"></strong> to confirm deletion:
         </label>
         <div class="input-wrapper">
-          <input id="deleteConfirmInput" maxlength="100" placeholder="Type the name exactly..." 
+          <input id="deleteConfirmInput"  placeholder="Type the name exactly..." 
                  class="confirmation-input" autocomplete="off" spellcheck="false" />
           <div class="input-status">
             
@@ -252,6 +251,8 @@
     
   </div>
 </div>
+<!-- Ultimate Add Heading Modal -->
+
 
 <!-- Receive Modal -->
 <div id="receiveModal" class="modal" style="display:none;">
@@ -411,7 +412,7 @@
     <div class="insert-input-container">
       <div class="input-label" id="insertInputLabel">Enter title:</div>
       <div class="input-wrapper">
-        <input id="insertTitleInput" maxlength="60" placeholder="Enter title..." 
+        <input id="insertTitleInput"  placeholder="Enter title..." 
                class="insert-title-input" autocomplete="off" spellcheck="false" />
         <div class="input-status" id="insertInputStatus">
           <svg class="status-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
