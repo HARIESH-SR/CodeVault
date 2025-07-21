@@ -2491,37 +2491,7 @@ table, .some-wide-content {
 /* By default, make both buttons equal width in the row */
 
 
-@media (max-width: 600px) {
-  #controls {
-    flex-direction: column;
-    align-items: stretch;
-    gap: 14px;
-    padding-left: 0;
-    padding-right: 0;
-  }
-  .expand-collapse-row {
-    display: flex;
-    gap: 10px;
-    width: 100%;
-    margin-bottom: 0;
-  }
-  .expand-collapse-row button {
-    flex: 1 1 0;
-    min-width: 0;
-    width: 50%;
-    max-width: 50%;
-  }
-  /* Other controls stack */
-  #controls > input,
-  #controls > button:not(.expand-collapse-row button),
-  #controls > .checkbox-tooltip,
-  #controls > label {
-    width: 100%;
-    max-width: 100%;
-    box-sizing: border-box;
-  }
-  
-}
+
 #controls{
   margin-top: 0px;
   background-color: #1a1a1a;
@@ -4571,5 +4541,2551 @@ body {
   .insert-modal-content .modal-actions {
     padding-left: 16px;
     padding-right: 16px;
+  }
+}
+/* Mobile Header Layout Fix */
+@media (max-width: 768px) {
+  .header-bar {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    padding: 10px 12px;
+  }
+  
+  /* User badge on the left */
+  #usernameDisplay {
+    order: 1;
+    flex-shrink: 0;
+  }
+  
+  /* Title in the center */
+  .header-title {
+    order: 2;
+    flex: 1;
+    justify-content: center;
+  }
+  
+  .header-title h2 {
+    font-size: 1.2rem;
+  }
+  
+  /* Actions on the right */
+  .header-actions {
+    order: 3;
+    flex-shrink: 0;
+    gap: 6px;
+  }
+  
+  /* Make buttons small icons */
+  .header-btn {
+    padding: 8px;
+    min-width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+  }
+  
+  .header-btn span {
+    display: none;
+  }
+  
+  .header-btn svg {
+    width: 18px;
+    height: 18px;
+  }
+}
+
+/* Very small screens */
+@media (max-width: 480px) {
+  .header-bar {
+    padding: 8px 10px;
+  }
+  
+  .header-title h2 {
+    font-size: 1.1rem;
+  }
+  
+  .header-btn {
+    padding: 6px;
+    min-width: 32px;
+    height: 32px;
+  }
+  
+  .header-btn svg {
+    width: 16px;
+    height: 16px;
+  }
+  
+  /* Make user badge smaller on very small screens */
+  #usernameDisplay {
+    font-size: 0.85rem;
+    padding: 0.25em 0.7em;
+  }
+  
+  #usernameDisplay .user-avatar {
+    width: 1.8em;
+    height: 1.8em;
+  }
+  
+  #usernameDisplay .username {
+    font-size: 12px;
+  }
+}
+
+/* Extra small screens - hide username text */
+@media (max-width: 360px) {
+  #usernameDisplay .username {
+    display: none;
+  }
+  
+  #usernameDisplay {
+    padding: 0.4em;
+    min-width: auto;
+  }
+}
+/* Mobile Header Layout - Show Essential Elements */
+@media (max-width: 768px) {
+  .header-bar {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    padding: 10px 12px;
+  }
+  
+  /* Keep user badge visible but smaller */
+  #usernameDisplay {
+    order: 1;
+    flex-shrink: 0;
+    font-size: 0.85rem;
+    padding: 0.25em 0.6em;
+    gap: 0.4em;
+  }
+  
+  #usernameDisplay .user-avatar {
+    width: 1.8em;
+    height: 1.8em;
+  }
+  
+  #usernameDisplay .username {
+    font-size: 12px;
+  }
+  
+  /* Keep title visible but smaller */
+  .header-title {
+    order: 2;
+    flex: 1;
+    justify-content: center;
+  }
+  
+  .header-title h2 {
+    font-size: 1.1rem;
+  }
+  
+  /* Actions on the right - both buttons as icons */
+  .header-actions {
+    order: 3;
+    flex-shrink: 0;
+    gap: 6px;
+  }
+  
+  /* Make all header buttons small icons */
+  .header-btn {
+    padding: 8px;
+    min-width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+  }
+  
+  /* Hide button text, show only icons */
+  .header-btn span {
+    display: none !important;
+  }
+  
+  .header-btn svg {
+    width: 18px;
+    height: 18px;
+  }
+}
+
+/* Very small screens - hide username but keep everything else */
+@media (max-width: 480px) {
+  .header-bar {
+    padding: 8px 10px;
+  }
+  
+  .header-title h2 {
+    font-size: 1rem;
+  }
+  
+  .header-btn {
+    padding: 6px;
+    min-width: 32px;
+    height: 32px;
+  }
+  
+  .header-btn svg {
+    width: 16px;
+    height: 16px;
+  }
+  
+  /* Hide username text but keep user avatar */
+  #usernameDisplay .username {
+    display: none;
+  }
+  
+  #usernameDisplay {
+    padding: 0.4em;
+    min-width: auto;
+  }
+}
+
+/* Extra small screens - minimal layout but all elements visible */
+@media (max-width: 360px) {
+  .header-bar {
+    gap: 6px;
+    padding: 6px 8px;
+  }
+  
+  .header-title h2 {
+    font-size: 0.9rem;
+  }
+  
+  .header-btn {
+    padding: 5px;
+    min-width: 28px;
+    height: 28px;
+  }
+  
+  .header-btn svg {
+    width: 14px;
+    height: 14px;
+  }
+}
+/* Reduced padding for logout icon on mobile */
+@media (max-width: 768px) {
+  .header-btn.logout-btn,
+  #logoutBtn {
+    padding: 6px;
+    min-width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+  }
+  
+  /* Hide the "Logout" text, show only icon */
+  .header-btn.logout-btn span,
+  #logoutBtn span {
+    display: none !important;
+  }
+  
+  /* Ensure SVG icon is properly sized */
+  .header-btn.logout-btn svg,
+  #logoutBtn svg {
+    width: 16px;
+    height: 16px;
+  }
+}
+
+/* Very small screens - even more compact */
+@media (max-width: 480px) {
+  .header-btn.logout-btn,
+  #logoutBtn {
+    padding: 4px;
+    min-width: 28px;
+    height: 28px;
+  }
+  
+  .header-btn.logout-btn svg,
+  #logoutBtn svg {
+    width: 14px;
+    height: 14px;
+  }
+}
+
+/* Extra small screens - minimal padding */
+@media (max-width: 360px) {
+  .header-btn.logout-btn,
+  #logoutBtn {
+    padding: 3px;
+    min-width: 26px;
+    height: 26px;
+  }
+  
+  .header-btn.logout-btn svg,
+  #logoutBtn svg {
+    width: 13px;
+    height: 13px;
+  }
+}
+/* Mobile Controls Layout - Single Row */
+/* Mobile Controls - Single Row Layout - REPLACE ALL MOBILE CONTROLS CSS */
+/* Mobile Controls - Fixed Horizontal Scroll Issue */
+@media (max-width: 768px) {
+  #controls {
+    position: fixed;
+    top: 60px;
+    left: 0;
+    right: 0;  /* Use left/right instead of width: 100vw */
+    z-index: 1000;
+    background-color: #0f1117;
+    border-bottom: 1px solid #23263a;
+    padding: 12px 16px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    
+    /* Perfect single row alignment - NO OVERFLOW */
+    display: flex !important;
+    align-items: center !important;
+    gap: 8px;
+    flex-wrap: nowrap !important;
+    /* Remove overflow-x: auto to prevent scrollbar */
+    height: 64px;
+    box-sizing: border-box;
+  }
+  
+  /* Reset all orders */
+  #controls > * {
+    order: initial !important;
+  }
+  
+  /* Search input - flexible but constrained */
+  #searchInput {
+    flex: 1 1 0 !important;  /* Changed from 'auto' to '0' */
+    min-width: 80px !important;  /* Reduced from 120px */
+    height: 40px !important;
+    padding: 0 12px !important;  /* Reduced padding */
+    font-size: 16px;
+    border-radius: 10px;
+    border: 2px solid #2e3549;
+    background: #1c202b;
+    color: #e0e0e0;
+    transition: all 0.3s ease;
+    box-sizing: border-box;
+    margin: 0 !important;
+    line-height: 40px;
+  }
+  
+  /* Expand button - exactly 40px */
+  #expandAll {
+    flex: 0 0 40px !important;
+    width: 40px !important;
+    height: 40px !important;
+    border: 2px solid #2e3549;
+    border-radius: 8px;
+    background: #0f1117;
+    color: #b0b3ba;
+    cursor: pointer;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    font-size: 0;
+    transition: all 0.3s ease;
+    margin: 0 !important;
+    padding: 0 !important;
+    box-sizing: border-box;
+  }
+  
+  #expandAll::before {
+    content: "⊞";
+    font-size: 18px;
+    line-height: 1;
+  }
+  
+  /* Hide collapse button */
+  #collapseAll {
+    display: none !important;
+  }
+  
+  /* Checkbox - 40px height for alignment */
+  #toggleShowChildren {
+    flex: 0 0 40px !important;
+    width: 40px !important;
+    height: 40px !important;
+    appearance: none;
+    border: 2px solid #404758;
+    border-radius: 8px;
+    background: transparent;
+    cursor: pointer;
+    position: relative;
+    transition: all 0.3s ease;
+    margin: 0 !important;
+    padding: 0 !important;
+    box-sizing: border-box;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+  }
+  
+  #toggleShowChildren:checked {
+    background: #4CAF50;
+    border-color: #4CAF50;
+  }
+  
+  #toggleShowChildren:checked::after {
+    content: "✓";
+    color: white;
+    font-size: 16px;
+    font-weight: bold;
+    line-height: 1;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+  
+  /* Add Heading button - 40px height */
+  .add-heading-btn {
+    flex: 0 0 40px !important;
+    width: 40px !important;
+    height: 10px !important;
+    padding: 0 !important;
+    background: linear-gradient(135deg, #4CAF50, #66BB6A);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    box-shadow: 0 4px 15px rgba(76, 175, 80, 0.3);
+    transition: all 0.3s ease;
+    margin: 0 !important;
+    font-size: 0;
+    box-sizing: border-box;
+    position: relative;
+  }
+  
+  .add-heading-btn::before {
+    content: "+";
+    font-size: 22px;
+    font-weight: bold;
+    line-height: 1;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+  
+  /* Hover states */
+  #searchInput:focus {
+    border-color: #6eb6fe;
+    box-shadow: 0 0 0 3px rgba(110, 182, 254, 0.2);
+    outline: none;
+  }
+  
+  #expandAll:hover {
+    background: #2e3549;
+    border-color: #4CAF50;
+    color: #4CAF50;
+    transform: scale(1.05);
+  }
+  
+  #toggleShowChildren:hover {
+    border-color: #4CAF50;
+    background: rgba(76, 175, 80, 0.1);
+  }
+  
+  .add-heading-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(76, 175, 80, 0.4);
+  }
+}
+
+/* Very small screens */
+@media (max-width: 480px) {
+  #controls {
+    height: 60px;
+    padding: 10px 12px;
+    gap: 6px;
+  }
+  
+  #searchInput {
+    height: 36px !important;
+    line-height: 36px;
+    font-size: 16px;
+    min-width: 60px !important;  /* Further reduced */
+    padding: 0 8px !important;
+  }
+  
+  #expandAll,
+  #toggleShowChildren,
+  .add-heading-btn {
+    width: 36px !important;
+    height: 30px !important;
+    flex-basis: 36px !important;
+  }
+  
+  #expandAll::before {
+    font-size: 16px;
+  }
+  
+  .add-heading-btn::before {
+    font-size: 20px;
+  }
+  
+  #toggleShowChildren:checked::after {
+    font-size: 14px;
+  }
+}
+
+/* Extra small screens */
+@media (max-width: 360px) {
+  #controls {
+    height: 56px;
+    padding: 8px 10px;
+    gap: 4px;
+  }
+  
+  #searchInput {
+    height: 32px !important;
+    line-height: 32px;
+    padding: 0 6px !important;
+    font-size: 14px;
+    min-width: 50px !important;
+  }
+  
+  #expandAll,
+  #toggleShowChildren,
+  .add-heading-btn {
+    width: 32px !important;
+    height: 32px !important;
+    flex-basis: 32px !important;
+  }
+  
+  #expandAll::before {
+    font-size: 14px;
+  }
+  
+  .add-heading-btn::before {
+    font-size: 18px;
+  }
+  
+  #toggleShowChildren:checked::after {
+    font-size: 12px;
+  }
+}
+
+/* Adjust body padding */
+@media (max-width: 768px) {
+  body {
+    padding-top: 124px !important;
+  }
+}
+
+@media (max-width: 480px) {
+  body {
+    padding-top: 120px !important;
+  }
+}
+
+@media (max-width: 360px) {
+  body {
+    padding-top: 116px !important;
+  }
+}
+
+/* Adjust body padding */
+@media (max-width: 768px) {
+  body {
+    padding-top: 120px !important;
+  }
+}
+/* Mobile Controls - Fixed Height and Alignment */
+@media (max-width: 768px) {
+  #controls {
+    position: fixed;
+    top: 60px;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+    background-color: #0f1117;
+    border-bottom: 1px solid #23263a;
+    padding: 12px 16px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    
+    /* FORCE single row with proper alignment */
+    display: flex !important;
+    align-items: center !important;
+    gap: 8px;
+    flex-wrap: nowrap !important;
+    overflow-x: auto;
+    height: 56px; /* Fixed height container */
+    box-sizing: border-box;
+  }
+  
+  /* Remove all existing orders and flex properties */
+  #controls > * {
+    order: initial !important;
+  }
+  
+  /* Search - takes available space with fixed height */
+  #searchInput {
+    flex: 1 1 auto !important;
+    min-width: 120px;
+    height: 40px !important; /* Fixed height */
+    padding: 0 14px !important; /* Remove top/bottom padding */
+    font-size: 16px;
+    border-radius: 10px;
+    border: 2px solid #2e3549;
+    background: #1c202b;
+    color: #e0e0e0;
+    transition: all 0.3s ease;
+    box-sizing: border-box;
+    margin: 0 !important;
+    vertical-align: middle;
+  }
+  
+  /* Expand button - fixed dimensions */
+  #expandAll {
+    flex: 0 0 40px !important; /* Match search height */
+    width: 40px !important;
+    height: 40px !important; /* Same height as search */
+    border: 2px solid #2e3549;
+    border-radius: 8px;
+    background: #0f1117;
+    color: #b0b3ba;
+    cursor: pointer;
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+    font-size: 0;
+    transition: all 0.3s ease;
+    margin: 0 !important;
+    padding: 0 !important;
+    box-sizing: border-box;
+  }
+  
+  #expandAll::before {
+    content: "⊞";
+    font-size: 18px;
+    line-height: 1;
+  }
+  
+  /* Hide collapse button completely */
+  #collapseAll {
+    display: none !important;
+  }
+  
+  /* Checkbox - centered and properly sized */
+  #toggleShowChildren {
+    flex: 0 0 24px !important;
+    width: 24px !important;
+    height: 24px !important;
+    appearance: none;
+    border: 2px solid #404758;
+    border-radius: 6px;
+    background: transparent;
+    cursor: pointer;
+    position: relative;
+    transition: all 0.3s ease;
+    margin: 0 !important;
+    padding: 0 !important;
+    box-sizing: border-box;
+    align-self: center; /* Center vertically */
+  }
+  
+  #toggleShowChildren:checked {
+    background: #4CAF50;
+    border-color: #4CAF50;
+  }
+  
+  #toggleShowChildren:checked::after {
+    content: "✓";
+    color: white;
+    font-size: 12px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-weight: bold;
+    line-height: 1;
+  }
+  
+  /* Add Heading - match other button heights */
+  .add-heading-btn {
+    flex: 0 0 40px !important; /* Match other button heights */
+    width: 40px !important;
+    height: 40px !important; /* Same height as expand button */
+    padding: 0 !important;
+    background: linear-gradient(135deg, #4CAF50, #66BB6A);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 15px rgba(76, 175, 80, 0.3);
+    transition: all 0.3s ease;
+    margin: 0 !important;
+    font-size: 0;
+    box-sizing: border-box;
+  }
+  
+  .add-heading-btn::before {
+    content: "+";
+    font-size: 22px;
+    font-weight: bold;
+    line-height: 1;
+  }
+  
+  /* Focus and hover states */
+  #searchInput:focus {
+    border-color: #6eb6fe;
+    box-shadow: 0 0 0 3px rgba(110, 182, 254, 0.2);
+    outline: none;
+  }
+  
+  #expandAll:hover {
+    background: #2e3549;
+    border-color: #4CAF50;
+    color: #4CAF50;
+    transform: scale(1.05);
+  }
+  
+  .add-heading-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(76, 175, 80, 0.4);
+  }
+}
+
+/* Very small screens - maintain proportions */
+@media (max-width: 480px) {
+  #controls {
+    height: 52px; /* Slightly smaller container */
+    padding: 10px 12px;
+    gap: 6px;
+  }
+  
+  #searchInput {
+    height: 36px !important;
+    font-size: 16px;
+  }
+  
+  #expandAll,
+  .add-heading-btn {
+    width: 36px !important;
+    height: 36px !important;
+    flex-basis: 36px !important;
+  }
+  
+  #expandAll::before {
+    font-size: 16px;
+  }
+  
+  .add-heading-btn::before {
+    font-size: 20px;
+  }
+  
+  #toggleShowChildren {
+    width: 22px !important;
+    height: 22px !important;
+    flex-basis: 22px !important;
+  }
+  
+  #toggleShowChildren:checked::after {
+    font-size: 10px;
+  }
+}
+
+/* Extra small screens */
+@media (max-width: 360px) {
+  #controls {
+    height: 48px;
+    padding: 8px 10px;
+    gap: 4px;
+  }
+  
+  #searchInput {
+    height: 32px !important;
+    padding: 0 10px !important;
+    font-size: 14px;
+  }
+  
+  #expandAll,
+  .add-heading-btn {
+    width: 32px !important;
+    height: 32px !important;
+    flex-basis: 32px !important;
+  }
+  
+  #expandAll::before {
+    font-size: 14px;
+  }
+  
+  .add-heading-btn::before {
+    font-size: 18px;
+  }
+  
+  #toggleShowChildren {
+    width: 20px !important;
+    height: 20px !important;
+    flex-basis: 20px !important;
+  }
+}
+
+/* Adjust body padding for new container height */
+@media (max-width: 768px) {
+  body {
+    padding-top: 116px !important; /* 60px header + 56px controls */
+  }
+}
+
+@media (max-width: 480px) {
+  body {
+    padding-top: 112px !important; /* 60px header + 52px controls */
+  }
+}
+
+@media (max-width: 360px) {
+  body {
+    padding-top: 108px !important; /* 60px header + 48px controls */
+  }
+}
+/* Mobile Controls - Perfect Alignment Fix */
+@media (max-width: 768px) {
+  #controls {
+    position: fixed;
+    top: 60px;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+    background-color: #0f1117;
+    border-bottom: 1px solid #23263a;
+    padding: 12px 16px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    
+    /* Perfect single row alignment */
+    display: flex !important;
+    align-items: center !important;
+    gap: 8px;
+    flex-wrap: nowrap !important;
+    overflow-x: auto;
+    height: 56px;
+    box-sizing: border-box;
+  }
+  
+  /* Reset all orders */
+  #controls > * {
+    order: initial !important;
+  }
+  
+  /* Search input - consistent height */
+  #searchInput {
+    flex: 1 1 auto !important;
+    min-width: 120px;
+    height: 40px !important;
+    padding: 0 14px !important;
+    font-size: 16px;
+    border-radius: 10px;
+    border: 2px solid #2e3549;
+    background: #1c202b;
+    color: #e0e0e0;
+    transition: all 0.3s ease;
+    box-sizing: border-box;
+    margin: 0 !important;
+    line-height: 40px; /* Ensure text is vertically centered */
+  }
+  
+  /* Expand button - exact same dimensions as search */
+  #expandAll {
+    flex: 0 0 40px !important;
+    width: 40px !important;
+    height: 40px !important;
+    border: 2px solid #2e3549;
+    border-radius: 8px;
+    background: #0f1117;
+    color: #b0b3ba;
+    cursor: pointer;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    font-size: 0;
+    transition: all 0.3s ease;
+    margin: 0 !important;
+    padding: 0 !important;
+    box-sizing: border-box;
+  }
+  
+  #expandAll::before {
+    content: "⊞";
+    font-size: 18px;
+    line-height: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  /* Hide collapse button */
+  #collapseAll {
+    display: none !important;
+  }
+  
+  /* Checkbox - properly centered */
+  #toggleShowChildren {
+    flex: 0 0 24px !important;
+    width: 24px !important;
+    height: 24px !important;
+    appearance: none;
+    border: 2px solid #404758;
+    border-radius: 6px;
+    background: transparent;
+    cursor: pointer;
+    position: relative;
+    transition: all 0.3s ease;
+    margin: 0 !important;
+    padding: 0 !important;
+    box-sizing: border-box;
+    /* Force vertical centering */
+    align-self: center !important;
+    flex-shrink: 0;
+  }
+  
+  #toggleShowChildren:checked {
+    background: #4CAF50;
+    border-color: #4CAF50;
+  }
+  
+  #toggleShowChildren:checked::after {
+    content: "✓";
+    color: white;
+    font-size: 12px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-weight: bold;
+    line-height: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  /* Add Heading button - exact same height as search and expand */
+  .add-heading-btn {
+    flex: 0 0 40px !important;
+    width: 40px !important;
+    height: 40px !important;
+    padding: 0 !important;
+    background: linear-gradient(135deg, #4CAF50, #66BB6A);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    box-shadow: 0 4px 15px rgba(76, 175, 80, 0.3);
+    transition: all 0.3s ease;
+    margin: 0 !important;
+    font-size: 0;
+    box-sizing: border-box;
+    /* Ensure perfect centering */
+    position: relative;
+  }
+  
+  .add-heading-btn::before {
+    content: "+";
+    font-size: 22px;
+    font-weight: bold;
+    line-height: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+  
+  /* Hover states */
+  #searchInput:focus {
+    border-color: #6eb6fe;
+    box-shadow: 0 0 0 3px rgba(110, 182, 254, 0.2);
+    outline: none;
+  }
+  
+  #expandAll:hover {
+    background: #2e3549;
+    border-color: #4CAF50;
+    color: #4CAF50;
+    transform: scale(1.05);
+  }
+  
+  .add-heading-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(76, 175, 80, 0.4);
+  }
+}
+
+/* Responsive adjustments */
+@media (max-width: 480px) {
+  #controls {
+    height: 52px;
+    padding: 10px 12px;
+    gap: 6px;
+  }
+  
+  #searchInput {
+    height: 36px !important;
+    line-height: 36px;
+    font-size: 16px;
+  }
+  
+  #expandAll,
+  .add-heading-btn {
+    width: 36px !important;
+    height: 36px !important;
+    flex-basis: 36px !important;
+  }
+  
+  #expandAll::before {
+    font-size: 16px;
+  }
+  
+  .add-heading-btn::before {
+    font-size: 20px;
+  }
+  
+  #toggleShowChildren {
+    width: 22px !important;
+    height: 22px !important;
+    flex-basis: 22px !important;
+  }
+  
+  #toggleShowChildren:checked::after {
+    font-size: 10px;
+  }
+}
+
+@media (max-width: 360px) {
+  #controls {
+    height: 48px;
+    padding: 8px 10px;
+    gap: 4px;
+  }
+  
+  #searchInput {
+    height: 32px !important;
+    line-height: 32px;
+    padding: 0 10px !important;
+    font-size: 14px;
+  }
+  
+  #expandAll,
+  .add-heading-btn {
+    width: 32px !important;
+    height: 32px !important;
+    flex-basis: 32px !important;
+  }
+  
+  #expandAll::before {
+    font-size: 14px;
+  }
+  
+  .add-heading-btn::before {
+    font-size: 18px;
+  }
+  
+  #toggleShowChildren {
+    width: 20px !important;
+    height: 20px !important;
+    flex-basis: 20px !important;
+  }
+}
+
+/* Adjust body padding */
+@media (max-width: 768px) {
+  body {
+    padding-top: 116px !important;
+  }
+}
+
+@media (max-width: 480px) {
+  body {
+    padding-top: 112px !important;
+  }
+}
+
+@media (max-width: 360px) {
+  body {
+    padding-top: 108px !important;
+  }
+}
+/* Mobile Controls - Perfect Height Alignment Fix */
+@media (max-width: 768px) {
+  #controls {
+    position: fixed;
+    top: 60px;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+    background-color: #0f1117;
+    border-bottom: 1px solid #23263a;
+    padding: 12px 16px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    
+    /* Perfect single row alignment */
+    display: flex !important;
+    align-items: center !important;
+    gap: 8px;
+    flex-wrap: nowrap !important;
+    overflow-x: auto;
+    height: 64px; /* Fixed container height */
+    box-sizing: border-box;
+  }
+  
+  /* Reset all orders */
+  #controls > * {
+    order: initial !important;
+  }
+  
+  /* Search input - 40px height */
+  #searchInput {
+    flex: 1 1 auto !important;
+    min-width: 120px;
+    height: 40px !important;
+    padding: 0 14px !important;
+    font-size: 16px;
+    border-radius: 10px;
+    border: 2px solid #2e3549;
+    background: #1c202b;
+    color: #e0e0e0;
+    transition: all 0.3s ease;
+    box-sizing: border-box;
+    margin: 0 !important;
+    line-height: 40px; /* Vertically center text */
+  }
+  
+  /* Expand button - exactly 40px height */
+  #expandAll {
+    flex: 0 0 40px !important;
+    width: 40px !important;
+    height: 40px !important;
+    border: 2px solid #2e3549;
+    border-radius: 8px;
+    background: #0f1117;
+    color: #b0b3ba;
+    cursor: pointer;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    font-size: 0;
+    transition: all 0.3s ease;
+    margin: 0 !important;
+    padding: 0 !important;
+    box-sizing: border-box;
+  }
+  
+  #expandAll::before {
+    content: "⊞";
+    font-size: 18px;
+    line-height: 1;
+  }
+  
+  /* Hide collapse button */
+  #collapseAll {
+    display: none !important;
+  }
+  
+  /* Checkbox - SAME 40px height as other elements */
+  #toggleShowChildren {
+    flex: 0 0 40px !important;
+    width: 40px !important;
+    height: 40px !important;
+    appearance: none;
+    border: 2px solid #404758;
+    border-radius: 8px; /* Match other buttons */
+    background: transparent;
+    cursor: pointer;
+    position: relative;
+    transition: all 0.3s ease;
+    margin: 0 !important;
+    padding: 0 !important;
+    box-sizing: border-box;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+  }
+  
+  #toggleShowChildren:checked {
+    background: #4CAF50;
+    border-color: #4CAF50;
+  }
+  
+  #toggleShowChildren:checked::after {
+    content: "✓";
+    color: white;
+    font-size: 16px; /* Larger checkmark for 40px container */
+    font-weight: bold;
+    line-height: 1;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+  
+  /* Add Heading button - exactly 40px height */
+  .add-heading-btn {
+    flex: 0 0 40px !important;
+    width: 40px !important;
+    height: 40px !important;
+    padding: 0 !important;
+    background: linear-gradient(135deg, #4CAF50, #66BB6A);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    box-shadow: 0 4px 15px rgba(76, 175, 80, 0.3);
+    transition: all 0.3s ease;
+    margin: 0 !important;
+    font-size: 0;
+    box-sizing: border-box;
+    position: relative;
+  }
+  
+  /* Perfect center alignment for plus symbol */
+  .add-heading-btn::before {
+    content: "+";
+    font-size: 22px;
+    font-weight: bold;
+    line-height: 1;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+  
+  /* Hover states */
+  #searchInput:focus {
+    border-color: #6eb6fe;
+    box-shadow: 0 0 0 3px rgba(110, 182, 254, 0.2);
+    outline: none;
+  }
+  
+  #expandAll:hover {
+    background: #2e3549;
+    border-color: #4CAF50;
+    color: #4CAF50;
+    transform: scale(1.05);
+  }
+  
+  #toggleShowChildren:hover {
+    border-color: #4CAF50;
+    background: rgba(76, 175, 80, 0.1);
+  }
+  
+  .add-heading-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(76, 175, 80, 0.4);
+  }
+}
+
+/* Very small screens - maintain same height ratio */
+@media (max-width: 480px) {
+  #controls {
+    height: 60px;
+    padding: 10px 12px;
+    gap: 6px;
+  }
+  
+  /* All elements same height - 36px */
+  #searchInput {
+    height: 36px !important;
+    line-height: 36px;
+    font-size: 16px;
+  }
+  
+  #expandAll,
+  #toggleShowChildren,
+  .add-heading-btn {
+    width: 36px !important;
+    height: 36px !important;
+    flex-basis: 36px !important;
+  }
+  
+  #expandAll::before {
+    font-size: 16px;
+  }
+  
+  .add-heading-btn::before {
+    font-size: 20px;
+  }
+  
+  #toggleShowChildren:checked::after {
+    font-size: 14px;
+  }
+}
+
+/* Extra small screens - maintain same height ratio */
+@media (max-width: 360px) {
+  #controls {
+    height: 56px;
+    padding: 8px 10px;
+    gap: 4px;
+  }
+  
+  /* All elements same height - 32px */
+  #searchInput {
+    height: 32px !important;
+    line-height: 32px;
+    padding: 0 10px !important;
+    font-size: 14px;
+  }
+  
+  #expandAll,
+  #toggleShowChildren,
+  .add-heading-btn {
+    width: 32px !important;
+    height: 32px !important;
+    flex-basis: 32px !important;
+  }
+  
+  #expandAll::before {
+    font-size: 14px;
+  }
+  
+  .add-heading-btn::before {
+    font-size: 18px;
+  }
+  
+  #toggleShowChildren:checked::after {
+    font-size: 12px;
+  }
+}
+
+/* Adjust body padding */
+@media (max-width: 768px) {
+  body {
+    padding-top: 124px !important; /* 60px header + 64px controls */
+  }
+}
+
+@media (max-width: 480px) {
+  body {
+    padding-top: 120px !important; /* 60px header + 60px controls */
+  }
+}
+
+@media (max-width: 360px) {
+  body {
+    padding-top: 116px !important; /* 60px header + 56px controls */
+  }
+}
+/* Mobile Controls - Fixed Horizontal Scroll Issue */
+@media (max-width: 768px) {
+  #controls {
+    position: fixed;
+    top: 60px;
+    left: 0;
+    right: 0;  /* Use left/right instead of width: 100vw */
+    z-index: 1000;
+    background-color: #0f1117;
+    border-bottom: 1px solid #23263a;
+    padding: 12px 16px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    
+    /* Perfect single row alignment - NO OVERFLOW */
+    display: flex !important;
+    align-items: center !important;
+    gap: 8px;
+    flex-wrap: nowrap !important;
+    /* Remove overflow-x: auto to prevent scrollbar */
+    height: 64px;
+    box-sizing: border-box;
+  }
+  
+  /* Reset all orders */
+  #controls > * {
+    order: initial !important;
+  }
+  
+  /* Search input - flexible but constrained */
+  #searchInput {
+    flex: 1 1 0 !important;  /* Changed from 'auto' to '0' */
+    min-width: 80px !important;  /* Reduced from 120px */
+    height: 40px !important;
+    padding: 0 12px !important;  /* Reduced padding */
+    font-size: 16px;
+    border-radius: 10px;
+    border: 2px solid #2e3549;
+    background: #1c202b;
+    color: #e0e0e0;
+    transition: all 0.3s ease;
+    box-sizing: border-box;
+    margin: 0 !important;
+    line-height: 40px;
+  }
+  
+  /* Expand button - exactly 40px */
+  #expandAll {
+    flex: 0 0 40px !important;
+    width: 40px !important;
+    height: 40px !important;
+    border: 2px solid #2e3549;
+    border-radius: 8px;
+    background: #0f1117;
+    color: #b0b3ba;
+    cursor: pointer;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    font-size: 0;
+    transition: all 0.3s ease;
+    margin: 0 !important;
+    padding: 0 !important;
+    box-sizing: border-box;
+  }
+  
+  #expandAll::before {
+    content: "⊞";
+    font-size: 18px;
+    line-height: 1;
+  }
+  
+  /* Hide collapse button */
+  #collapseAll {
+    display: none !important;
+  }
+  
+  /* Checkbox - 40px height for alignment */
+  #toggleShowChildren {
+    flex: 0 0 40px !important;
+    width: 40px !important;
+    height: 40px !important;
+    appearance: none;
+    border: 2px solid #404758;
+    border-radius: 8px;
+    background: transparent;
+    cursor: pointer;
+    position: relative;
+    transition: all 0.3s ease;
+    margin: 0 !important;
+    padding: 0 !important;
+    box-sizing: border-box;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+  }
+  
+  #toggleShowChildren:checked {
+    background: #4CAF50;
+    border-color: #4CAF50;
+  }
+  
+  #toggleShowChildren:checked::after {
+    content: "✓";
+    color: white;
+    font-size: 16px;
+    font-weight: bold;
+    line-height: 1;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+  
+  /* Add Heading button - 40px height */
+  .add-heading-btn {
+    flex: 0 0 40px !important;
+    width: 40px !important;
+    height: 40px !important;
+    padding: 0 !important;
+    background: linear-gradient(135deg, #4CAF50, #66BB6A);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    box-shadow: 0 4px 15px rgba(76, 175, 80, 0.3);
+    transition: all 0.3s ease;
+    margin: 0 !important;
+    font-size: 0;
+    box-sizing: border-box;
+    position: relative;
+  }
+  
+  .add-heading-btn::before {
+    content: "+";
+    font-size: 22px;
+    font-weight: bold;
+    line-height: 1;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+  
+  /* Hover states */
+  #searchInput:focus {
+    border-color: #6eb6fe;
+    box-shadow: 0 0 0 3px rgba(110, 182, 254, 0.2);
+    outline: none;
+  }
+  
+  #expandAll:hover {
+    background: #2e3549;
+    border-color: #4CAF50;
+    color: #4CAF50;
+    transform: scale(1.05);
+  }
+  
+  #toggleShowChildren:hover {
+    border-color: #4CAF50;
+    background: rgba(76, 175, 80, 0.1);
+  }
+  
+  .add-heading-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(76, 175, 80, 0.4);
+  }
+}
+
+/* Very small screens */
+@media (max-width: 480px) {
+  #controls {
+    height: 60px;
+    padding: 10px 12px;
+    gap: 6px;
+  }
+  
+  #searchInput {
+    height: 36px !important;
+    line-height: 36px;
+    font-size: 16px;
+    min-width: 60px !important;  /* Further reduced */
+    padding: 0 8px !important;
+  }
+  
+  #expandAll,
+  #toggleShowChildren,
+  .add-heading-btn {
+    width: 36px !important;
+    height: 36px !important;
+    flex-basis: 36px !important;
+  }
+  
+  #expandAll::before {
+    font-size: 16px;
+  }
+  
+  .add-heading-btn::before {
+    font-size: 20px;
+  }
+  
+  #toggleShowChildren:checked::after {
+    font-size: 14px;
+  }
+}
+
+/* Extra small screens */
+@media (max-width: 360px) {
+  #controls {
+    height: 56px;
+    padding: 8px 10px;
+    gap: 4px;
+  }
+  
+  #searchInput {
+    height: 32px !important;
+    line-height: 32px;
+    padding: 0 6px !important;
+    font-size: 14px;
+    min-width: 50px !important;
+  }
+  
+  #expandAll,
+  #toggleShowChildren,
+  .add-heading-btn {
+    width: 32px !important;
+    height: 32px !important;
+    flex-basis: 32px !important;
+  }
+  
+  #expandAll::before {
+    font-size: 14px;
+  }
+  
+  .add-heading-btn::before {
+    font-size: 18px;
+  }
+  
+  #toggleShowChildren:checked::after {
+    font-size: 12px;
+  }
+}
+
+/* Adjust body padding */
+@media (max-width: 768px) {
+  body {
+    padding-top: 124px !important;
+  }
+}
+
+@media (max-width: 480px) {
+  body {
+    padding-top: 120px !important;
+  }
+}
+
+@media (max-width: 360px) {
+  body {
+    padding-top: 116px !important;
+  }
+}
+/* Global horizontal scroll prevention */
+
+
+/* Mobile Controls - No Horizontal Scroll */
+/* Mobile Controls - No Scrollbar Fix */
+@media (max-width: 768px) {
+  #controls {
+    position: fixed;
+    top: 60px;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+    background-color: #0f1117;
+    border-bottom: 1px solid #23263a;
+    padding: 12px 16px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    
+    /* Perfect single row alignment - NO SCROLLBARS */
+    display: flex !important;
+    align-items: center !important;
+    gap: 8px;
+    flex-wrap: nowrap !important;
+    overflow: hidden !important; /* Changed from overflow-x: auto */
+    height: 64px;
+    box-sizing: border-box;
+  }
+  
+  /* Search input - properly constrained */
+  #searchInput {
+    flex: 1 1 0 !important;
+    min-width: 60px !important; /* Reduced to prevent overflow */
+    max-width: none !important;
+    height: 40px !important;
+    padding: 0 10px !important; /* Reduced padding */
+    font-size: 16px;
+    border-radius: 10px;
+    border: 2px solid #2e3549;
+    background: #1c202b;
+    color: #e0e0e0;
+    transition: all 0.3s ease;
+    box-sizing: border-box;
+    margin: 0 !important;
+    line-height: 40px;
+  }
+  
+  /* All other elements - fixed sizes to prevent overflow */
+  #expandAll {
+    flex: 0 0 40px !important;
+    width: 40px !important;
+    height: 40px !important;
+    min-width: 40px !important;
+    max-width: 40px !important;
+    border: 2px solid #2e3549;
+    border-radius: 8px;
+    background: #0f1117;
+    color: #b0b3ba;
+    cursor: pointer;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    font-size: 0;
+    transition: all 0.3s ease;
+    margin: 0 !important;
+    padding: 0 !important;
+    box-sizing: border-box;
+  }
+  
+  #expandAll::before {
+    content: "⊞";
+    font-size: 18px;
+    line-height: 1;
+  }
+  
+  #collapseAll {
+    display: none !important;
+  }
+  
+  #toggleShowChildren {
+    flex: 0 0 40px !important;
+    width: 40px !important;
+    height: 40px !important;
+    min-width: 40px !important;
+    max-width: 40px !important;
+    appearance: none;
+    border: 2px solid #404758;
+    border-radius: 8px;
+    background: transparent;
+    cursor: pointer;
+    position: relative;
+    transition: all 0.3s ease;
+    margin: 0 !important;
+    padding: 0 !important;
+    box-sizing: border-box;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+  }
+  
+  #toggleShowChildren:checked {
+    background: #4CAF50;
+    border-color: #4CAF50;
+  }
+  
+  #toggleShowChildren:checked::after {
+    content: "✓";
+    color: white;
+    font-size: 16px;
+    font-weight: bold;
+    line-height: 1;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+  
+  .add-heading-btn {
+    flex: 0 0 40px !important;
+    width: 40px !important;
+    height: 20px !important;
+    min-width: 40px !important;
+    max-width: 40px !important;
+    padding: 0 !important;
+    background: linear-gradient(135deg, #4CAF50, #66BB6A);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    box-shadow: 0 4px 15px rgba(76, 175, 80, 0.3);
+    transition: all 0.3s ease;
+    margin: 0 !important;
+    font-size: 0;
+    box-sizing: border-box;
+    position: relative;
+  }
+  
+  .add-heading-btn::before {
+    content: "+";
+    font-size: 22px;
+    font-weight: bold;
+    line-height: 1;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+}
+
+/* Smaller screens with even tighter constraints */
+@media (max-width: 480px) {
+  #controls {
+    height: 56px;
+    padding: 10px 12px;
+    gap: 6px;
+  }
+  
+  #searchInput {
+    min-width: 40px !important;
+    height: 36px !important;
+    line-height: 36px;
+    padding: 0 6px !important;
+    font-size: 15px;
+  }
+  
+  #expandAll,
+  #toggleShowChildren,
+  .add-heading-btn {
+    width: 36px !important;
+    height: 36px !important;
+    flex-basis: 36px !important;
+    min-width: 36px !important;
+    max-width: 36px !important;
+  }
+}
+
+/* Extra small screens */
+@media (max-width: 360px) {
+  #controls {
+    height: 52px;
+    padding: 8px 10px;
+    gap: 4px;
+  }
+  
+  #searchInput {
+    min-width: 30px !important;
+    height: 32px !important;
+    line-height: 32px;
+    padding: 0 4px !important;
+    font-size: 14px;
+  }
+  
+  #expandAll,
+  #toggleShowChildren,
+  .add-heading-btn {
+    width: 32px !important;
+    height: 32px !important;
+    flex-basis: 32px !important;
+    min-width: 32px !important;
+    max-width: 32px !important;
+  }
+}
+
+
+/* Very small screens - even more compact */
+@media (max-width: 480px) {
+  #controls {
+    padding: 10px 12px;
+    gap: 6px;
+    height: 52px;
+  }
+  
+  #searchInput {
+    min-width: 60px !important;
+    height: 36px !important;
+    padding: 0 8px !important;
+    line-height: 36px;
+  }
+  
+  #expandAll,
+  #toggleShowChildren,
+  .add-heading-btn {
+    width: 36px !important;
+    height: 36px !important;
+    flex-basis: 36px !important;
+    min-width: 36px !important;
+    max-width: 36px !important;
+  }
+  
+  #expandAll::before {
+    font-size: 16px;
+  }
+  
+  .add-heading-btn::before {
+    font-size: 20px;
+  }
+  
+  #toggleShowChildren:checked::after {
+    font-size: 14px;
+  }
+}
+
+/* Extra small screens */
+@media (max-width: 360px) {
+  #controls {
+    padding: 8px 10px;
+    gap: 4px;
+    height: 48px;
+  }
+  
+  #searchInput {
+    min-width: 50px !important;
+    height: 32px !important;
+    padding: 0 6px !important;
+    font-size: 14px;
+    line-height: 32px;
+  }
+  
+  #expandAll,
+  #toggleShowChildren,
+  .add-heading-btn {
+    width: 32px !important;
+    height: 30px !important;
+    flex-basis: 32px !important;
+    min-width: 32px !important;
+    max-width: 32px !important;
+  }
+  
+  #expandAll::before {
+    font-size: 14px;
+  }
+  
+  .add-heading-btn::before {
+    font-size: 18px;
+  }
+  
+  #toggleShowChildren:checked::after {
+    font-size: 12px;
+  }
+}
+
+/* Adjust body padding */
+@media (max-width: 768px) {
+  body {
+    padding-top: 116px !important;
+  }
+}
+
+@media (max-width: 480px) {
+  body {
+    padding-top: 112px !important;
+  }
+}
+
+@media (max-width: 360px) {
+  body {
+    padding-top: 108px !important;
+  }
+}
+/* Increase logout and receive icon size on mobile */
+@media (max-width: 768px) {
+  .header-btn svg,
+  #logoutBtn svg {
+    width: 22px !important;
+    height: 22px !important;
+  }
+  
+  /* Adjust button size to accommodate larger icons */
+  .header-btn,
+  #logoutBtn {
+    min-width: 40px !important;
+    height: 40px !important;
+    padding: 8px !important;
+  }
+}
+
+/* Very small screens - keep icons reasonably sized */
+@media (max-width: 480px) {
+  .header-btn svg,
+  #logoutBtn svg {
+    width: 20px !important;
+    height: 20px !important;
+  }
+  
+  .header-btn,
+  #logoutBtn {
+    min-width: 36px !important;
+    height: 36px !important;
+    padding: 6px !important;
+  }
+}
+
+/* Extra small screens */
+@media (max-width: 360px) {
+  .header-btn svg,
+  #logoutBtn svg {
+    width: 18px !important;
+    height: 18px !important;
+  }
+  
+  .header-btn,
+  #logoutBtn {
+    min-width: 32px !important;
+    height: 32px !important;
+    padding: 5px !important;
+  }
+}
+/* Reduce plus symbol height in mobile controls */
+@media (max-width: 768px) {
+  .add-heading-btn::before {
+    content: "+";
+    font-size: 16px !important; /* Reduced from 22px */
+    font-weight: bold;
+    line-height: 1;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+}
+
+/* Further reduction for very small screens */
+@media (max-width: 480px) {
+  .add-heading-btn::before {
+    font-size: 16px !important; /* Reduced from 20px */
+  }
+}
+
+/* Extra small screens */
+@media (max-width: 360px) {
+  .add-heading-btn::before {
+    font-size: 14px !important; /* Reduced from 18px */
+  }
+}
+/* Mobile Controls - Single Toggle Button */
+@media (max-width: 768px) {
+  #controls {
+    position: fixed;
+    top: 60px;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+    background-color: #0f1117;
+    border-bottom: 1px solid #23263a;
+    padding: 12px 16px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    display: flex !important;
+    align-items: center !important;
+    gap: 8px;
+    flex-wrap: nowrap !important;
+    overflow: hidden !important;
+    height: 64px;
+    box-sizing: border-box;
+  }
+  
+  /* Search input */
+  #searchInput {
+    flex: 1 1 0 !important;
+    min-width: 60px !important;
+    height: 40px !important;
+    padding: 0 10px !important;
+    font-size: 16px;
+    border-radius: 10px;
+    border: 2px solid #2e3549;
+    background: #1c202b;
+    color: #e0e0e0;
+    transition: all 0.3s ease;
+    box-sizing: border-box;
+    margin: 0 !important;
+    line-height: 40px;
+  }
+  
+  /* Expand button - toggles between expand/collapse */
+  #expandAll {
+    flex: 0 0 40px !important;
+    width: 40px !important;
+    height: 40px !important;
+    border: 2px solid #2e3549;
+    border-radius: 8px;
+    background: #0f1117;
+    color: #b0b3ba;
+    cursor: pointer;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    font-size: 0;
+    transition: all 0.3s ease;
+    margin: 0 !important;
+    padding: 0 !important;
+    box-sizing: border-box;
+  }
+  
+  /* Default expand symbol */
+  #expandAll::before {
+    content: "⊞";
+    font-size: 18px;
+    line-height: 1;
+    transition: all 0.3s ease;
+  }
+  
+  /* When expanded state - show collapse symbol */
+  #expandAll.expanded::before {
+    content: "⊟";
+    color: #4CAF50;
+  }
+  
+  /* Hide the separate collapse button in mobile */
+  #collapseAll {
+    display: none !important;
+  }
+  
+  /* Checkbox */
+  #toggleShowChildren {
+    flex: 0 0 40px !important;
+    width: 40px !important;
+    height: 40px !important;
+    appearance: none;
+    border: 2px solid #404758;
+    border-radius: 8px;
+    background: transparent;
+    cursor: pointer;
+    position: relative;
+    transition: all 0.3s ease;
+    margin: 0 !important;
+    padding: 0 !important;
+    box-sizing: border-box;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+  }
+  
+  #toggleShowChildren:checked {
+    background: #4CAF50;
+    border-color: #4CAF50;
+  }
+  
+  #toggleShowChildren:checked::after {
+    content: "✓";
+    color: white;
+    font-size: 16px;
+    font-weight: bold;
+    line-height: 1;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+  
+  /* Add Heading button */
+  .add-heading-btn {
+    flex: 0 0 40px !important;
+    width: 40px !important;
+    height: 40px !important;
+    padding: 0 !important;
+    background: linear-gradient(135deg, #4CAF50, #66BB6A);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    box-shadow: 0 4px 15px rgba(76, 175, 80, 0.3);
+    transition: all 0.3s ease;
+    margin: 0 !important;
+    font-size: 0;
+    box-sizing: border-box;
+    position: relative;
+  }
+  
+  .add-heading-btn::before {
+    content: "+";
+    font-size: 16px !important;
+    font-weight: bold;
+    line-height: 1;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+  
+  /* Hover effects */
+  #expandAll:hover {
+    background: #2e3549;
+    border-color: #4CAF50;
+    color: #4CAF50;
+  }
+  
+  #expandAll.expanded:hover {
+    background: #2e3549;
+    border-color: #ff6b6b;
+    color: #ff6b6b;
+  }
+}
+/* Mobile Add Problem Button - Show only plus symbol */
+@media (max-width: 768px) {
+  .add-problem-btn {
+    font-size: 0; /* Hide the text */
+    min-width: 32px;
+    height: 32px;
+    padding: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .add-problem-btn::before {
+    content: "+";
+    font-size: 16px;
+    font-weight: bold;
+    color: inherit;
+    line-height: 1;
+  }
+}
+
+/* Very small screens */
+@media (max-width: 480px) {
+  .add-problem-btn {
+    min-width: 28px;
+    height: 28px;
+    padding: 4px;
+  }
+  
+  .add-problem-btn::before {
+    font-size: 14px;
+  }
+}
+
+/* Extra small screens */
+@media (max-width: 360px) {
+  .add-problem-btn {
+    min-width: 24px;
+    height: 24px;
+    padding: 3px;
+  }
+  
+  .add-problem-btn::before {
+    font-size: 12px;
+  }
+}
+/* Heading title truncation */
+.heading-text {
+  max-width: calc(100vw - 200px); /* Adjust based on button space needed */
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: inline-block;
+  vertical-align: middle;
+}
+
+/* Problem title truncation in table rows */
+.clickable-row td span:first-child {
+  max-width: calc(100vw - 150px); /* Adjust based on dropdown button space */
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: inline-block;
+  vertical-align: middle;
+}
+
+/* Mobile specific truncation */
+@media (max-width: 768px) {
+  .heading-text {
+    max-width: calc(100vw - 120px); /* Less space needed on mobile */
+  }
+  
+  .clickable-row td span:first-child {
+    max-width: calc(100vw - 80px); /* Account for mobile dropdown button */
+  }
+}
+
+@media (max-width: 480px) {
+  .heading-text {
+    max-width: calc(100vw - 100px);
+  }
+  
+  .clickable-row td span:first-child {
+    max-width: calc(100vw - 60px);
+  }
+}
+
+/* Summary bar layout adjustment */
+.summary-left {
+  flex: 1;
+  min-width: 0; /* Important: allows text to shrink */
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Table cell adjustment for problem titles */
+.clickable-row td {
+  min-width: 0; /* Allows content to shrink */
+}
+
+.clickable-row td > div {
+  min-width: 0; /* Allows flex children to shrink */
+}
+/* Problem Title Truncation */
+.clickable-row td:first-child {
+  max-width: 300px; /* Adjust based on your layout needs */
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* For mobile devices - more aggressive truncation */
+@media (max-width: 768px) {
+  .clickable-row td:first-child {
+    max-width: 200px;
+  }
+}
+
+@media (max-width: 480px) {
+  .clickable-row td:first-child {
+    max-width: 150px;
+  }
+}
+
+/* If problem titles are in span elements */
+.clickable-row td span {
+  display: inline-block;
+  max-width: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  vertical-align: top;
+}
+
+/* Table cell constraints to prevent overflow */
+table {
+  table-layout: fixed;
+  width: 100%;
+}
+
+td {
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+/* Responsive Problem Title Truncation */
+.problem-title {
+  display: inline-block;
+  max-width: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  vertical-align: middle;
+}
+
+/* Desktop */
+@media (min-width: 1024px) {
+  .problem-title {
+    max-width: 400px;
+  }
+}
+
+/* Tablet */
+@media (max-width: 1023px) and (min-width: 769px) {
+  .problem-title {
+    max-width: 250px;
+  }
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+  .problem-title {
+    max-width: 180px;
+  }
+}
+
+/* Small mobile */
+@media (max-width: 480px) {
+  .problem-title {
+    max-width: 120px;
+  }
+}
+/* Dynamic width based on container */
+.clickable-row td:first-child {
+  max-width: calc(100vw - 300px); /* Subtract space for other columns */
+  min-width: 120px; /* Ensure minimum readability */
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+@media (max-width: 768px) {
+  .clickable-row td:first-child {
+    max-width: calc(100vw - 200px);
+  }
+}
+/* Override Add Problem button height to match other elements in mobile */
+@media (max-width: 768px) {
+  .add-problem-btn {
+    height: 40px !important; /* Match Add Heading button and other controls */
+    min-height: 40px !important;
+    max-height: 40px !important;
+    padding: 0 8px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    line-height: 1 !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .add-problem-btn {
+    height: 36px !important;
+    min-height: 36px !important;
+    max-height: 36px !important;
+  }
+}
+
+@media (max-width: 360px) {
+  .add-problem-btn {
+    height: 32px !important;
+    min-height: 32px !important;
+    max-height: 32px !important;
+  }
+}
+/* Mobile Controls - Keep Same Colors as Desktop */
+@media (max-width: 768px) {
+  /* Checkbox - Keep original desktop colors */
+  #toggleShowChildren {
+    border-color: #404758 !important;
+    background: transparent !important;
+  }
+  
+  #toggleShowChildren:checked {
+    background: #21283d !important;
+    border-color: #404758 !important;
+  }
+  
+  #toggleShowChildren:hover {
+    border-color: #404758 !important;
+    background: rgba(33, 40, 61, 0.1) !important;
+  }
+  
+  /* Add Heading button - Keep original desktop colors */
+  .add-heading-btn {
+    background: #1b1f29 !important;
+    color: #e7eafd !important;
+    box-shadow: 0 2px 8px rgba(36,54,78,0.07) !important;
+  }
+  
+  .add-heading-btn:hover {
+    background: rgba(42, 44, 63, 0.92) !important;
+    color: #fff !important;
+    box-shadow: 0 4px 18px 0 rgba(80,148,255,.13) !important;
+  }
+}
+
+/* Very small screens - maintain same colors */
+@media (max-width: 480px) {
+  #toggleShowChildren {
+    border-color: #404758 !important;
+    background: transparent !important;
+  }
+  
+  #toggleShowChildren:checked {
+    background: #21283d !important;
+    border-color: #404758 !important;
+  }
+  
+  .add-heading-btn {
+    background: #1b1f29 !important;
+    color: #e7eafd !important;
+    box-shadow: 0 2px 8px rgba(36,54,78,0.07) !important;
+  }
+}
+
+/* Extra small screens - maintain same colors */
+@media (max-width: 360px) {
+  #toggleShowChildren {
+    border-color: #404758 !important;
+    background: transparent !important;
+  }
+  
+  #toggleShowChildren:checked {
+    background: #21283d !important;
+    border-color: #404758 !important;
+  }
+  
+  .add-heading-btn {
+    background: #1b1f29 !important;
+    color: #e7eafd !important;
+    box-shadow: 0 2px 8px rgba(36,54,78,0.07) !important;
+  }
+}
+/* Enhanced checkbox tooltip that avoids header overlap */
+.checkbox-tooltip::before {
+  content: "Show all children when heading matches";
+  position: absolute;
+  top: -38px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: #2a2a2a;
+  color: #e0e0e0;
+  padding: 6px 10px;
+  border-radius: 6px;
+  font-size: 12px;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease;
+  z-index: 10001 !important;
+  border: 1px solid #444;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.4);
+}
+
+/* Show tooltip on hover with proper z-index */
+.checkbox-tooltip:hover::before {
+  opacity: 1;
+}
+
+/* Media query for mobile - position tooltip below on small screens */
+@media (max-width: 768px) {
+  .checkbox-tooltip::before {
+    top: 28px;  /* Below checkbox on mobile */
+    transform: translateX(-50%);
+  }
+}
+/* Fix checkbox tooltip positioning for mobile */
+.checkbox-tooltip::before {
+  content: "Show all children when heading matches";
+  position: absolute;
+  top: -38px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: #2a2a2a;
+  color: #e0e0e0;
+  padding: 6px 10px;
+  border-radius: 6px;
+  font-size: 12px;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease;
+  z-index: 10001;
+  border: 1px solid #444;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.4);
+}
+
+/* Mobile-specific positioning to prevent overflow */
+@media (max-width: 768px) {
+  .checkbox-tooltip::before {
+    /* Position tooltip to the left of checkbox on mobile */
+    left: auto;
+    right: 0;
+    transform: none;
+    max-width: 200px;
+    white-space: normal;
+    word-wrap: break-word;
+    line-height: 1.3;
+  }
+}
+
+/* Very small screens - position below checkbox */
+@media (max-width: 480px) {
+  .checkbox-tooltip::before {
+    top: 28px; /* Position below checkbox */
+    right: auto;
+    left: 50%;
+    transform: translateX(-50%);
+    max-width: 180px;
+    font-size: 11px;
+  }
+}
+
+/* Ensure tooltip never goes off-screen */
+@media (max-width: 360px) {
+  .checkbox-tooltip::before {
+    left: 0;
+    transform: none;
+    max-width: calc(100vw - 40px);
+    margin-left: 10px;
+  }
+}
+/* Override CodeVault heading font size on mobile */
+@media (max-width: 768px) {
+  .header-title h2 {
+    font-size: 1.3rem !important; /* Increased from 1.2rem */
+  }
+  
+  .brand-text {
+    font-size: 1.3rem !important; /* Match the h2 size */
+  }
+}
+
+/* Very small screens */
+@media (max-width: 480px) {
+  .header-title h2 {
+    font-size: 1.2rem !important; /* Increased from 1.1rem */
+  }
+  
+  .brand-text {
+    font-size: 1.2rem !important;
+  }
+}
+
+/* Extra small screens */
+@media (max-width: 360px) {
+  .header-title h2 {
+    font-size: 1.1rem !important; /* Increased from 0.9rem */
+  }
+  
+  .brand-text {
+    font-size: 1.1rem !important;
   }
 }
