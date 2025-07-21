@@ -82,11 +82,15 @@
                   <button id="collapseAll">Collapse All</button>
                   <input type="text" id="searchInput" placeholder="Search...">
                   <input type="checkbox" id="toggleShowChildren" class="checkbox-tooltip" checked/>
-               <!-- Add Heading Modal -->
+               
+
+<button id="openAddHeadingModal" class="add-heading-btn">+ Add Heading</button>
+
             </div>
             <div id="container"></div>
         </div>
-        <div id="addHeadingModal" class="modal" style="display:none;">
+        <!-- Add Heading Modal -->
+<div id="addHeadingModal" class="modal" style="display:none;">
   <div class="modal-backdrop"></div>
   <div class="modal-content" role="dialog" aria-modal="true">
     <h2>Add New Heading</h2>
@@ -98,8 +102,6 @@
     <div class="modal-hint">Press <kbd>Enter</kbd> or tap <b>Add</b> to confirm.</div>
   </div>
 </div>
-<button id="openAddHeadingModal" class="add-heading-btn">+ Add Heading</button>
-
 <!-- Rename Modal -->
 <div id="renameModal" class="modal" style="display:none;">
   <div class="modal-backdrop"></div>
