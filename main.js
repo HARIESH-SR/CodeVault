@@ -2155,3 +2155,45 @@ insertTitleInput.onkeydown = (e) => {
     closeInsertModal();
   }
 };
+// Mobile expand/collapse toggle functionality
+function initializeMobileToggle() {
+  const expandBtn = document.getElementById('expandAll');
+  let isExpanded = false;
+  
+  if (expandBtn && window.innerWidth <= 768) {
+    expandBtn.addEventListener('click', function() {
+      if (isExpanded) {
+        // Collapse all
+        const allDetails = document.querySelectorAll('details');
+        allDetails.forEach(detail => {
+          detail.removeAttribute('open');
+        });
+        
+        // Update button state
+        expandBtn.classList.remove('expanded');
+        isExpanded = false;
+      } else {
+        // Expand all
+        const allDetails = document.querySelectorAll('details');
+        allDetails.forEach(detail => {
+          detail.setAttribute('open', '');
+        });
+        
+        // Update button state
+        expandBtn.classList.add('expanded');
+        isExpanded = true;
+      }
+    });
+  }
+}
+
+// Initialize on page load
+document.addEventListener('DOMContentLoaded', initializeMobileToggle);
+
+// Re-initialize on window resize
+window.addEventListener('resize', function() {
+  if (window.innerWidth <= 768) {
+    initializeMobileToggle();
+  }
+});
+
