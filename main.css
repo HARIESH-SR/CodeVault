@@ -54,7 +54,7 @@ button {
 input:focus,
 button:focus {
   outline: none;
-  border-color: #4c93af;
+  border-color: #433e67;
 }
 
 button {
@@ -740,13 +740,13 @@ summary {
 
 /* Checked state */
 .checkbox-tooltip:checked {
-  background-color: #4c93af;
+  background-color: #21283d;
 }
 
 /* Centered tick inside checkbox */
 .checkbox-tooltip:checked::after {
   content: "✔";
-  color: #000;
+  color: #727171;
   font-size: 13px;
   font-weight: bold;
   line-height: 1;
@@ -2569,4 +2569,65 @@ background-color: #343946;
 }
 details:hover{
   background-color: rgba(76, 135, 175, 0.1);
+}
+html, body {
+  height: 100%;
+  min-height: 100vh;
+  box-sizing: border-box;
+}
+body {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+#appContent, #container {
+  flex: 1 1 auto;
+}
+.dropdown-menu{
+  background-color: #14171f;
+}
+.dropdown-menu button:hover{
+  background-color: #ced0d4;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+.dropdown-menu button:hover{
+  background-color: #4a4b4e;
+  color: white;
+}
+#expandAll{
+  background-color: #0f1117;
+  padding: 6px 14px;
+  border-radius: 8px;
+  border: 2px solid #2e3549 !important;
+}
+#collapseAll{
+  border: 2px solid #2e3549 !important;
+  transition: background-color 0.2s ease;
+}
+#collapseAll:hover{
+  background-color: #0f1117;
+  
+
+}
+#save-problem-btn{
+  padding: 6px 20px;
+  background-color: #363741;
+  border: 1px solid #67676e;
+  transition: background-color 0.2s ease;
+}
+#save-problem-btn:hover{
+  background-color: #0f1117;
+}
+.addform {
+  display: flex;
+  gap: 8px;
+  margin: 10px 0;
+  
+}
+.addform input[type="text"] {
+  flex: 1 1 0;
+  min-width: 0;
+}
+.addform button {
+  white-space: nowrap;
 }
