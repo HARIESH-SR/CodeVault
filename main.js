@@ -774,14 +774,14 @@ function runSearch() {
         return;
     }
 
-    // ✅ Match <summary> (headings/subheadings)
-    document.querySelectorAll('#container details > summary').forEach(summary => {
-        const text = summary.innerText.toLowerCase();
+    // ✅ Match only HEADING TITLES (exclude buttons and UI elements)
+    document.querySelectorAll('#container details > summary .heading-text').forEach(headingElement => {
+        const text = headingElement.innerText.toLowerCase();
         const textWords = text.split(/\s+/);
         const matches = queryWords.every(qw => textWords.some(tw => tw.startsWith(qw)));
 
         if (matches) {
-            const detail = summary.parentElement;
+            const detail = headingElement.closest('details');
             detail.style.display = '';
             detail.open = true;
 
@@ -800,13 +800,14 @@ function runSearch() {
         }
     });
 
-    // 🔍 Match <tr>
-    document.querySelectorAll('#container tr').forEach(row => {
-        const text = row.innerText.toLowerCase();
+    // 🔍 Match only PROBLEM TITLES (first span in clickable rows)
+    document.querySelectorAll('#container .clickable-row td span:first-child').forEach(problemTitleSpan => {
+        const text = problemTitleSpan.innerText.toLowerCase();
         const textWords = text.split(/\s+/);
         const matches = queryWords.every(qw => textWords.some(tw => tw.startsWith(qw)));
 
         if (matches) {
+            const row = problemTitleSpan.closest('tr');
             row.style.display = '';
             let parent = row.closest('details');
             while (parent) {
@@ -817,8 +818,13 @@ function runSearch() {
         }
     });
 
-    // 🔍 Match <div>
+    // 🔍 Match specific content divs (exclude UI elements)
     document.querySelectorAll('#container div[style*="margin-left"]').forEach(div => {
+        // Skip if div contains buttons or UI elements
+        if (div.querySelector('button') || div.classList.contains('empty-placeholder')) {
+            return;
+        }
+        
         const text = div.innerText.toLowerCase();
         const textWords = text.split(/\s+/);
         const matches = queryWords.every(qw => textWords.some(tw => tw.startsWith(qw)));
@@ -834,6 +840,8 @@ function runSearch() {
         }
     });
 }
+
+
 
 // Trigger on typing
 document.getElementById('searchInput').addEventListener('input', runSearch);
