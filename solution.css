@@ -319,7 +319,7 @@ body {
 .toggle-container input:checked + .custom-toggle::before {
   transform: translateX(18px);
 }
-@media screen and (max-width: 768px) {
+@media screen and (max-width: 1100px) {
   #top-bar {
   display: flex;
   justify-content: space-between;
@@ -1461,4 +1461,38 @@ pre {
   background: #4f9cff;
   color: #fff;
   transform: scale(1.03);
+}
+#top-bar {
+  display: flex !important;
+  align-items: center !important;
+  min-width: 0 !important;
+}
+#problemTitle {
+  flex: 1 1 0% !important;
+  min-width: 0 !important;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+}
+#controls-wrapper {
+  flex: 0 0 auto !important;
+  min-width: max-content !important;
+  display: flex !important;
+}
+#controls {
+  display: flex !important;
+  flex-wrap: nowrap !important;
+  min-width: max-content !important;
+  width: auto !important;
+  flex: 0 0 auto !important;
+}
+@media (max-width: 768px) {
+  #controls {
+    overflow-x: auto !important;
+    width: 100vw !important;
+    min-width: 0 !important;
+  }
+  #controls::-webkit-scrollbar {
+    display: none !important;
+  }
 }
