@@ -6782,7 +6782,7 @@ body {
 .clickable-row td:first-child {
   max-width: 300px; /* Adjust based on your layout needs */
   white-space: nowrap;
-  overflow: hidden;
+
   text-overflow: ellipsis;
 }
 
@@ -6804,7 +6804,7 @@ body {
   display: inline-block;
   max-width: 100%;
   white-space: nowrap;
-  overflow: hidden;
+
   text-overflow: ellipsis;
   vertical-align: top;
 }
@@ -6861,7 +6861,7 @@ td {
   max-width: calc(100vw - 300px); /* Subtract space for other columns */
   min-width: 120px; /* Ensure minimum readability */
   white-space: nowrap;
-  overflow: hidden;
+
   text-overflow: ellipsis;
 }
 
@@ -7089,3 +7089,4 @@ td {
     font-size: 1.1rem !important;
   }
 }
+
