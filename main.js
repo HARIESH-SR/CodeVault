@@ -1822,8 +1822,8 @@ async function openMoveModal(fromHKey, pKey, problemTitle) {
       option.innerHTML = `
         <div class="heading-option-radio"></div>
         <div class="heading-option-info">
-          <div class="heading-option-name">${heading.heading}</div>
-          <div class="heading-option-details">${problemCount} problem${problemCount !== 1 ? 's' : ''}</div>
+          <div class="heading-option-name ellipsis">${heading.heading}</div>
+          <div class="heading-option-details ellipsis">${problemCount} problem${problemCount !== 1 ? 's' : ''}</div>
         </div>
       `;
       
