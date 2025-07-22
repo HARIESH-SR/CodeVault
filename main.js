@@ -742,7 +742,7 @@ window.shareProblemByCode = async function(hKey, pKey) {
   const probData = probSnap.val();
 
   // 3. Generate a secure random share code
-  const code = Math.random().toString(36).slice(2, 6) + Math.random().toString(36).slice(2, 4);
+  const code = Math.random().toString(36).slice(2, 6) + Math.random().toString(36).slice(2, 4).toUpperCase();
 
   // 4. Compose the shared payload
   const shareObj = {
