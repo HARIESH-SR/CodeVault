@@ -7089,4 +7089,9 @@ td {
     font-size: 1.1rem !important;
   }
 }
+.ellipsis {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
 
