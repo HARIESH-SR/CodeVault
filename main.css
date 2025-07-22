@@ -7094,4 +7094,36 @@ td {
   white-space: nowrap;
   text-overflow: ellipsis;
 }
+.problem-preview, .position-preview {
+  min-width: 0;
+  overflow: hidden;
+}
+.heading-option-info {
+  min-width: 0;
+  overflow: hidden;
+
+}
+.headings-list {
+  overflow-y: auto; /* keep vertical scroll if many headings */
+  overflow-x: hidden;
+}
+.headings-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  /* You can increase for more visible rows */
+  overflow-y: auto;
+}
+.heading-option {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px;
+  min-height: 48px; /* ensure enough tap/click area */
+  /* ... other existing styles ... */
+}
+.move-selection-container {
+  overflow: visible !important;
+}
+
 
