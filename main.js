@@ -742,8 +742,7 @@ window.shareProblemByCode = async function(hKey, pKey) {
   const probData = probSnap.val();
 
   // 3. Generate a secure random share code
-  const code = Math.random().toString(36).slice(2, 6) + Math.random().toString(36).slice(2, 4).toUpperCase();
-
+    const code = (Math.random().toString(36).slice(2, 8)).toUpperCase();
   // 4. Compose the shared payload
   const shareObj = {
     type: "problem",
@@ -818,7 +817,7 @@ window.shareHeadingByCode = async function(hKey) {
   const headingData = headingSnap.val();
 
   // 3. Generate a secure random share code
-  const code = Math.random().toString(36).slice(2, 6) + Math.random().toString(36).slice(2, 4);
+  const code = (Math.random().toString(36).slice(2, 8)).toUpperCase();
 
   // 4. Compose the shared payload
   const shareObj = {
@@ -1603,8 +1602,8 @@ function closeReceiveModal() {
 
 // Validate input and enable/disable button
 receiveCodeInput.oninput = () => {
-  const code = receiveCodeInput.value.trim();
-  const isValid = /^[a-zA-Z0-9]{4,8}$/.test(code);
+  const code = receiveCodeInput.value.trim().toUpperCase(); 
+  const isValid = /^[a-zA-Z0-9]{6}$/.test(code);
   
   receiveCodeInput.classList.remove('valid', 'invalid');
   receiveInputStatus.classList.remove('show');
@@ -1622,14 +1621,14 @@ receiveCodeInput.oninput = () => {
   } else {
     receiveCodeInput.classList.add('invalid');
     receiveContentBtn.disabled = true;
-    receiveInputFeedback.textContent = 'Invalid format: 4-8 characters, letters and numbers only';
+    receiveInputFeedback.textContent = 'Invalid format: 6 characters, letters and numbers only';
     receiveInputFeedback.className = 'input-feedback invalid';
   }
 };
 
 // Perform content import
 async function performReceive() {
-  const code = receiveCodeInput.value.trim();
+  const code = receiveCodeInput.value.trim().toUpperCase();
   if (!code) return;
   
   receiveContentBtn.disabled = true;
@@ -2196,4 +2195,5 @@ window.addEventListener('resize', function() {
     initializeMobileToggle();
   }
 });
+
 
