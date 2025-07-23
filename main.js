@@ -1677,7 +1677,7 @@ async function performReceive() {
         pcount: pcount
       });
 
-      await remove(shareRef);
+     
       showToast(`Received ${problemObj.title}`);
       closeReceiveModal();
       
@@ -1701,7 +1701,7 @@ async function performReceive() {
         hcount: hcount
       });
 
-      await remove(shareRef);
+      
       showToast(`Received heading: "${newHeadingTitle}" with ${headingObj.pcount} problems!`);
       closeReceiveModal();
       
