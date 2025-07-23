@@ -710,29 +710,7 @@ let pendingShareCodes = []; // Array of { code, timeout }
 
 
 window.shareProblemByCode = async function(hKey, pKey) {
-  // 1. CLEANUP STEP: Remove all expired shares (for everyone)
-  try {
-    const sharedSnap = await get(ref(db, "shared"));
-    const now = Date.now();
-    if (sharedSnap.exists()) {
-      const sharedCodes = sharedSnap.val();
-      for (const [code, obj] of Object.entries(sharedCodes)) {
-        const age = now - (obj.timestamp || 0);
-        if (age > SHARE_EXPIRY_MS) {
-          try {
-            await remove(ref(db, `shared/${code}`));
-            console.log("Deleted expired share code:", code);
-          } catch(e) {
-            // This could happen for legacy codes, admin-created nodes, or race conditions
-            console.warn("Could not delete code (maybe legacy/locked/permission):", code, e);
-          }
-        }
-      }
-    }
-  } catch (e) {
-    console.error("Error cleaning up expired /shared codes:", e);
-  }
-
+ 
   // 2. Get the problem object to share
   const probSnap = await get(ref(db, `${dbPrefix}/headings/${hKey}/problems/${pKey}`));
   if (!probSnap.exists()) {
@@ -771,32 +749,14 @@ window.shareProblemByCode = async function(hKey, pKey) {
   // 9. Show/copy the code to user
   openShareModal('problem', code, probData.title || 'Untitled Problem');
 
+  performBatchCleanup().catch(e => {
+    console.error("Background cleanup error:", e);
+  });
+
   return code;
 };
 window.shareHeadingByCode = async function(hKey) {
-  // 1. CLEANUP STEP: Remove all expired shares (for everyone)
-  try {
-    const sharedSnap = await get(ref(db, "shared"));
-    const now = Date.now();
-    if (sharedSnap.exists()) {
-      const sharedCodes = sharedSnap.val();
-      for (const [code, obj] of Object.entries(sharedCodes)) {
-        const age = now - (obj.timestamp || 0);
-        if (age > SHARE_EXPIRY_MS) {
-          try {
-            await remove(ref(db, `shared/${code}`));
-            console.log("Deleted expired share code:", code);
-          } catch(e) {
-            console.warn("Could not delete code (maybe legacy/locked/permission):", code, e);
-          }
-        }
-      }
-    }
-  } catch (e) {
-    console.error("Error cleaning up expired /shared codes:", e);
-  }
-
-  // 2. Get the heading object to share
+  
   const headingSnap = await get(ref(db, `${dbPrefix}/headings/${hKey}`));
   if (!headingSnap.exists()) {
     alert("Heading not found!");
@@ -833,6 +793,10 @@ window.shareHeadingByCode = async function(hKey) {
 
   // 9. Show/copy the code to user
   openShareModal('heading', code, headingData.heading || 'Untitled Heading');
+  performBatchCleanup().catch(e => {
+    console.error("Background cleanup error:", e);
+  });
+
 
   return code;
 };
@@ -998,7 +962,7 @@ const shareData = shareSnap.val();
 // ✅ Add expiry validation
 const now = Date.now();
 const codeAge = now - (shareData.timestamp || 0);
-const SHARE_EXPIRY_MS = 4 * 60 * 1000; // 2 minutes
+
 
 if (codeAge > SHARE_EXPIRY_MS) {
   // Code is expired, delete it and show error
@@ -2208,5 +2172,37 @@ window.addEventListener('resize', function() {
     initializeMobileToggle();
   }
 });
+async function performBatchCleanup() {
+  try {
+    const sharedSnap = await get(ref(db, "shared"));
+    if (!sharedSnap.exists()) return;
+
+    const now = Date.now();
+    const sharedCodes = sharedSnap.val();
+    const expiredCodes = [];
+
+    // Collect all expired codes first
+    for (const [code, obj] of Object.entries(sharedCodes)) {
+      const age = now - (obj.timestamp || 0);
+      if (age > SHARE_EXPIRY_MS) {
+        expiredCodes.push(code);
+      }
+    }
+
+    // Batch delete using Firebase multi-path update
+    if (expiredCodes.length > 0) {
+      const updates = {};
+      expiredCodes.forEach(code => {
+        updates[`shared/${code}`] = null;
+      });
+      
+      await update(ref(db), updates);
+      console.log(`✅ Batch deleted ${expiredCodes.length} expired codes`);
+    }
+
+  } catch (e) {
+    console.error("Batch cleanup error:", e);
+  }
+}
 
 
