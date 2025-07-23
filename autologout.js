@@ -34,10 +34,10 @@ function autoLogout() {
   localStorage.setItem(logoutKey, Date.now());
 
 
-    window.location.href = "index.html";
+    window.location.href = "/login";
  // 50–100ms is enough
  auth.signOut().finally(() => {
-    window.location.href = "index.html";
+    window.location.href = "/login";
   });
 }
 window.autoLogout = autoLogout;
@@ -101,13 +101,13 @@ window.addEventListener("storage", (event) => {
     try {
       if (typeof firebase !== "undefined" && firebase.auth) {
         firebase.auth().signOut().finally(() => {
-          window.location.href = "index.html";
+          window.location.href = "/login";
         });
       } else {
-        window.location.href = "index.html";
+        window.location.href = "/login";
       }
     } catch {
-      window.location.href = "index.html";
+      window.location.href = "/login";
     }
   }
 
