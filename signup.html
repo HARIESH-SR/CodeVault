@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>CodeVault - Sign Up</title>
-  <link rel="stylesheet" href="index.css" />
+  <link rel="stylesheet" href="login.css" />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
    <!-- Google tag (gtag.js) -->
@@ -30,7 +30,7 @@
   <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
 
-  <script>
+  <!-- <script>
     window.addEventListener('DOMContentLoaded', () => {
       const allowedDomain = "https://codeevault.netlify.app";
       const currentDomain = window.location.origin;
@@ -44,7 +44,7 @@
         return;
       }
     });
-  </script>
+  </script> -->
 </head>
 
 <body>
@@ -61,7 +61,7 @@
   <div id="signupError" class="login-error" style="margin-top: 0.6rem;"></div>
 
   <div class="login-links">
-    <p>Already have an account? <a href="index.html">Login</a></p>
+    <p>Already have an account? <a href="/login">Login</a></p>
   </div>
 </div>
 
@@ -240,7 +240,7 @@
 
         alert("✅ Account created successfully.\n\nWe've sent a verification link to your email. Please verify it before logging in.\n\nIf you don't see it, check your Spam or Promotions folder.");
 
-        window.location.href = "index.html";
+        window.location.href = "/login";
       } catch (error) {
           console.error("Signup error:", error);
 
