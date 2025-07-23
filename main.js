@@ -7,7 +7,7 @@ try {
   if (!firebaseConfig) throw new Error("Missing config");
 } catch {
   alert("Missing Firebase config. Please log in again.");
-  window.location.href = "index.html";
+  window.location.href = "/login";
 }
 
 // ✅ Now import Firebase modules
@@ -507,7 +507,7 @@ window.editSolution = function (hKey, pKey) {
         sessionStorage.setItem("hKey", hKey);
         sessionStorage.setItem("pKey", pKey);
 
-        window.open("solution.html", "_blank");
+        window.open("/solution", "_blank");
     });
 };
 
@@ -543,7 +543,7 @@ onAuthStateChanged(auth, user => {
     renderSavedCodes();
   } else {
  
-    window.location.href = "index.html";
+    window.location.href = "/login";
   }
 });
 
@@ -2024,7 +2024,7 @@ async function performInsert() {
           sessionStorage.setItem("solutionTitle", title);
           sessionStorage.setItem("hKey", hKey);
           sessionStorage.setItem("pKey", result.newPKey);
-          window.open("solution.html", "_blank");
+          window.open("/solution", "_blank");
         }, 500);
       }
     }
