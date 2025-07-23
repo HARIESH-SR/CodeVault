@@ -6,13 +6,13 @@ try {
     if (!firebaseConfig) throw new Error("Missing config");
 } catch {
     alert("Missing Firebase config. Please log in again.");
-    window.location.href = "index.html";
+    window.location.href = "/login";
 }
 const uid = sessionStorage.getItem("uid");
 
 if (!uid) {
   alert("Missing UID. Please log in again.");
-  window.location.href = "index.html";
+  window.location.href = "/login";
 }
 
 
@@ -20,7 +20,7 @@ if (!uid) {
 firebase.initializeApp(firebaseConfig);
 firebase.auth().onAuthStateChanged((user) => {
   if (!user || user.uid !== uid) {
-    window.location.href = "index.html";
+    window.location.href = "/login";
   }
 });
 
@@ -487,11 +487,11 @@ btn.onclick = () => {
       const data = snapshot.val();
       const site = (data.site || "").toLowerCase();
 
-      let fileToOpen = "problemdata.html";
+      let fileToOpen = "/problemdata";
       if (site === "leetcode") {
-        fileToOpen = "leetcodeproblemdata.html";
+        fileToOpen = "/leetcodeproblemdata";
       } else if (site === "gfg") {
-        fileToOpen = "gfgproblemdata.html";
+        fileToOpen = "/gfgproblemdata";
       }
 
       window.open(fileToOpen, "_blank");
@@ -799,9 +799,9 @@ function redirectToExtractor(select) {
   const site = select.value;
 
   if (site === "leetcode") {
-    window.open("leetcodeExtractor.html", "_blank");
+    window.open("/leetcodeExtractor", "_blank");
   } else if (site === "gfg") {
-    window.open("gfgExtractor.html", "_blank");
+    window.open("/gfgExtractor", "_blank");
   }
 
   select.selectedIndex = 0; // Reset dropdown
@@ -1603,7 +1603,7 @@ function openNoteEditor() {
   sessionStorage.setItem("addNoteUid", uid);
   sessionStorage.setItem("addNoteHKey", hKey);
   sessionStorage.setItem("addNotePKey", pKey);
-  window.open("notes.html", "_blank");
+  window.open("/notes", "_blank");
 }
 
 
