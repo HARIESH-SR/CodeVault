@@ -30,7 +30,7 @@
   <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
 
-  <!-- <script>
+  <script>
     window.addEventListener('DOMContentLoaded', () => {
       const allowedDomain = "https://codeevault.netlify.app";
       const currentDomain = window.location.origin;
@@ -44,7 +44,7 @@
         return;
       }
     });
-  </script> -->
+  </script>
 </head>
 
 <body>
@@ -54,8 +54,18 @@
   <h2 class="login-heading">Create Account</h2>
 
   <input type="email" id="signupEmail" placeholder="Email" class="login-input" />
-  <input type="password" id="signupPassword" placeholder="Password" class="login-input" />
-  <input type="text" id="signupUsername" placeholder="Username (optional)" class="login-input" />
+<input type="password" id="signupPassword" placeholder="Password" class="login-input" />
+<!-- Add this after the password input -->
+<div id="passwordStrength" class="password-strength">
+  <div class="strength-bar">
+    <div id="strengthIndicator" class="strength-fill"></div>
+  </div>
+  <span id="strengthText" class="strength-text"></span>
+</div>
+
+<input type="password" id="confirmPassword" placeholder="Confirm Password" class="login-input" />
+<input type="text" id="signupUsername" placeholder="Username (optional)" class="login-input" />
+
 
   <button id="signupBtn" class="login-btn">Sign Up</button>
   <div id="signupError" class="login-error" style="margin-top: 0.6rem;"></div>
@@ -66,6 +76,55 @@
 </div>
 
 <style>
+  .password-strength {
+  margin-bottom: 1rem;
+  margin-top: -0.5rem;
+}
+
+.strength-bar {
+  width: 100%;
+  height: 4px;
+  background-color: #3b4252;
+  border-radius: 2px;
+  overflow: hidden;
+  margin-bottom: 0.3rem;
+}
+
+.strength-fill {
+  height: 100%;
+  transition: width 0.3s ease, background-color 0.3s ease;
+  width: 0%;
+}
+
+.strength-text {
+  font-size: 0.8rem;
+  color: #aaa;
+}
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.loading-spinner {
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  border: 2px solid rgba(255,255,255,0.3);
+  border-radius: 50%;
+  border-top-color: #fff;
+  animation: spin 1s ease-in-out infinite;
+  margin-right: 8px;
+}
+
+.login-btn:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.strength-weak { background-color: #ff6b6b; }
+.strength-medium { background-color: #ffa500; }
+.strength-strong { background-color: #00ff88; }
+
   body {
     margin: 0;
     padding: 0;
@@ -108,11 +167,12 @@
   }
 
   .login-heading {
-     margin-bottom: 20rem; /* increased from 1.5rem */
+  margin-bottom: 1.5rem; /* ✅ Fixed from 20rem */
   font-size: 1.6rem;
   font-weight: 600;
   color: #f5f5f5;
-  }
+}
+
 
   .login-input {
     width: 100%;
@@ -182,6 +242,78 @@
     color: #1f9eff;
     text-decoration: underline;
   }
+  .verify-text {
+  line-height: 1.55;
+  margin: 1.2rem 0 2rem;
+  color: #ccc;
+}
+.fullscreen-notice {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: #0f1117;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
+
+.notice-content {
+  text-align: center;
+  max-width: 500px;
+  padding: 2rem;
+}
+
+.verification-container {
+  background: #1a1d25;
+  padding: 3rem 2.5rem;
+  border-radius: 16px;
+  box-shadow: 0 0 25px rgba(0, 123, 255, 0.15);
+}
+
+.success-icon {
+  font-size: 4rem;
+  margin-bottom: 1.5rem;
+  animation: bounce 0.6s ease-out;
+}
+
+.verification-heading {
+  font-size: 1.8rem;
+  font-weight: 600;
+  color: #f5f5f5;
+  margin-bottom: 1.5rem;
+}
+
+@keyframes bounce {
+  0%, 20%, 50%, 80%, 100% {
+    transform: translateY(0);
+  }
+  40% {
+    transform: translateY(-10px);
+  }
+  60% {
+    transform: translateY(-5px);
+  }
+}
+
+/* Mobile responsive */
+@media (max-width: 480px) {
+  .verification-container {
+    padding: 2rem 1.5rem;
+    margin: 1rem;
+  }
+  
+  .success-icon {
+    font-size: 3rem;
+  }
+  
+  .verification-heading {
+    font-size: 1.6rem;
+  }
+}
+
 </style>
 
 
@@ -203,74 +335,282 @@
 
     const signupBtn = document.getElementById("signupBtn");
     const signupError = document.getElementById("signupError");
+ signupBtn.addEventListener("click", async () => {
+  const email = document.getElementById("signupEmail").value.trim();
+  const password = document.getElementById("signupPassword").value;
+  const confirmPassword = document.getElementById("confirmPassword").value;
+  const username = document.getElementById("signupUsername").value.trim();
 
-    signupBtn.addEventListener("click", async () => {
-      const email = document.getElementById("signupEmail").value.trim();
-      const password = document.getElementById("signupPassword").value;
-      const username = document.getElementById("signupUsername").value.trim();
+  signupError.textContent = "";
 
-      signupError.textContent = "";
-
-      if (!email || !password) {
-        signupError.textContent = "Email and password are required.";
-        return;
-      }
-
-      signupBtn.textContent = "Signing up...";
-      signupBtn.disabled = true;
-
-      try {
-        const userCredential = await firebase.auth().createUserWithEmailAndPassword(email, password);
-        const user = userCredential.user;
-        const uid = user.uid;
-
-        // Send email verification
-        await user.sendEmailVerification();
-
-        // Save user data in database
-        await firebase.database().ref(`users/${uid}`).set({
-          username: username || email,
-          createdAt: new Date().toISOString(),
-          config: {
-            judge0Key: "",
-            renderUrl: "",
-            replitUrl: ""
-          }
-        });
-
-        alert("✅ Account created successfully.\n\nWe've sent a verification link to your email. Please verify it before logging in.\n\nIf you don't see it, check your Spam or Promotions folder.");
-
-        window.location.href = "/login";
-      } catch (error) {
-          console.error("Signup error:", error);
-
-          let msg = "Something went wrong. Please try again.";
-
-          switch (error.code) {
-            case "auth/email-already-in-use":
-              msg = "This email is already registered.";
-              break;
-            case "auth/invalid-email":
-              msg = "Please enter a valid email address.";
-              break;
-            case "auth/weak-password":
-              msg = "Password should be at least 6 characters.";
-              break;
-            case "auth/network-request-failed":
-              msg = "Network error. Check your internet connection.";
-              break;
-            case "auth/too-many-requests":
-              msg = "Too many attempts. Try again later.";
-              break;
-            // You can add more cases if needed
+  // Enhanced validation
+  if (!email || !password || !confirmPassword) {
+    signupError.textContent = "Email, password, and confirm password are required.";
+    return;
   }
 
-  signupError.textContent = msg;
-  signupBtn.textContent = "Sign Up";
-  signupBtn.disabled = false;
+  if (password !== confirmPassword) {
+    signupError.textContent = "Passwords do not match.";
+    return;
+  }
+
+  if (password.length < 6) {
+    signupError.textContent = "Password should be at least 6 characters.";
+    return;
+  }
+
+  signupBtn.textContent = "Signing up...";
+  signupBtn.disabled = true;
+
+  try {
+    const userCredential = await firebase.auth().createUserWithEmailAndPassword(email, password);
+    const user = userCredential.user;
+    const uid = user.uid;
+
+    // Send email verification
+    await user.sendEmailVerification();
+      showVerificationNotice(email);
+    // Save user data in database
+    await firebase.database().ref(`users/${uid}`).set({
+      username: username || email,
+      createdAt: new Date().toISOString(),
+      config: {
+        judge0Key: "",
+        renderUrl: "",
+        replitUrl: ""
+      }
+    });
+
+  } catch (error) {
+    console.error("Signup error:", error);
+
+    let msg = "Something went wrong. Please try again.";
+
+    switch (error.code) {
+      case "auth/email-already-in-use":
+        msg = "This email is already registered.";
+        break;
+      case "auth/invalid-email":
+        msg = "Please enter a valid email address.";
+        break;
+      case "auth/weak-password":
+        msg = "Password should be at least 6 characters.";
+        break;
+      case "auth/network-request-failed":
+        msg = "Network error. Check your internet connection.";
+        break;
+      case "auth/too-many-requests":
+        msg = "Too many attempts. Try again later.";
+        break;
+    }
+
+    signupError.textContent = msg;
+  } finally {
+    // This ensures the button is always reset, even if there's an error
+    signupBtn.textContent = "Sign Up";
+    signupBtn.disabled = false;
+  }
+});
+// Real-time password matching feedback
+const passwordField = document.getElementById("signupPassword");
+const confirmPasswordField = document.getElementById("confirmPassword");
+
+function checkPasswordMatch() {
+  const password = passwordField.value;
+  const confirmPassword = confirmPasswordField.value;
+  
+  if (confirmPassword.length > 0) {
+    if (password === confirmPassword) {
+      confirmPasswordField.style.borderColor = "#00ff88";
+      confirmPasswordField.style.boxShadow = "0 0 5px rgba(0, 255, 136, 0.4)";
+    } else {
+      confirmPasswordField.style.borderColor = "#ff6b6b";
+      confirmPasswordField.style.boxShadow = "0 0 5px rgba(255, 107, 107, 0.4)";
+    }
+  } else {
+    // Reset to default styling when empty
+    confirmPasswordField.style.borderColor = "#3b4252";
+    confirmPasswordField.style.boxShadow = "none";
+  }
 }
 
-    });
-  </script>
+passwordField.addEventListener("input", checkPasswordMatch);
+confirmPasswordField.addEventListener("input", checkPasswordMatch);
+function checkPasswordStrength() {
+  const password = passwordField.value;
+  const strengthIndicator = document.getElementById("strengthIndicator");
+  const strengthText = document.getElementById("strengthText");
+  
+  let strength = 0;
+  let text = "";
+  
+  if (password.length >= 8) strength++;
+  if (/[a-z]/.test(password)) strength++;
+  if (/[A-Z]/.test(password)) strength++;
+  if (/[0-9]/.test(password)) strength++;
+  if (/[^A-Za-z0-9]/.test(password)) strength++;
+  
+  strengthIndicator.className = "strength-fill";
+  
+  if (password.length === 0) {
+    strengthIndicator.style.width = "0%";
+    text = "";
+  } else if (strength <= 2) {
+    strengthIndicator.classList.add("strength-weak");
+    strengthIndicator.style.width = "33%";
+    text = "Weak";
+  } else if (strength <= 3) {
+    strengthIndicator.classList.add("strength-medium");
+    strengthIndicator.style.width = "66%";
+    text = "Medium";
+  } else {
+    strengthIndicator.classList.add("strength-strong");
+    strengthIndicator.style.width = "100%";
+    text = "Strong";
+  }
+  
+  strengthText.textContent = text;
+}
+
+passwordField.addEventListener("input", () => {
+  checkPasswordStrength();
+  checkPasswordMatch();
+});
+function showVerificationNotice(email) {
+  // Replace the entire body content
+  document.body.innerHTML = `
+    <style>
+      body {
+        margin: 0;
+        padding: 0;
+        font-family: 'Inter', sans-serif;
+        background: #0f1117;
+        color: #f1f1f1;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        min-height: 100vh;
+      }
+      
+      .branding {
+        font-size: 2rem;
+        font-weight: 700;
+        color: #fff;
+        margin-bottom: 1.8rem;
+        display: flex;
+        align-items: center;
+        gap: 0.6rem;
+      }
+      
+      .brand-text {
+        background: linear-gradient(135deg, #00d2ff, #3a47d5);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+      }
+      
+      .verification-container {
+        background: #1a1d25;
+        padding: 2.5rem;
+        border-radius: 16px;
+        box-shadow: 0 0 25px rgba(0, 123, 255, 0.15);
+        width: 90%;
+        max-width: 380px;
+        text-align: center;
+        margin-top: 5rem;
+      }
+      
+      .verification-heading {
+        margin-bottom: 1.5rem;
+        font-size: 1.6rem;
+        font-weight: 600;
+        color: #f5f5f5;
+      }
+      
+      .verify-text {
+        line-height: 1.55;
+        margin: 1.2rem 0 2rem;
+        color: #ccc;
+        font-size: 1rem;
+      }
+      
+      .login-btn {
+        width: 100%;
+        padding: 0.9rem;
+        background: linear-gradient(to right, #007BFF, #00bfff);
+        color: white;
+        font-size: 1rem;
+        font-weight: 600;
+        border: none;
+        border-radius: 10px;
+        cursor: pointer;
+        transition: background 0.3s ease;
+      }
+      
+      .login-btn:hover {
+        background: linear-gradient(to right, #0056b3, #00a6ff);
+      }
+      
+      .success-icon {
+        font-size: 3rem;
+        margin-bottom: 1rem;
+        animation: bounce 0.6s ease-out;
+      }
+      
+      @keyframes bounce {
+        0%, 20%, 50%, 80%, 100% {
+          transform: translateY(0);
+        }
+        40% {
+          transform: translateY(-10px);
+        }
+        60% {
+          transform: translateY(-5px);
+        }
+      }
+      
+      @media (max-width: 480px) {
+        .verification-container {
+          padding: 2rem 1.5rem;
+          margin: 1rem;
+        }
+        
+        .branding {
+          font-size: 1.8rem;
+          margin-bottom: 1.5rem;
+        }
+        
+        .verification-heading {
+          font-size: 1.4rem;
+        }
+        
+        .success-icon {
+          font-size: 2.5rem;
+        }
+      }
+    </style>
+    
+    <div class="branding">
+      <span class="brand-text">CodeVault</span>
+    </div>
+    
+    <div class="verification-container">
+      <div class="success-icon">✅</div>
+      <h2 class="verification-heading">Account Created!</h2>
+      <p class="verify-text">
+        We've sent a verification link to<br>
+        <strong>${email}</strong><br><br>
+        Please check your Spam folder and click the link
+        before logging in.
+      </p>
+      <button id="gotoLogin" class="login-btn">Back to Login</button>
+    </div>
+  `;
+
+  // Add event listener for the button
+  document.getElementById('gotoLogin')
+          .addEventListener('click', () => location.href = '/login');
+}
+</script>
 </body>
 </html>
