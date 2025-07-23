@@ -1,0 +1,940 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CodeVault - AI-Powered Cloud Coding Platform | Python Execution & Problem Extractors</title>
+  <meta name="description" content="CodeVault offers instant Python execution with Pyodide, AI coding assistance, LeetCode/GFG problem extractors, and cloud storage. All-in-one coding platform for developers." />
+  <meta name="keywords" content="python executor, pyodide, coding platform, leetcode extractor, gfg extractor, ai coding assistant, cloud code storage" />
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://codeevault.netlify.app/" />
+  
+  <!-- Open Graph Meta Tags -->
+  <meta property="og:title" content="CodeVault - AI-Powered Cloud Coding Platform" />
+  <meta property="og:description" content="Instant Python execution, AI assistance, and problem extractors in one platform" />
+  <meta property="og:url" content="https://codeevault.netlify.app/" />
+  <meta property="og:type" content="website" />
+  <meta property="og:image" content="https://codeevault.netlify.app/og-image.png" />
+  
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  
+  <!-- Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-H6Y77TN6YV"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-H6Y77TN6YV');
+  </script>
+  
+  <!-- Microsoft Clarity -->
+  <script type="text/javascript">
+    (function(c,l,a,r,i,t,y){
+        c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+        t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+        y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+    })(window, document, "clarity", "script", "siqscpf50f");
+  </script>
+
+ 
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: #0a0b0d;
+      color: #e1e5e9;
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    /* Header Navigation */
+    .header {
+      position: fixed;
+      top: 0;
+      width: 100%;
+      background: rgba(10, 11, 13, 0.95);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid #1a1d23;
+      z-index: 1000;
+      padding: 1rem 0;
+    }
+
+    .nav-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 2rem;
+    }
+
+    .logo {
+      font-size: 1.8rem;
+      font-weight: 700;
+      background: linear-gradient(135deg, #00d2ff, #3a47d5);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      text-decoration: none;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 2rem;
+      list-style: none;
+    }
+
+    .nav-links a {
+      color: #e1e5e9;
+      text-decoration: none;
+      font-weight: 500;
+      transition: color 0.3s ease;
+    }
+
+    .nav-links a:hover {
+      color: #00d2ff;
+    }
+
+    .auth-buttons {
+      display: flex;
+      gap: 1rem;
+      align-items: center;
+    }
+
+    .login-btn {
+      color: #e1e5e9;
+      text-decoration: none;
+      font-weight: 500;
+      padding: 0.5rem 1rem;
+      border: 1px solid #2a2f3a;
+      border-radius: 6px;
+      transition: all 0.3s ease;
+    }
+
+    .login-btn:hover {
+      border-color: #00d2ff;
+      color: #00d2ff;
+    }
+
+    .signup-btn {
+      background: linear-gradient(135deg, #00d2ff, #3a47d5);
+      color: white;
+      padding: 0.5rem 1.5rem;
+      border-radius: 8px;
+      text-decoration: none;
+      font-weight: 600;
+      transition: transform 0.3s ease;
+    }
+
+    .signup-btn:hover {
+      transform: translateY(-2px);
+    }
+
+    /* User Menu (when logged in) */
+    .user-menu {
+      position: relative;
+      display: none;
+    }
+
+    .user-menu.show {
+      display: block;
+    }
+
+    .user-avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #00d2ff, #3a47d5);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .dropdown-menu {
+      position: absolute;
+      top: 100%;
+      right: 0;
+      background: #1a1d25;
+      border: 1px solid #2a2f3a;
+      border-radius: 8px;
+      padding: 0.5rem 0;
+      min-width: 180px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+      display: none;
+    }
+
+    .dropdown-menu.show {
+      display: block;
+    }
+
+    .dropdown-menu a {
+      display: block;
+      padding: 0.75rem 1rem;
+      color: #e1e5e9;
+      text-decoration: none;
+      transition: background 0.3s ease;
+    }
+
+    .dropdown-menu a:hover {
+      background: #2a2f3a;
+      color: #00d2ff;
+    }
+
+    .logout-btn {
+      border-top: 1px solid #2a2f3a;
+      margin-top: 0.5rem;
+      padding-top: 0.5rem;
+    }
+
+    /* Hero Section */
+    .hero {
+      padding: 8rem 2rem 6rem;
+      text-align: center;
+      background: radial-gradient(ellipse at center, rgba(0, 210, 255, 0.1) 0%, transparent 70%);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+    }
+
+    .hero-content {
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    .hero h1 {
+      font-size: 3.5rem;
+      font-weight: 700;
+      margin-bottom: 1.5rem;
+      background: linear-gradient(135deg, #ffffff, #a0a6b0);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      line-height: 1.2;
+    }
+
+    .hero-subtitle {
+      font-size: 1.3rem;
+      color: #8b9cb6;
+      margin-bottom: 3rem;
+      font-weight: 400;
+    }
+
+    .hero-cta {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: linear-gradient(135deg, #00d2ff, #3a47d5);
+      color: white;
+      padding: 1rem 2rem;
+      border-radius: 12px;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 1.1rem;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 20px rgba(0, 210, 255, 0.3);
+    }
+
+    .hero-cta:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 25px rgba(0, 210, 255, 0.4);
+    }
+
+    /* Features Section */
+    .features {
+      padding: 6rem 2rem;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .section-title {
+      text-align: center;
+      font-size: 2.5rem;
+      font-weight: 700;
+      margin-bottom: 3rem;
+      background: linear-gradient(135deg, #ffffff, #a0a6b0);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 2rem;
+      margin-bottom: 4rem;
+    }
+
+    .feature-card {
+      background: linear-gradient(145deg, #161821, #1a1d25);
+      border: 1px solid #2a2f3a;
+      border-radius: 16px;
+      padding: 2rem;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .feature-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, #00d2ff, transparent);
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    .feature-card:hover {
+      transform: translateY(-5px);
+      border-color: #00d2ff;
+      box-shadow: 0 10px 30px rgba(0, 210, 255, 0.1);
+    }
+
+    .feature-card:hover::before {
+      opacity: 1;
+    }
+
+    .feature-icon {
+      font-size: 2.5rem;
+      margin-bottom: 1rem;
+      display: block;
+    }
+
+    .feature-card h3 {
+      font-size: 1.4rem;
+      font-weight: 600;
+      margin-bottom: 1rem;
+      color: #ffffff;
+    }
+
+    .feature-card p {
+      color: #8b9cb6;
+      line-height: 1.6;
+    }
+
+    .feature-list {
+      list-style: none;
+      margin-top: 1rem;
+    }
+
+    .feature-list li {
+      color: #8b9cb6;
+      margin: 0.5rem 0;
+      padding-left: 1.5rem;
+      position: relative;
+    }
+
+    .feature-list li::before {
+      content: '✓';
+      position: absolute;
+      left: 0;
+      color: #00d2ff;
+      font-weight: bold;
+    }
+
+    /* How It Works Section */
+    .how-it-works {
+      background: linear-gradient(145deg, #161821, #1a1d25);
+      padding: 6rem 2rem;
+      margin: 4rem 0;
+    }
+
+    .workflow-steps {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 3rem;
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+
+    .workflow-step {
+      text-align: center;
+      position: relative;
+    }
+
+    .step-number {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 60px;
+      height: 60px;
+      background: linear-gradient(135deg, #00d2ff, #3a47d5);
+      color: white;
+      border-radius: 50%;
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin-bottom: 1.5rem;
+    }
+
+    .workflow-step h3 {
+      font-size: 1.3rem;
+      font-weight: 600;
+      margin-bottom: 1rem;
+      color: #ffffff;
+    }
+
+    .workflow-step p {
+      color: #8b9cb6;
+    }
+
+    /* FAQ Section */
+    .faq {
+      padding: 6rem 2rem;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    .faq-item {
+      background: linear-gradient(145deg, #161821, #1a1d25);
+      border: 1px solid #2a2f3a;
+      border-radius: 12px;
+      margin-bottom: 1rem;
+      overflow: hidden;
+    }
+
+    .faq-question {
+      padding: 1.5rem;
+      background: none;
+      border: none;
+      color: #ffffff;
+      font-size: 1.1rem;
+      font-weight: 600;
+      cursor: pointer;
+      width: 100%;
+      text-align: left;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      transition: color 0.3s ease;
+    }
+
+    .faq-question:hover {
+      color: #00d2ff;
+    }
+
+    .faq-answer {
+      padding: 0 1.5rem 1.5rem;
+      color: #8b9cb6;
+      display: none;
+    }
+
+    .faq-answer.active {
+      display: block;
+    }
+
+    /* Footer */
+    .footer {
+      background: #0f1117;
+      padding: 3rem 2rem 2rem;
+      text-align: center;
+      border-top: 1px solid #1a1d23;
+    }
+
+    .footer-content {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .footer-links {
+      display: flex;
+      justify-content: center;
+      gap: 2rem;
+      margin-bottom: 2rem;
+      flex-wrap: wrap;
+    }
+
+    .footer-links a {
+      color: #8b9cb6;
+      text-decoration: none;
+      transition: color 0.3s ease;
+    }
+
+    .footer-links a:hover {
+      color: #00d2ff;
+    }
+
+    .footer-bottom {
+      color: #666;
+      font-size: 0.9rem;
+      padding-top: 2rem;
+      border-top: 1px solid #1a1d23;
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+      .nav-links {
+        display: none;
+      }
+
+      .auth-buttons {
+        gap: 0.5rem;
+      }
+
+      .hero h1 {
+        font-size: 2.5rem;
+      }
+
+      .hero-subtitle {
+        font-size: 1.1rem;
+      }
+
+      .section-title {
+        font-size: 2rem;
+      }
+
+      .features-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .workflow-steps {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* Animations */
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .fade-in {
+      animation: fadeInUp 0.6s ease forwards;
+    }
+
+    /* Structured Data */
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
+    }
+    
+/* Add this to your existing CSS */
+@media (max-width: 768px) {
+  .nav-links {
+    display: none;
+  }
+
+  .auth-buttons {
+    gap: 0.5rem;
+  }
+
+  /* Hide Get Started button on mobile */
+  .signup-btn {
+    display: none;
+  }
+
+  .hero h1 {
+    font-size: 2.5rem;
+  }
+
+  .hero-subtitle {
+    font-size: 1.1rem;
+  }
+
+  .section-title {
+    font-size: 2rem;
+  }
+
+  .features-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .workflow-steps {
+    grid-template-columns: 1fr;
+  }
+}
+
+  </style>
+</head>
+
+<body>
+  <!-- Structured Data for SEO -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "CodeVault",
+    "description": "AI-powered cloud coding platform with instant Python execution, problem extractors, and intelligent note-taking",
+    "url": "https://codeevault.netlify.app",
+    "applicationCategory": "DeveloperApplication",
+    "operatingSystem": "Web Browser",
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "USD"
+    },
+    "featureList": [
+      "Instant Python Execution with Pyodide",
+      "AI Coding Assistant",
+      "LeetCode Problem Extractor",
+      "GeeksforGeeks Problem Extractor",
+      "Cloud Code Storage",
+      "AI-Powered Notes"
+    ]
+  }
+  </script>
+
+  <!-- Header -->
+  <header class="header">
+    <nav class="nav-container">
+      <a href="/" class="logo">CodeVault</a>
+      <ul class="nav-links">
+        <li><a href="#features">Features</a></li>
+        <li><a href="#how-it-works">How It Works</a></li>
+        <li><a href="#faq">FAQ</a></li>
+      </ul>
+      
+      <!-- Authentication Buttons (shown when not logged in) -->
+      <div class="auth-buttons" id="authButtons">
+        <a href="/login" class="login-btn">Login</a>
+        <a href="/signup" class="signup-btn">Get Started</a>
+      </div>
+
+      <!-- User Menu (shown when logged in) -->
+      <div class="user-menu" id="userMenu">
+        <div class="user-avatar" id="userAvatar" onclick="toggleUserMenu()">
+          <span id="userInitials">U</span>
+        </div>
+        <div class="dropdown-menu" id="dropdownMenu">
+          <a href="/main">Dashboard</a>
+          <a href="/notes">My Notes</a>
+          <a href="/solution">Solutions</a>
+          <a href="#" class="logout-btn" onclick="logout()">Logout</a>
+        </div>
+      </div>
+    </nav>
+  </header>
+
+  <!-- Hero Section -->
+  <section class="hero">
+    <div class="hero-content fade-in">
+      <h1>Your AI-Powered Cloud Coding Vault</h1>
+      <p class="hero-subtitle">
+         Stop juggling tabs. Write code with AI help, take notes, save and sync everything. <br>
+        Everything you need for coding in one place.
+      </p>
+      <a href="/login" class="hero-cta" id="heroCTA">
+        Start Coding Now
+      </a>
+    </div>
+  </section>
+
+  <!-- Key Features Section -->
+  <section id="features" class="features">
+    <h2 class="section-title">What You Can Do With CodeVault</h2>
+    
+    <div class="features-grid">
+      <!-- Code Workspace -->
+      <article class="feature-card fade-in">
+        <span class="feature-icon">🔧</span>
+        <h3>Code Workspace</h3>
+        <p>Complete coding environment with instant execution and cloud synchronization</p>
+        <ul class="feature-list">
+          <li>Save solutions for coding problems</li>
+          <li>Multi-language code editor</li>
+          <li>Instant Python execution with Pyodide</li>
+          <li>Cloud sync with Firebase</li>
+        </ul>
+      </article>
+
+      <!-- AI Assistant -->
+      <article class="feature-card fade-in">
+        <span class="feature-icon">💡</span>
+        <h3>AI Assistant</h3>
+        <p>Intelligent coding companion to help you learn and solve problems faster</p>
+        <ul class="feature-list">
+          <li>Get AI help with coding logic</li>
+          <li>AI-powered topic note generation</li>
+          <li>Code optimization suggestions</li>
+          <li>Real-time debugging assistance</li>
+        </ul>
+      </article>
+
+      <!-- Notes & Docs -->
+      <article class="feature-card fade-in">
+        <span class="feature-icon">📘</span>
+        <h3>Notes & Documentation</h3>
+        <p>Rich note-taking system with syntax highlighting and intelligent organization</p>
+        <ul class="feature-list">
+          <li>Rich text + code note-taking</li>
+          <li>Syntax highlighting with Prism.js</li>
+          <li>Organized storage by topic</li>
+          <li>AI-enhanced content generation</li>
+        </ul>
+      </article>
+
+      <!-- Problem Extractors -->
+      <article class="feature-card fade-in">
+        <span class="feature-icon">🔍</span>
+        <h3>Problem Extractors</h3>
+        <p>Import coding challenges directly from popular platforms</p>
+        <ul class="feature-list">
+          <li>Import coding problems from LeetCode</li>
+          <li>Import content from GeeksforGeeks</li>
+          <li>Auto-format and store problem data</li>
+          <li>Organized problem library</li>
+        </ul>
+      </article>
+
+      <!-- Cross-Device Sync -->
+      <article class="feature-card fade-in">
+        <span class="feature-icon">🌐</span>
+        <h3>Cross-Device Sync</h3>
+        <p>Access your coding workspace from anywhere with secure cloud storage</p>
+        <ul class="feature-list">
+          <li>Secure user authentication</li>
+          <li>Resume your work on any device</li>
+          <li>Real-time synchronization</li>
+          <li>Data backup and recovery</li>
+        </ul>
+      </article>
+
+      <!-- Performance -->
+      <article class="feature-card fade-in">
+        <span class="feature-icon">⚡</span>
+        <h3>Lightning Fast</h3>
+        <p>Pyodide WebAssembly technology for instant code execution without server delays</p>
+        <ul class="feature-list">
+          <li>Client-side Python execution</li>
+          <li>No server round-trip delays</li>
+          <li>Offline code execution capability</li>
+          <li>Enhanced privacy and security</li>
+        </ul>
+      </article>
+    </div>
+  </section>
+
+  <!-- How It Works Section -->
+  <section id="how-it-works" class="how-it-works">
+    <div class="section-title">One Workflow. Everything You Need.</div>
+    
+    <div class="workflow-steps">
+      <div class="workflow-step fade-in">
+        <div class="step-number">1</div>
+        <h3>Sign Up & Login</h3>
+        <p>Create your free account to access all CodeVault features and sync across devices</p>
+      </div>
+      
+      <div class="workflow-step fade-in">
+        <div class="step-number">2</div>
+        <h3>Solve & Save</h3>
+        <p>Write code in or powerfull editor with AI Assistant, run code instantly, and save your work to the cloud.</p>
+      </div>
+      
+      <div class="workflow-step fade-in">
+        <div class="step-number">3</div>
+        <h3>Organize & Access</h3>
+        <p>View all your saved problems, solutions, and notes from a clean, organized dashboard, on any device.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ Section -->
+  <section id="faq" class="faq">
+    <h2 class="section-title">Frequently Asked Questions</h2>
+    
+    <div class="faq-item">
+      <button class="faq-question" onclick="toggleFaq(this)">
+        Is CodeVault free to use?
+        <span>+</span>
+      </button>
+      <div class="faq-answer">
+        Yes! All core features including Python execution, problem extraction, and cloud storage are completely free. Just create an account to get started.
+      </div>
+    </div>
+
+    <div class="faq-item">
+      <button class="faq-question" onclick="toggleFaq(this)">
+        Do I need to create an account?
+        <span>+</span>
+      </button>
+      <div class="faq-answer">
+        Yes, an account is required to access the dashboard, save your work, and sync across devices. Sign up is quick and free!
+      </div>
+    </div>
+
+    <div class="faq-item">
+      <button class="faq-question" onclick="toggleFaq(this)">
+        What programming languages are supported?
+        <span>+</span>
+      </button>
+      <div class="faq-answer">
+        Currently, we offer instant execution for Python, C++, Java and C. We're working on adding support for more languages.
+      </div>
+    </div>
+
+    <div class="faq-item">
+      <button class="faq-question" onclick="toggleFaq(this)">
+        Do I need to install anything?
+        <span>+</span>
+      </button>
+      <div class="faq-answer">
+        No installation required! CodeVault runs entirely in your web browser with full offline code execution capabilities.
+      </div>
+    </div>
+
+    <div class="faq-item">
+      <button class="faq-question" onclick="toggleFaq(this)">
+        Is my code secure and private?
+        <span>+</span>
+      </button>
+      <div class="faq-answer">
+        Yes! Code execution happens locally in your browser using Pyodide, and all data is securely stored with Firebase encryption.
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="footer-content">
+      <div class="footer-links">
+        <a href="#features">Features</a>
+        <a href="#how-it-works">How It Works</a>
+        <a href="#faq">FAQ</a>
+        <a href="/signup">Sign Up</a>
+        <a href="/login">Login</a>
+      </div>
+      
+      <div class="footer-bottom">
+        <p>&copy; 2025 CodeVault. All rights reserved. Built for developers, by developers.</p>
+        <p>Powered by Pyodide WebAssembly • Firebase Cloud • AI Technology</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Hidden content for additional SEO -->
+  <div class="sr-only">
+    <h2>CodeVault - The Ultimate Coding Platform</h2>
+    <p>CodeVault is a comprehensive coding platform that combines instant Python execution using Pyodide WebAssembly technology, AI-powered coding assistance, problem extraction from LeetCode and GeeksforGeeks, intelligent note-taking with syntax highlighting, and secure cloud storage. Perfect for competitive programming, technical interviews, and coding education.</p>
+    
+    <h3>Key Features for Developers:</h3>
+    <ul>
+      <li>Instant Python code execution without server delays</li>
+      <li>AI coding assistant for debugging and optimization</li>
+      <li>LeetCode and GeeksforGeeks problem extractors</li>
+      <li>Rich-text note-taking with Prism.js syntax highlighting</li>
+      <li>Firebase-powered cloud storage and synchronization</li>
+      <li>Mobile-responsive design for coding on any device</li>
+      <li>Offline capability with WebAssembly technology</li>
+    </ul>
+  </div>
+
+  <script>
+    // Initialize Firebase (add your config)
+    const firebaseConfig = {
+      // Your Firebase config here
+    };
+    
+    // Check authentication state
+    // Toggle user dropdown menu
+    function toggleUserMenu() {
+      const dropdownMenu = document.getElementById('dropdownMenu');
+      dropdownMenu.classList.toggle('show');
+    }
+
+    // Close dropdown when clicking outside
+    document.addEventListener('click', (event) => {
+      const userMenu = document.getElementById('userMenu');
+      const dropdownMenu = document.getElementById('dropdownMenu');
+      
+      if (!userMenu.contains(event.target)) {
+        dropdownMenu.classList.remove('show');
+      }
+    });
+
+    // Logout function
+    function logout() {
+      firebase.auth().signOut().then(() => {
+        console.log('User signed out');
+        window.location.reload();
+      }).catch((error) => {
+        console.error('Sign out error:', error);
+      });
+    }
+
+    // FAQ Toggle Functionality
+    function toggleFaq(button) {
+      const answer = button.nextElementSibling;
+      const isActive = answer.classList.contains('active');
+      
+      // Close all other FAQs
+      document.querySelectorAll('.faq-answer').forEach(item => {
+        item.classList.remove('active');
+      });
+      document.querySelectorAll('.faq-question span').forEach(span => {
+        span.textContent = '+';
+      });
+      
+      // Toggle current FAQ
+      if (!isActive) {
+        answer.classList.add('active');
+        button.querySelector('span').textContent = '−';
+      }
+    }
+
+    // Smooth scrolling for navigation links
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function (e) {
+        e.preventDefault();
+        const target = document.querySelector(this.getAttribute('href'));
+        if (target) {
+          target.scrollIntoView({
+            behavior: 'smooth',
+            block: 'start'
+          });
+        }
+      });
+    });
+
+    // Intersection Observer for fade-in animations
+    const observerOptions = {
+      threshold: 0.1,
+      rootMargin: '0px 0px -50px 0px'
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.style.animation = 'fadeInUp 0.6s ease forwards';
+        }
+      });
+    }, observerOptions);
+
+    // Observe all fade-in elements
+    document.querySelectorAll('.fade-in').forEach(el => {
+      observer.observe(el);
+    });
+
+    // Initialize everything when page loads
+    window.addEventListener('load', () => {
+      document.body.classList.add('loaded');
+      checkAuthState();
+    });
+  </script>
+</body>
+</html>
