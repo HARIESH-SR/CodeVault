@@ -68,7 +68,7 @@
       sessionStorage.setItem("geminiApiKey", userConf.geminiApiKey || globalConfig.geminiApiKey || "");
 
 
-      window.location.href = "main.html";
+      window.location.href = "/main";
 
     } catch (error) {
   console.error("Login failed:", error);
