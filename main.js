@@ -1079,7 +1079,7 @@ window.importSharedByCode = async function() {
     });
 
     // Delete the shared code after successful import
-    await remove(shareRef);
+    
 
     showToast(`Recived ${problemObj.title}`);
   }
@@ -1102,7 +1102,7 @@ window.importSharedByCode = async function() {
     hcount: hcount
   });
 
-  await remove(shareRef);
+
   showToast(`Received heading: "${newHeadingTitle}" with ${headingObj.pcount} problems!`);
   }
   else {
