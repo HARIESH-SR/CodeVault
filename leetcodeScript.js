@@ -26,8 +26,7 @@ function saveProblemData() {
   }
 
   const path = `users/${uid}/${dbPrefix}/headings/${hKey}/problems/${pKey}/problemData`;
-  console.log("Session UID:", sessionStorage.getItem("uid"));
-console.log("Auth UID:", firebase.auth().currentUser?.uid);
+  
   db.ref(path)
     .set(window.parsedProblemData.problemData)
     .then(() => alert("✅ Problem saved to database"))
