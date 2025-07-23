@@ -985,13 +985,33 @@ window.importSharedByCode = async function() {
   const code = prompt("Enter the share code:");
   if (!code) return;
 
-  const shareRef = ref(db, `shared/${code}`);
-  const shareSnap = await get(shareRef);
-  if (!shareSnap.exists()) {
-    showToast("Invalid or expired code.", { success: false });
-    return;
+  // ✅ Updated code - checks both existence AND expiry
+const shareRef = ref(db, `shared/${code}`);
+const shareSnap = await get(shareRef);
+if (!shareSnap.exists()) {
+  showToast("Invalid or expired code.", { success: false });
+  return;
+}
+
+const shareData = shareSnap.val();
+
+// ✅ Add expiry validation
+const now = Date.now();
+const codeAge = now - (shareData.timestamp || 0);
+const SHARE_EXPIRY_MS = 4 * 60 * 1000; // 2 minutes
+
+if (codeAge > SHARE_EXPIRY_MS) {
+  // Code is expired, delete it and show error
+  try {
+    await remove(shareRef);
+    console.log(`Deleted expired code: ${code}`);
+  } catch(e) {
+    console.warn('Could not delete expired code:', e);
   }
-  const shareData = shareSnap.val();
+  showToast("Code has expired.", { success: false });
+  return;
+}
+
 
   if (shareData.type === "problem" && shareData.data) {
      const problemObj = { ...shareData.data };
@@ -1617,14 +1637,32 @@ async function performReceive() {
   `;
 
   try {
-    const shareRef = ref(db, `shared/${code}`);
-    const shareSnap = await get(shareRef);
-    
-    if (!shareSnap.exists()) {
-      throw new Error('Invalid or expired code');
-    }
-    
-    const shareData = shareSnap.val();
+    // ✅ Updated code - checks both existence AND expiry
+const shareRef = ref(db, `shared/${code}`);
+const shareSnap = await get(shareRef);
+
+if (!shareSnap.exists()) {
+  throw new Error('Invalid or expired code');
+}
+
+const shareData = shareSnap.val();
+
+// ✅ Add expiry validation
+const now = Date.now();
+const codeAge = now - (shareData.timestamp || 0);
+const SHARE_EXPIRY_MS = 4 * 60 * 1000; // 2 minutes
+
+if (codeAge > SHARE_EXPIRY_MS) {
+  // Code is expired, delete it and throw error
+  try {
+    await remove(shareRef);
+    console.log(`Deleted expired code: ${code}`);
+  } catch(e) {
+    console.warn('Could not delete expired code:', e);
+  }
+  throw new Error('Code has expired');
+}
+
     
     if (shareData.type === "problem" && shareData.data) {
       const problemObj = { ...shareData.data };
