@@ -766,19 +766,7 @@ window.shareProblemByCode = async function(hKey, pKey) {
   // 7. Track code+timeout for collective cleanup
   pendingShareCodes.push({code, timeout});
 
-  // 8. On tab/app close, remove ALL pending
-  if (!window._shareCleanupRegistered) {
-    window.addEventListener("beforeunload", async () => {
-      for (const {code, timeout} of pendingShareCodes) {
-        try {
-          await remove(ref(db, `shared/${code}`));
-          clearTimeout(timeout);
-        } catch(e) {/* ignore */}
-      }
-      pendingShareCodes = [];
-    });
-    window._shareCleanupRegistered = true;
-  }
+ 
 
   // 9. Show/copy the code to user
   openShareModal('problem', code, probData.title || 'Untitled Problem');
