@@ -83,7 +83,7 @@ function renderSavedCodes() {
     .map(detail => detail.dataset.hkey); // we’ll set this below
 
     get(ref(db, dbPrefix)).then(snapshot => {
-      console.log(snapshot.val())
+      //console.log(snapshot.val())
         let data = {};
         if (snapshot.exists()) data = snapshot.val();
         const headings = data.headings || {};
@@ -243,7 +243,7 @@ html += `
       if (el) el.open = true;
     })
     const expandHKey = sessionStorage.getItem("expandHKeyOnRender");
-    console.log(expandHKey)
+    //console.log(expandHKey)
 if (expandHKey) {
   const el = document.querySelector(`details[data-hkey="${expandHKey}"]`);
   if (el) {
@@ -968,7 +968,7 @@ if (codeAge > SHARE_EXPIRY_MS) {
   // Code is expired, delete it and show error
   try {
     await remove(shareRef);
-    console.log(`Deleted expired code: ${code}`);
+    //console.log(`Deleted expired code: ${code}`);
   } catch(e) {
     console.warn('Could not delete expired code:', e);
   }
@@ -1127,7 +1127,7 @@ async function addHeading() {
     sessionStorage.setItem("expandHKeyOnRender", newHeadingKey);
     await update(ref(db), updates);
 
-      console.log("While adding:",newHeadingKey);
+      //console.log("While adding:",newHeadingKey);
   
 
 
@@ -1620,7 +1620,7 @@ if (codeAge > SHARE_EXPIRY_MS) {
   // Code is expired, delete it and throw error
   try {
     await remove(shareRef);
-    console.log(`Deleted expired code: ${code}`);
+    //console.log(`Deleted expired code: ${code}`);
   } catch(e) {
     console.warn('Could not delete expired code:', e);
   }
@@ -2197,7 +2197,7 @@ async function performBatchCleanup() {
       });
       
       await update(ref(db), updates);
-      console.log(`✅ Batch deleted ${expiredCodes.length} expired codes`);
+      //console.log(`✅ Batch deleted ${expiredCodes.length} expired codes`);
     }
 
   } catch (e) {
