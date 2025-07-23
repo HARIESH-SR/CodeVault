@@ -18,7 +18,7 @@ function resetInactivityTimer() {
 
 // 🚪 Perform logout
 function autoLogout() {
-  console.log("⏳ Auto logout initiated.");
+  //console.log("⏳ Auto logout initiated.");
   window.skipBeforeUnload = true;
   if (typeof handleBeforeUnload === "function") {
   window.removeEventListener("beforeunload", handleBeforeUnload);
@@ -26,7 +26,7 @@ function autoLogout() {
 
   if (window.renderPingInterval) {
     clearInterval(window.renderPingInterval);
-    console.log("🛑 Render ping interval stopped due to auto logout.");
+    //console.log("🛑 Render ping interval stopped due to auto logout.");
   }
 
   sessionStorage.clear();
