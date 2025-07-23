@@ -439,7 +439,7 @@ if (["cpp", "java", "c", "php"].includes(langName)) {
         .then(res => res.json())
         .then(res => {
             let output = '';
-            console.log(res.message);
+            //console.log(res.message);
 
             let stdout = (res.stdout || '').trim();
             const stderr = (res.stderr || '').trim();
@@ -837,7 +837,7 @@ logoutChannel.addEventListener("message", (event) => {
             tabId: tabId
         });
         
-        console.log(`Tab ${tabId} reporting unsaved changes: ${hasUnsaved}`);
+        //console.log(`Tab ${tabId} reporting unsaved changes: ${hasUnsaved}`);
     }
 });
 
@@ -1288,7 +1288,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
       if (snapshot.exists()) {
         problemDataValue = snapshot.val();
-        console.log("Problem Data loaded:", problemDataValue);
+        //console.log("Problem Data loaded:", problemDataValue);
         const label = document.createElement("label");
         label.className = "modern-checkbox";
         label.innerHTML = `
