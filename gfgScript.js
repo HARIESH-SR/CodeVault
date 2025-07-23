@@ -29,9 +29,9 @@ function saveProblemData() {
 
   const path = `users/${uid}/${dbPrefix}/headings/${hKey}/problems/${pKey}/problemData`;
 
-  console.log("Session UID:", uid);
-  console.log("Parsed:", parsedProblemData);
-  console.log("Auth UID:", firebase.auth().currentUser?.uid);
+  //console.log("Session UID:", uid);
+  //console.log("Parsed:", parsedProblemData);
+  //console.log("Auth UID:", firebase.auth().currentUser?.uid);
 
   db.ref(path)
     .set(parsedProblemData.problemData)
@@ -49,7 +49,7 @@ function extract() {
   const html = isType2 ? parseType2(rawText) : parseType1(rawText);
 
   output.innerHTML = html;
-  console.log("Parsed Data:", parsedProblemData);
+  //console.log("Parsed Data:", parsedProblemData);
 }
 
 function parseType2(text) {
