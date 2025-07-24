@@ -1059,17 +1059,15 @@ function makeCopyCodeBlock(code, toEditor = false) {
 // To store whole chat turns
 let chatHistoryTurns = [];
 
-function chatAskGemini(event){
+// Refactor chatAskGemini to async to support notes fetching
+async function chatAskGemini(event) {
   event.preventDefault();
 
   const input = document.getElementById('chatPromptInput');
   const msg = input.value.trim();
   if (!msg) return;
-
-  // Optionally, clear input:
   input.value = '';
 
-  // Gather context from checkboxes
   let context = "";
   if (document.getElementById('includeCodeBox').checked) {
     context += `\n\nHere is the code:\n${window.editor?.getValue() || ""}`;
@@ -1080,34 +1078,39 @@ function chatAskGemini(event){
   if (document.getElementById('includeOutputBox').checked) {
     context += `\n\nHere is the output:\n${document.getElementById('output').innerText || ""}`;
   }
-  if (document.getElementById('includeOutputBox').checked) {
-    context += `\n\nHere is the output:\n${document.getElementById('output').innerText || ""}`;
+
+  // --- Notes Checkbox: Fetch and include notes if checked ---
+  const notesCheckbox = document.getElementById('includeNotesBox');
+  if (notesCheckbox && notesCheckbox.checked) {
+    const notesContent = await getNotesContent();
+    if (notesContent) {
+      context += `\n\nHere are my notes:\n${notesContent}`;
+    }
   }
 
   const probCheckbox = document.getElementById('includeProblemDataBox');
-  
-if (probCheckbox && probCheckbox.checked && problemDataValue) {
-  let probSection = `\n\nHere is the problem:\n`;
-  if (problemDataValue.title) probSection += `Title: ${problemDataValue.title}\n`;
-  if (problemDataValue.description) probSection += `Description:\n${problemDataValue.description}\n`;
-  if (problemDataValue.constraints && Array.isArray(problemDataValue.constraints)) {
-    probSection += `Constraints:\n`;
-    probSection += problemDataValue.constraints.map(x => `- ${x}`).join('\n') + '\n';
-  }
-  // Examples
-  if (problemDataValue.examples && Array.isArray(problemDataValue.examples)) {
-    probSection += `Examples:\n`;
-    for (const ex of problemDataValue.examples) {
-      if (typeof ex === 'string') {
-        probSection += ex + '\n';
-      } else if (ex && typeof ex === 'object') {
-        if (ex.title) probSection += `${ex.title}\n`;
-        if (Array.isArray(ex.lines)) probSection += ex.lines.map(l => `  ${l}`).join('\n') + '\n';
+  if (probCheckbox && probCheckbox.checked && problemDataValue) {
+    let probSection = `\n\nHere is the problem:\n`;
+    if (problemDataValue.title) probSection += `Title: ${problemDataValue.title}\n`;
+    if (problemDataValue.description) probSection += `Description:\n${problemDataValue.description}\n`;
+    if (problemDataValue.constraints && Array.isArray(problemDataValue.constraints)) {
+      probSection += `Constraints:\n`;
+      probSection += problemDataValue.constraints.map(x => `- ${x}`).join('\n') + '\n';
+    }
+    // Examples
+    if (problemDataValue.examples && Array.isArray(problemDataValue.examples)) {
+      probSection += `Examples:\n`;
+      for (const ex of problemDataValue.examples) {
+        if (typeof ex === 'string') {
+          probSection += ex + '\n';
+        } else if (ex && typeof ex === 'object') {
+          if (ex.title) probSection += `${ex.title}\n`;
+          if (Array.isArray(ex.lines)) probSection += ex.lines.map(l => `  ${l}`).join('\n') + '\n';
+        }
       }
     }
+    context += probSection;
   }
-  context += probSection;
-}
 
   // Gather previous turns for context (last N exchanges, you decide; here, all)
   let systemContext = chatHistoryTurns.map(turn =>
@@ -1124,45 +1127,49 @@ if (probCheckbox && probCheckbox.checked && problemDataValue) {
   let userBubble = document.createElement('div');
   userBubble.className = 'chat-bubble user';
   userBubble.innerHTML = escapeHTML(msg);
-if (document.getElementById('includeCodeBox').checked) {
-  userBubble.innerHTML += `<div class="data-label">Code:</div><pre><code>${escapeHTML(window.editor?.getValue() || "")}</code></pre>`;
-}
-if (document.getElementById('includeInputBox').checked) {
-  userBubble.innerHTML += `<div class="data-label">Input:</div><pre><code>${escapeHTML(document.getElementById('inputArea').value || "")}</code></pre>`;
-}
-if (document.getElementById('includeOutputBox').checked) {
- userBubble.innerHTML += `<div class="data-label">Output:</div><pre><code>${escapeHTML(document.getElementById('output').innerText || "")}</code></pre>`;
-}
-
-if (probCheckbox && probCheckbox.checked && problemDataValue) {
-  let html = `<div class="data-label">Problem Data:</div><div class="problem-data-block">`;
-  if (problemDataValue.title) html += `<div><strong>Title:</strong> ${escapeHTML(problemDataValue.title)}</div>`;
-  if (problemDataValue.description) html += `<div style="margin: .2em 0;"><strong>Description:</strong><br>${escapeHTML(problemDataValue.description)}</div>`;
-  if (problemDataValue.constraints && Array.isArray(problemDataValue.constraints)) {
-    html += `<div><strong>Constraints:</strong><ul>`;
-    html += problemDataValue.constraints.map(x => `<li>${escapeHTML(x)}</li>`).join('');
-    html += `</ul></div>`;
+  if (document.getElementById('includeCodeBox').checked) {
+    userBubble.innerHTML += `<div class=\"data-label\">Code:</div><pre><code>${escapeHTML(window.editor?.getValue() || "")}</code></pre>`;
   }
-  // Examples: handle both LeetCode and GFG style!
-  if (problemDataValue.examples && Array.isArray(problemDataValue.examples)) {
-    html += `<div><strong>Examples:</strong>`;
-    for (const ex of problemDataValue.examples) {
-      html += `<div style="margin-bottom:.4em;">`;
-      if (typeof ex === 'string') {
-        html += `<pre style="margin:0">${escapeHTML(ex)}</pre>`;
-      } else if (ex && typeof ex === 'object') {
-        if (ex.title) html += `<em>${escapeHTML(ex.title)}</em><br>`;
-        if (Array.isArray(ex.lines)) html += ex.lines.map(ln => `<div>${escapeHTML(ln)}</div>`).join('');
+  if (document.getElementById('includeInputBox').checked) {
+    userBubble.innerHTML += `<div class=\"data-label\">Input:</div><pre><code>${escapeHTML(document.getElementById('inputArea').value || "")}</code></pre>`;
+  }
+  if (document.getElementById('includeOutputBox').checked) {
+    userBubble.innerHTML += `<div class=\"data-label\">Output:</div><pre><code>${escapeHTML(document.getElementById('output').innerText || "")}</code></pre>`;
+  }
+  // --- Notes in user bubble ---
+  if (notesCheckbox && notesCheckbox.checked) {
+    const notesContent = await getNotesContent();
+    if (notesContent) {
+      userBubble.innerHTML += `<div class=\"data-label\">Notes:</div><pre><code>${escapeHTML(notesContent)}</code></pre>`;
+    }
+  }
+  if (probCheckbox && probCheckbox.checked && problemDataValue) {
+    let html = `<div class=\"data-label\">Problem Data:</div><div class=\"problem-data-block\">`;
+    if (problemDataValue.title) html += `<div><strong>Title:</strong> ${escapeHTML(problemDataValue.title)}</div>`;
+    if (problemDataValue.description) html += `<div style=\"margin: .2em 0;\"><strong>Description:</strong><br>${escapeHTML(problemDataValue.description)}</div>`;
+    if (problemDataValue.constraints && Array.isArray(problemDataValue.constraints)) {
+      html += `<div><strong>Constraints:</strong><ul>`;
+      html += problemDataValue.constraints.map(x => `<li>${escapeHTML(x)}</li>`).join('');
+      html += `</ul></div>`;
+    }
+    // Examples: handle both LeetCode and GFG style!
+    if (problemDataValue.examples && Array.isArray(problemDataValue.examples)) {
+      html += `<div><strong>Examples:</strong>`;
+      for (const ex of problemDataValue.examples) {
+        html += `<div style=\"margin-bottom:.4em;\">`;
+        if (typeof ex === 'string') {
+          html += `<pre style=\"margin:0\">${escapeHTML(ex)}</pre>`;
+        } else if (ex && typeof ex === 'object') {
+          if (ex.title) html += `<em>${escapeHTML(ex.title)}</em><br>`;
+          if (Array.isArray(ex.lines)) html += ex.lines.map(ln => `<div>${escapeHTML(ln)}</div>`).join('');
+        }
+        html += `</div>`;
       }
       html += `</div>`;
     }
     html += `</div>`;
+    userBubble.innerHTML += html;
   }
-  html += `</div>`;
-  userBubble.innerHTML += html;
-}
-
-
 
   chatHistory.appendChild(userBubble);
 
@@ -1174,8 +1181,8 @@ if (probCheckbox && probCheckbox.checked && problemDataValue) {
 
   askGeminiAPI(fullPrompt).then(resp => {
     geminiBubble.innerHTML = `
-  <div class="gemini-response-content">${resp}</div>
-  <button class="save-gemini-response-btn" title="Save this response">Save To AI Notes</button>
+  <div class=\"gemini-response-content\">${resp}</div>
+  <button class=\"save-gemini-response-btn\" title=\"Save this response\">Save To AI Notes</button>
 `;
     chatHistoryTurns.push({question: msg, answer: resp});
 
@@ -1186,6 +1193,8 @@ if (probCheckbox && probCheckbox.checked && problemDataValue) {
     document.getElementById('includeOutputBox').checked = false;
     const probCheckbox = document.getElementById('includeProblemDataBox');
     if (probCheckbox) probCheckbox.checked = false;
+    const notesCheckbox = document.getElementById('includeNotesBox');
+    if (notesCheckbox) notesCheckbox.checked = false;
   }
   
      // ↓↓↓ SCROLL TO THE TOP OF THE GEMINI RESPONSE ↓↓↓
@@ -1243,12 +1252,11 @@ const chatPromptInput = document.getElementById('chatPromptInput');
 chatPromptInput.addEventListener('keydown', function(e) {
   if (e.key === 'Enter' && !e.shiftKey) {
     e.preventDefault();
-    // Find the form and submit it!
-    chatPromptInput.form.requestSubmit();
+    chatAskGemini(e);
   }
   // If Shift+Enter, allow new line (default behavior)
 });
-
+document.querySelector('.gemini-chat-input').onsubmit = chatAskGemini;
 // Automatically resize textarea as you type
 chatPromptInput.addEventListener('input', function() {
   this.style.height = 'auto'; // shrink if needed
@@ -1300,6 +1308,29 @@ document.addEventListener('DOMContentLoaded', function() {
         problemDataValue = null;
       }
     });
+});
+// --- Add Notes Checkbox Dynamically to AI Chat Options Bar ---
+document.addEventListener('DOMContentLoaded', function() {
+  const notesCheckId = "includeNotesBox";
+  const chatOptionsDiv = document.getElementById("chatOptionsBar");
+  const notesRef = firebase.database().ref(`users/${uid}/${problemPath}/notes`);
+
+  notesRef.on("value", (snapshot) => {
+    // Remove old Notes checkbox if present
+    const old = document.getElementById(notesCheckId)?.closest("label");
+    if (old) old.remove();
+
+    if (snapshot.exists() && (snapshot.val()?.content)) {
+      // Only add if note content exists
+      const label = document.createElement("label");
+      label.className = "modern-checkbox";
+      label.innerHTML = `
+        <input type="checkbox" id="${notesCheckId}" checked>
+        <span class="checkmark"></span>
+        <span class="label-text">Notes</span>`;
+      chatOptionsDiv.appendChild(label);
+    }
+  });
 });
 document.querySelectorAll('.prompt-btn').forEach(btn => {
   btn.addEventListener('click', function() {
@@ -1607,3 +1638,45 @@ function openNoteEditor() {
 }
 
 
+// Add this function after line ~1200 (near other utility functions)
+function convertDeltaToPlainText(deltaOps) {
+  if (!deltaOps || !Array.isArray(deltaOps)) return "";
+  
+  let plainText = "";
+  
+  deltaOps.forEach(op => {
+    if (typeof op.insert === 'string') {
+      plainText += op.insert;
+    } else if (op.insert && op.insert.image) {
+      plainText += `[Image: ${op.attributes?.alt || 'Image'}]\n`;
+    }
+  });
+  
+  return plainText.trim();
+}
+
+// Add this function right after the convertDeltaToPlainText function
+async function getNotesContent() {
+  try {
+    const notesRef = firebase.database().ref(`users/${uid}/${problemPath}/notes`);
+    const snapshot = await notesRef.once('value');
+    
+    if (snapshot.exists()) {
+      const notesData = snapshot.val();
+      
+      // Check if it's the Quill Delta format
+      if (notesData.content && notesData.content.ops) {
+        return convertDeltaToPlainText(notesData.content.ops);
+      }
+      // Handle other formats if needed
+      else if (typeof notesData.content === 'string') {
+        return notesData.content;
+      }
+    }
+    
+    return null;
+  } catch (error) {
+    console.error("Error fetching notes:", error);
+    return null;
+  }
+}
