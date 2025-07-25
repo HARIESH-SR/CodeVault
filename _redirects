@@ -15,7 +15,6 @@
 /gfgExtractor           /gfgExtractor.html           200
 /leetcodeproblemdata    /leetcodeproblemdata.html    200
 /gfgproblemdata         /gfgproblemdata.html         200
-/render-ping            /render-ping.html            200
 
 # SEO: Redirect .html to clean URLs (permanent redirects)
 /index.html                  /index                  301
@@ -30,7 +29,6 @@
 /gfgExtractor.html           /gfgExtractor           301
 /leetcodeproblemdata.html    /leetcodeproblemdata    301
 /gfgproblemdata.html         /gfgproblemdata         301
-/render-ping.html            /render-ping            301
 
 # Fallback for any missed .html pages
 /*.html                      /:splat                 301
