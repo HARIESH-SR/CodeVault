@@ -876,10 +876,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   </div>
 
   <script>
-    // Initialize Firebase (add your config)
-    const firebaseConfig = {
-      // Your Firebase config here
-    };
+
     
     // Check authentication state
     // Toggle user dropdown menu
@@ -899,14 +896,6 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     });
 
     // Logout function
-    function logout() {
-      firebase.auth().signOut().then(() => {
-        console.log('User signed out');
-        window.location.reload();
-      }).catch((error) => {
-        console.error('Sign out error:', error);
-      });
-    }
 
     // FAQ Toggle Functionality
     function toggleFaq(button) {
@@ -961,11 +950,6 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       observer.observe(el);
     });
 
-    // Initialize everything when page loads
-    window.addEventListener('load', () => {
-      document.body.classList.add('loaded');
-      checkAuthState();
-    });
   </script>
 </body>
 </html>
