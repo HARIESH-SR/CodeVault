@@ -1,36 +1,36 @@
-/sitemap.xml     /sitemap.xml          200
+# Serve sitemap.xml directly
+/sitemap.xml    /sitemap.xml    200
 
-# Remove .html extension from URLs - Clean URL routing
-/login            /login.html           200
-/signup           /signup.html          200  
-/main             /main.html            200
-/solution         /solution.html        200
-/ainotes          /ainotes.html         200
-/notes            /notes.html           200
-/reset-password   /reset-password.html  200
-/gfgextractor     /gfgExtractor         200
-/leetcodeextractor /leetcodeExtractor   200
-/leetcodeproblemdata /leetcodeproblemdata.html 200
-/gfgproblemdata   /gfgproblemdata.html  200
-/gfgscript        /gfgScript            200
-/leetcodescript   /leetcodeScript       200
-/gfgstyle         /gfgStyle             200
-/leetcodestyle    /leetcodeStyle        200
-/render-ping      /render-ping.html     200
-/snippets         /snippets.html        200
+# Clean URLs (rewrite without redirect)
+#index
+/index                 /index.html                 200
+/login                 /login.html                 200
+/signup                /signup.html                200
+/main                  /main.html                  200
+/solution              /solution.html              200
+/ainotes               /ainotes.html               200
+/notes                 /notes.html                 200
+/reset-password        /reset-password.html        200
+/leetcodeextractor     /leetcodeExtractor.html     200
+/gfgextractor          /gfgExtractor.html          200
+/leetcodeproblemdata   /leetcodeproblemdata.html   200
+/gfgproblemdata        /gfgproblemdata.html        200
+/render-ping           /render-ping.html           200
 
-# Redirect .html URLs to clean URLs (301 permanent redirects for SEO)
-/login.html       /login                301
-/signup.html      /signup               301
-/main.html        /main                 301
-/solution.html    /solution             301
-/ainotes.html     /ainotes              301
-/notes.html       /notes                301
-/reset-password.html /reset-password     301
-/leetcodeproblemdata.html /leetcodeproblemdata 301
-/gfgproblemdata.html /gfgproblemdata     301
-/render-ping.html /render-ping          301
-/snippets.html    /snippets             301
+# SEO: Redirect .html to clean URLs (permanent redirects)
+/index.html                 /index                 301
+/login.html                 /login                 301
+/signup.html                /signup                301
+/main.html                  /main                  301
+/solution.html              /solution              301
+/ainotes.html               /ainotes               301
+/notes.html                 /notes                 301
+/reset-password.html        /reset-password        301
+/leetcodeExtractor.html     /leetcodeextractor     301
+/gfgExtractor.html          /gfgextractor          301
+/leetcodeproblemdata.html   /leetcodeproblemdata   301
+/gfgproblemdata.html        /gfgproblemdata        301
+/render-ping.html           /render-ping           301
 
-# Fallback for any missed .html files
-/*.html           /:splat               301
+# Fallback for any missed .html pages
+/*.html                     /:splat                 301
