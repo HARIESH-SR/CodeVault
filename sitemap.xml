@@ -9,70 +9,70 @@
   </url>
 
   <url>
-    <loc>https://codeevault.netlify.app/main.html</loc>
+    <loc>https://codeevault.netlify.app/main</loc>
     <lastmod>2025-07-24</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
 
   <url>
-    <loc>https://codeevault.netlify.app/solution.html</loc>
+    <loc>https://codeevault.netlify.app/solution</loc>
     <lastmod>2025-07-24</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
 
   <url>
-    <loc>https://codeevault.netlify.app/login.html</loc>
+    <loc>https://codeevault.netlify.app/login</loc>
     <lastmod>2025-07-24</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
   </url>
 
   <url>
-    <loc>https://codeevault.netlify.app/signup.html</loc>
+    <loc>https://codeevault.netlify.app/signup</loc>
     <lastmod>2025-07-24</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
   </url>
 
   <url>
-    <loc>https://codeevault.netlify.app/notes.html</loc>
+    <loc>https://codeevault.netlify.app/notes</loc>
     <lastmod>2025-07-24</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
 
   <url>
-    <loc>https://codeevault.netlify.app/ainotes.html</loc>
+    <loc>https://codeevault.netlify.app/ainotes</loc>
     <lastmod>2025-07-24</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
 
   <url>
-    <loc>https://codeevault.netlify.app/leetcodeExtractor.html</loc>
+    <loc>https://codeevault.netlify.app/leetcodeExtractor</loc>
     <lastmod>2025-07-24</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
 
   <url>
-    <loc>https://codeevault.netlify.app/leetcodeproblemdata.html</loc>
+    <loc>https://codeevault.netlify.app/leetcodeproblemdata</loc>
     <lastmod>2025-07-24</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
 
   <url>
-    <loc>https://codeevault.netlify.app/gfgExtractor.html</loc>
+    <loc>https://codeevault.netlify.app/gfgExtractor</loc>
     <lastmod>2025-07-24</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
 
   <url>
-    <loc>https://codeevault.netlify.app/gfgproblemdata.html</loc>
+    <loc>https://codeevault.netlify.app/gfgproblemdata</loc>
     <lastmod>2025-07-24</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
