@@ -1,1 +1,5 @@
 # My-Codes
+
+User-agent: *
+Allow: /
+Sitemap: https://codeevault.netlify.app/sitemap.xml
