@@ -1,6 +1,3 @@
-# Serve sitemap.xml directly
-/sitemap.xml    /sitemap.xml    200
-
 # Clean URLs (rewrite without redirect)
 #index
 /index                  /index.html                  200
