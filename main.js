@@ -703,7 +703,7 @@ document.getElementById('toggleShowChildren').addEventListener('change', runSear
  * Runs timeout & cleans up on close/cancel.
  */
 // Constants
-const SHARE_EXPIRY_MINUTES = 4;
+const SHARE_EXPIRY_MINUTES = 59;
 const SHARE_EXPIRY_MS = SHARE_EXPIRY_MINUTES * 60 * 1000; // 3 minutes
 
 let pendingShareCodes = []; // Array of { code, timeout }
@@ -1614,7 +1614,7 @@ const shareData = shareSnap.val();
 // ✅ Add expiry validation
 const now = Date.now();
 const codeAge = now - (shareData.timestamp || 0);
-const SHARE_EXPIRY_MS = 4 * 60 * 1000; // 2 minutes
+const SHARE_EXPIRY_MS = 59 * 60 * 1000; // 2 minutes
 
 if (codeAge > SHARE_EXPIRY_MS) {
   // Code is expired, delete it and throw error
@@ -2204,5 +2204,4 @@ async function performBatchCleanup() {
     console.error("Batch cleanup error:", e);
   }
 }
-
 
